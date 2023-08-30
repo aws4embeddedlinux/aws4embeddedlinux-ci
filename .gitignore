@@ -1,0 +1,15 @@
+!jest.config.js
+!.eslintrc.js
+!.prettierrc.js
+*.js
+*.d.ts
+node_modules
+dist
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+
+cdk.context.json
+/.idea/
+/aws4embeddedlinux-ci.iml
