@@ -4,6 +4,8 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 import { BucketDeployment, Source } from "aws-cdk-lib/aws-s3-deployment";
 import * as iam from "aws-cdk-lib/aws-iam";
 
+import * as path from "path";
+
 /**
  * Select options for the BuildImageDataStack.
  */
@@ -65,7 +67,7 @@ export class BuildImageDataStack extends cdk.Stack {
 
     new BucketDeployment(this, "BuildImageBucketDeployment", {
       // Note: Run `npm run zip-data` before deploying this stack!
-      sources: [Source.asset("../lib/dist/assets/build-image")],
+      sources: [Source.asset(path.join(__dirname, "..", "assets/build-image"))],
       destinationBucket: dataBucket,
       role: dataBucketDeploymentRole,
       extract: true,
