@@ -1,12 +1,12 @@
-import * as cdk from "aws-cdk-lib";
-import { Construct } from "constructs";
-import * as codepipeline from "aws-cdk-lib/aws-codepipeline";
-import * as codepipeline_actions from "aws-cdk-lib/aws-codepipeline-actions";
-import * as events from "aws-cdk-lib/aws-events";
-import * as targets from "aws-cdk-lib/aws-events-targets";
-import * as lambda from "aws-cdk-lib/aws-lambda";
-import * as iam from "aws-cdk-lib/aws-iam";
-import * as efs from "aws-cdk-lib/aws-efs";
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
+import * as codepipeline_actions from 'aws-cdk-lib/aws-codepipeline-actions';
+import * as events from 'aws-cdk-lib/aws-events';
+import * as targets from 'aws-cdk-lib/aws-events-targets';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as efs from 'aws-cdk-lib/aws-efs';
 
 import {
   BuildSpec,
@@ -14,8 +14,8 @@ import {
   FileSystemLocation,
   LinuxBuildImage,
   PipelineProject,
-} from "aws-cdk-lib/aws-codebuild";
-import { IRepository } from "aws-cdk-lib/aws-ecr";
+} from 'aws-cdk-lib/aws-codebuild';
+import { IRepository } from 'aws-cdk-lib/aws-ecr';
 
 import {
   ISecurityGroup,
@@ -23,9 +23,9 @@ import {
   Peer,
   Port,
   SecurityGroup,
-} from "aws-cdk-lib/aws-ec2";
-import { Bucket } from "aws-cdk-lib/aws-s3";
-import { SourceRepo, DistributionKind } from "./constructs/source-repo";
+} from 'aws-cdk-lib/aws-ec2';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
+import { SourceRepo, DistributionKind } from './constructs/source-repo';
 
 /**
  * Properties to allow customizing the build.
@@ -52,23 +52,23 @@ export class DemoPipelineStack extends cdk.Stack {
 
     /** Set up networking access and EFS FileSystems. */
 
-    const projectSg = new SecurityGroup(this, "BuildProjectSecurityGroup", {
+    const projectSg = new SecurityGroup(this, 'BuildProjectSecurityGroup', {
       vpc: props.vpc,
-      description: "Security Group to allow attaching EFS",
+      description: 'Security Group to allow attaching EFS',
     });
     projectSg.addIngressRule(
       Peer.ipv4(props.vpc.vpcCidrBlock),
       Port.tcp(2049),
-      "NFS Mount Port"
+      'NFS Mount Port'
     );
 
-    const sstateFS = this.addFileSystem("SState", props.vpc, projectSg);
-    const dlFS = this.addFileSystem("Downloads", props.vpc, projectSg);
-    const tmpFS = this.addFileSystem("Temp", props.vpc, projectSg);
+    const sstateFS = this.addFileSystem('SState', props.vpc, projectSg);
+    const dlFS = this.addFileSystem('Downloads', props.vpc, projectSg);
+    const tmpFS = this.addFileSystem('Temp', props.vpc, projectSg);
 
     /** Create our CodePipeline Actions. */
 
-    const sourceRepo = new SourceRepo(this, "SourceRepo", {
+    const sourceRepo = new SourceRepo(this, 'SourceRepo', {
       ...props,
       repoName: props.layerRepoName ?? `layer-repo-${this.stackName}`,
       kind: props.distroKind ?? DistributionKind.Poky,
@@ -78,14 +78,14 @@ export class DemoPipelineStack extends cdk.Stack {
     const sourceAction = new codepipeline_actions.CodeCommitSourceAction({
       // trigger: CodeCommitTrigger.NONE,
       output: sourceOutput,
-      actionName: "Source",
+      actionName: 'Source',
       repository: sourceRepo.repo,
-      branch: "main",
+      branch: 'main',
       codeBuildCloneOutput: true,
     });
 
-    const project = new PipelineProject(this, "DemoBuildProject", {
-      buildSpec: BuildSpec.fromSourceFilename("build.buildspec.yml"),
+    const project = new PipelineProject(this, 'DemoBuildProject', {
+      buildSpec: BuildSpec.fromSourceFilename('build.buildspec.yml'),
       environment: {
         computeType: ComputeType.X2_LARGE,
         buildImage: LinuxBuildImage.fromEcrRepository(
@@ -99,19 +99,19 @@ export class DemoPipelineStack extends cdk.Stack {
       securityGroups: [projectSg],
       fileSystemLocations: [
         FileSystemLocation.efs({
-          identifier: "tmp_dir",
+          identifier: 'tmp_dir',
           location: tmpFS,
-          mountPoint: "/build-output",
+          mountPoint: '/build-output',
         }),
         FileSystemLocation.efs({
-          identifier: "sstate_cache",
+          identifier: 'sstate_cache',
           location: sstateFS,
-          mountPoint: "/sstate-cache",
+          mountPoint: '/sstate-cache',
         }),
         FileSystemLocation.efs({
-          identifier: "dl_dir",
+          identifier: 'dl_dir',
           location: dlFS,
-          mountPoint: "/downloads",
+          mountPoint: '/downloads',
         }),
       ],
     });
@@ -119,17 +119,17 @@ export class DemoPipelineStack extends cdk.Stack {
     const buildOutput = new codepipeline.Artifact();
     const buildAction = new codepipeline_actions.CodeBuildAction({
       input: sourceOutput,
-      actionName: "Demo-Build",
+      actionName: 'Demo-Build',
       outputs: [buildOutput],
       project,
     });
 
-    const artifactBucket = new Bucket(this, "DemoArtifact", {
+    const artifactBucket = new Bucket(this, 'DemoArtifact', {
       versioned: true,
       enforceSSL: true,
     });
     const artifactAction = new codepipeline_actions.S3DeployAction({
-      actionName: "Demo-Artifact",
+      actionName: 'Demo-Artifact',
       input: buildOutput,
       bucket: artifactBucket,
     });
@@ -138,10 +138,10 @@ export class DemoPipelineStack extends cdk.Stack {
      * and stop the execution if the image does not exist.  */
     const fnOnPipelineCreate = new lambda.Function(
       this,
-      "OSImageCheckOnStart",
+      'OSImageCheckOnStart',
       {
         runtime: lambda.Runtime.PYTHON_3_10,
-        handler: "index.handler",
+        handler: 'index.handler',
         code: lambda.Code.fromInline(`
 import boto3
 import json
@@ -166,14 +166,14 @@ def handler(event, context):
       }
     );
 
-    const pipelineCreateRule = new events.Rule(this, "OnPipelineStartRule", {
+    const pipelineCreateRule = new events.Rule(this, 'OnPipelineStartRule', {
       eventPattern: {
-        detailType: ["CodePipeline Pipeline Execution State Change"],
-        source: ["aws.codepipeline"],
+        detailType: ['CodePipeline Pipeline Execution State Change'],
+        source: ['aws.codepipeline'],
         detail: {
-          state: ["STARTED"],
-          "execution-trigger": {
-            "trigger-type": ["CreatePipeline"],
+          state: ['STARTED'],
+          'execution-trigger': {
+            'trigger-type': ['CreatePipeline'],
           },
         },
       },
@@ -183,35 +183,35 @@ def handler(event, context):
     );
 
     /** Now create the actual Pipeline */
-    const pipeline = new codepipeline.Pipeline(this, "DemoPipeline", {
+    const pipeline = new codepipeline.Pipeline(this, 'DemoPipeline', {
       restartExecutionOnUpdate: true,
       stages: [
         {
-          stageName: "Source",
+          stageName: 'Source',
           actions: [sourceAction],
         },
         {
-          stageName: "Build",
+          stageName: 'Build',
           actions: [buildAction],
         },
         {
-          stageName: "Artifact",
+          stageName: 'Artifact',
           actions: [artifactAction],
         },
       ],
     });
 
     const stopPipelinePolicy = new iam.PolicyStatement({
-      actions: ["codepipeline:StopPipelineExecution"],
+      actions: ['codepipeline:StopPipelineExecution'],
       resources: [pipeline.pipelineArn],
     });
 
     const ecrPolicy = new iam.PolicyStatement({
-      actions: ["ecr:DescribeImages"],
+      actions: ['ecr:DescribeImages'],
       resources: [props.imageRepo.repositoryArn],
     });
     fnOnPipelineCreate.role?.attachInlinePolicy(
-      new iam.Policy(this, "CheckOSAndStop", {
+      new iam.Policy(this, 'CheckOSAndStop', {
         statements: [stopPipelinePolicy, ecrPolicy],
       })
     );

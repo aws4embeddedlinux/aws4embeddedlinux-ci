@@ -1,10 +1,10 @@
-import * as cdk from "aws-cdk-lib";
-import { Construct } from "constructs";
-import * as s3 from "aws-cdk-lib/aws-s3";
-import { BucketDeployment, Source } from "aws-cdk-lib/aws-s3-deployment";
-import * as iam from "aws-cdk-lib/aws-iam";
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
+import * as iam from 'aws-cdk-lib/aws-iam';
 
-import * as path from "path";
+import * as path from 'path';
 
 /**
  * Select options for the BuildImageDataStack.
@@ -35,7 +35,7 @@ export class BuildImageDataStack extends cdk.Stack {
    */
   private createDeploymentBucket(bucketName: string): s3.IBucket {
     // Create a bucket, then allow a deployment Lambda to upload to it.
-    const dataBucket = new s3.Bucket(this, "BuildImageDataBucket", {
+    const dataBucket = new s3.Bucket(this, 'BuildImageDataBucket', {
       bucketName,
       versioned: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -44,12 +44,12 @@ export class BuildImageDataStack extends cdk.Stack {
 
     const dataBucketDeploymentRole = new iam.Role(
       this,
-      "BuildImageBucketRole",
+      'BuildImageBucketRole',
       {
-        assumedBy: new iam.ServicePrincipal("lambda.amazonaws.com"),
+        assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
         managedPolicies: [
           iam.ManagedPolicy.fromAwsManagedPolicyName(
-            "service-role/AWSLambdaBasicExecutionRole"
+            'service-role/AWSLambdaBasicExecutionRole'
           ),
         ],
       }
@@ -60,14 +60,14 @@ export class BuildImageDataStack extends cdk.Stack {
 
     dataBucketDeploymentRole.addToPolicy(
       new iam.PolicyStatement({
-        actions: ["kms:Decrypt"],
+        actions: ['kms:Decrypt'],
         resources: [`arn:aws:kms:${region}:${account}:key/*`],
       })
     );
 
-    new BucketDeployment(this, "BuildImageBucketDeployment", {
+    new BucketDeployment(this, 'BuildImageBucketDeployment', {
       // Note: Run `npm run zip-data` before deploying this stack!
-      sources: [Source.asset(path.join(__dirname, "..", "assets/build-image"))],
+      sources: [Source.asset(path.join(__dirname, '..', 'assets/build-image'))],
       destinationBucket: dataBucket,
       role: dataBucketDeploymentRole,
       extract: true,
