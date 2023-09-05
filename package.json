@@ -13,7 +13,8 @@
     "cdk": "cdk",
     "doc": "typedoc",
     "format": "eslint '**/*.{js,ts,json}' --quiet --fix",
-    "check": "eslint '**/*.{js,ts,json}'"
+    "check": "eslint '**/*.{js,ts,json}'",
+    "prepare": "npm run build"
   },
   "devDependencies": {
     "@types/jest": "^29.5.1",
