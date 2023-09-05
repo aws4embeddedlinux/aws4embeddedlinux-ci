@@ -1,8 +1,8 @@
 {
   "name": "aws4embeddedlinux-cdk-lib",
   "version": "0.1.0",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "dist/lib/index.js",
+  "types": "dist/lib/index.d.ts",
   "scripts": {
     "build": "tsc",
     "zip-data": "if [ -f dist/assets/build-image/data.zip ]; then rm -rf dist/assets/build-image; fi && mkdir -p dist/assets/build-image ; cd assets/build-image && zip -q -o ../../dist/assets/build-image/data.zip -r *",
