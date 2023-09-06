@@ -1,20 +1,20 @@
-import * as cdk from "aws-cdk-lib";
-import { Template } from "aws-cdk-lib/assertions";
+import * as cdk from 'aws-cdk-lib';
+import { Template } from 'aws-cdk-lib/assertions';
 import {
   BuildImagePipelineStack,
   ImageKind,
-} from "../lib/build-image-pipeline";
-import { Repository } from "aws-cdk-lib/aws-ecr";
-import { Bucket } from "aws-cdk-lib/aws-s3";
+} from '../lib/build-image-pipeline';
+import { Repository } from 'aws-cdk-lib/aws-ecr';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
 
-describe("Build Image Pipeline", () => {
-  const env = { account: "111111111111", region: "eu-central-1" };
+describe('Build Image Pipeline', () => {
+  const env = { account: '111111111111', region: 'eu-central-1' };
 
-  test("Build Image Pipeline Instantiates", () => {
+  test('Build Image Pipeline Instantiates', () => {
     const app = new cdk.App();
-    const repoStack = new cdk.Stack(app, "RepoStack", { env });
-    const repository = new Repository(repoStack, "Repository", {});
-    const dataBucket = new Bucket(repoStack, "Bucket", {});
+    const repoStack = new cdk.Stack(app, 'RepoStack', { env });
+    const repository = new Repository(repoStack, 'Repository', {});
+    const dataBucket = new Bucket(repoStack, 'Bucket', {});
 
     const props = {
       env,
@@ -23,16 +23,16 @@ describe("Build Image Pipeline", () => {
       dataBucket,
     };
 
-    const stack = new BuildImagePipelineStack(repoStack, "MyTestStack", props);
+    const stack = new BuildImagePipelineStack(repoStack, 'MyTestStack', props);
     const template = Template.fromStack(stack);
-    template.resourceCountIs("AWS::CodePipeline::Pipeline", 1);
+    template.resourceCountIs('AWS::CodePipeline::Pipeline', 1);
   });
 
-  test("Snapshot", () => {
+  test('Snapshot', () => {
     const app = new cdk.App();
-    const repoStack = new cdk.Stack(app, "RepoStack", { env });
-    const repository = new Repository(repoStack, "Repository", {});
-    const dataBucket = new Bucket(repoStack, "Bucket", {});
+    const repoStack = new cdk.Stack(app, 'RepoStack', { env });
+    const repository = new Repository(repoStack, 'Repository', {});
+    const dataBucket = new Bucket(repoStack, 'Bucket', {});
 
     const props = {
       env,
@@ -41,7 +41,7 @@ describe("Build Image Pipeline", () => {
       dataBucket,
     };
 
-    const stack = new BuildImagePipelineStack(repoStack, "MyTestStack", props);
+    const stack = new BuildImagePipelineStack(repoStack, 'MyTestStack', props);
     const template = Template.fromStack(stack);
     expect(template).toMatchSnapshot();
   });

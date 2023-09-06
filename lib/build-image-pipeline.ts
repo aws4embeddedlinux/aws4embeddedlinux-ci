@@ -1,23 +1,23 @@
-import * as cdk from "aws-cdk-lib";
-import { Construct } from "constructs";
-import * as codepipeline from "aws-cdk-lib/aws-codepipeline";
-import * as codepipeline_actions from "aws-cdk-lib/aws-codepipeline-actions";
-import * as codebuild from "aws-cdk-lib/aws-codebuild";
-import { IRepository } from "aws-cdk-lib/aws-ecr";
-import { IBucket } from "aws-cdk-lib/aws-s3";
-import * as events from "aws-cdk-lib/aws-events";
-import { CodePipeline } from "aws-cdk-lib/aws-events-targets";
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
+import * as codepipeline_actions from 'aws-cdk-lib/aws-codepipeline-actions';
+import * as codebuild from 'aws-cdk-lib/aws-codebuild';
+import { IRepository } from 'aws-cdk-lib/aws-ecr';
+import { IBucket } from 'aws-cdk-lib/aws-s3';
+import * as events from 'aws-cdk-lib/aws-events';
+import { CodePipeline } from 'aws-cdk-lib/aws-events-targets';
 
 /**
  * The type of Image to build on.
  */
 export enum ImageKind {
   /** Ubuntu 22.04 (LTS) */
-  Ubuntu22_04 = "ubuntu_22_04",
+  Ubuntu22_04 = 'ubuntu_22_04',
   /** Fedora 37 */
-  Fedora37 = "fedora_37",
+  Fedora37 = 'fedora_37',
   /** Debian GNU/Linux 11.x (Bullseye) */
-  Debian11 = "debian_11",
+  Debian11 = 'debian_11',
 }
 
 /**
@@ -41,18 +41,18 @@ export class BuildImagePipelineStack extends cdk.Stack {
     super(scope, id, props);
 
     // Create a source action.
-    const sourceOutput = new codepipeline.Artifact("BuildImageSource");
+    const sourceOutput = new codepipeline.Artifact('BuildImageSource');
     const sourceAction = new codepipeline_actions.S3SourceAction({
-      actionName: "Build-Image-Source",
+      actionName: 'Build-Image-Source',
       bucket: props.dataBucket,
-      bucketKey: "data.zip", // TODO(glimsdal): Parameterize.
+      bucketKey: 'data.zip', // TODO(glimsdal): Parameterize.
       output: sourceOutput,
     });
 
     // Create a build action.
     const buildImageProject = new codebuild.PipelineProject(
       this,
-      "BuildImageProject",
+      'BuildImageProject',
       {
         buildSpec: codebuild.BuildSpec.fromSourceFilename(
           `${props.imageKind}/buildspec.yml`
@@ -85,20 +85,20 @@ export class BuildImagePipelineStack extends cdk.Stack {
     props.repository.grantPullPush(buildImageProject);
 
     const buildAction = new codepipeline_actions.CodeBuildAction({
-      actionName: "Build",
+      actionName: 'Build',
       project: buildImageProject,
       input: sourceOutput,
     });
 
-    const pipeline = new codepipeline.Pipeline(this, "BuildImagePipeline", {
+    const pipeline = new codepipeline.Pipeline(this, 'BuildImagePipeline', {
       pipelineName: `${props.imageKind}BuildImagePipeline`,
       stages: [
         {
-          stageName: "Source",
+          stageName: 'Source',
           actions: [sourceAction],
         },
         {
-          stageName: "Build",
+          stageName: 'Build',
           actions: [buildAction],
         },
       ],
@@ -107,11 +107,11 @@ export class BuildImagePipelineStack extends cdk.Stack {
 
     // Run this pipeline weekly to update the image OS.
     const pipelineTarget = new CodePipeline(pipeline);
-    new events.Rule(this, "WeeklySchedule", {
+    new events.Rule(this, 'WeeklySchedule', {
       schedule: events.Schedule.cron({
-        weekDay: "Monday",
-        minute: "0",
-        hour: "6",
+        weekDay: 'Monday',
+        minute: '0',
+        hour: '6',
       }),
       targets: [pipelineTarget],
     });
