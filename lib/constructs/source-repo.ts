@@ -5,20 +5,20 @@ import { Code, Repository } from 'aws-cdk-lib/aws-codecommit';
 import * as path from 'path';
 
 /**
- * The kind of Yocto Distribution built.
+ * The kind of project built.
  */
-export enum DistributionKind {
-  /** A Poky Based Distribution. */
+export enum ProjectKind {
+  /** Build core-image-minimal from poky. */
   Poky = 'poky',
-  /** The meta-aws Demonstration Distribution. */
+  /** Build the Qemu meta-aws Demonstration Distribution. */
   MetaAwsDemo = 'meta-aws-demo',
 }
 
 export interface SourceRepoProps extends cdk.StackProps {
   /** The name of the CodeCommit Repository created. */
   readonly repoName: string;
-  /** The type of distribution to see this repository with. */
-  readonly kind: DistributionKind;
+  /** The type of project to seed this repository with. */
+  readonly kind: ProjectKind;
 }
 
 /**

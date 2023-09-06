@@ -1,11 +1,11 @@
 import * as cdk from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { SourceRepo, DistributionKind } from '../lib/constructs/source-repo';
+import { SourceRepo, ProjectKind } from '../lib/constructs/source-repo';
 
 describe('Demo Source Repository', () => {
   const props = {
     env: { account: '12341234', region: 'eu-central-1' },
-    kind: DistributionKind.Poky,
+    kind: ProjectKind.Poky,
     repoName: 'charlie',
   };
 
