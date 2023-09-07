@@ -12,6 +12,8 @@ export enum ProjectKind {
   Poky = 'poky',
   /** Build the Qemu meta-aws Demonstration Distribution. */
   MetaAwsDemo = 'meta-aws-demo',
+  /** Build an EC2 AMI */
+  PokyAmi = 'poky-ami',
 }
 
 export interface SourceRepoProps extends cdk.StackProps {
