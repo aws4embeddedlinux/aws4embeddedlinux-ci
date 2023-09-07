@@ -9,6 +9,7 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import * as efs from 'aws-cdk-lib/aws-efs';
 
 import {
+  BuildEnvironmentVariableType,
   BuildSpec,
   ComputeType,
   FileSystemLocation,
@@ -24,8 +25,9 @@ import {
   Port,
   SecurityGroup,
 } from 'aws-cdk-lib/aws-ec2';
-import { Bucket } from 'aws-cdk-lib/aws-s3';
+import { Bucket, IBucket } from 'aws-cdk-lib/aws-s3';
 import { SourceRepo, ProjectKind } from './constructs/source-repo';
+import { VMImportBucket } from './vm-import-bucket';
 
 /**
  * Properties to allow customizing the build.
@@ -37,8 +39,8 @@ export interface DemoPipelineProps extends cdk.StackProps {
   readonly imageTag?: string;
   /** VPC where the networking setup resides. */
   readonly vpc: IVpc;
-  /** The type of Layer  */
-  readonly distroKind?: ProjectKind;
+  /** The type of project being built.  */
+  readonly projectKind?: ProjectKind;
   /** A name for the layer-repo that is created. Default is 'layer-repo' */
   readonly layerRepoName?: string;
 }
@@ -66,12 +68,34 @@ export class DemoPipelineStack extends cdk.Stack {
     const dlFS = this.addFileSystem('Downloads', props.vpc, projectSg);
     const tmpFS = this.addFileSystem('Temp', props.vpc, projectSg);
 
+    let artifactBucket: IBucket;
+    let environmentVariables = {};
+
+    if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
+      /** The bucket our images are sent to. */
+      artifactBucket = new VMImportBucket(this, 'DemoArtifact', {
+        versioned: true,
+        enforceSSL: true,
+      });
+      environmentVariables = {
+        IMPORT_BUCKET: {
+          type: BuildEnvironmentVariableType.PLAINTEXT,
+          value: artifactBucket.bucketName,
+        },
+      };
+    } else {
+      artifactBucket = new Bucket(this, 'DemoArtifact', {
+        versioned: true,
+        enforceSSL: true,
+      });
+    }
+
     /** Create our CodePipeline Actions. */
 
     const sourceRepo = new SourceRepo(this, 'SourceRepo', {
       ...props,
       repoName: props.layerRepoName ?? `layer-repo-${this.stackName}`,
-      kind: props.distroKind ?? ProjectKind.Poky,
+      kind: props.projectKind ?? ProjectKind.Poky,
     });
 
     const sourceOutput = new codepipeline.Artifact();
@@ -93,6 +117,7 @@ export class DemoPipelineStack extends cdk.Stack {
           props.imageTag
         ),
         privileged: true,
+        environmentVariables,
       },
       timeout: cdk.Duration.hours(4),
       vpc: props.vpc,
@@ -116,6 +141,11 @@ export class DemoPipelineStack extends cdk.Stack {
       ],
     });
 
+    if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
+      artifactBucket.grantReadWrite(project);
+      project.addToRolePolicy(this.addVMExportPolicy());
+    }
+
     const buildOutput = new codepipeline.Artifact();
     const buildAction = new codepipeline_actions.CodeBuildAction({
       input: sourceOutput,
@@ -124,10 +154,6 @@ export class DemoPipelineStack extends cdk.Stack {
       project,
     });
 
-    const artifactBucket = new Bucket(this, 'DemoArtifact', {
-      versioned: true,
-      enforceSSL: true,
-    });
     const artifactAction = new codepipeline_actions.S3DeployAction({
       actionName: 'Demo-Artifact',
       input: buildOutput,
@@ -242,5 +268,38 @@ def handler(event, context):
     const region = cdk.Stack.of(this).region;
 
     return `${fsId}.efs.${region}.amazonaws.com:/`;
+  }
+
+  private addVMExportPolicy(): iam.PolicyStatement {
+    return new iam.PolicyStatement({
+      actions: [
+        'ec2:CancelConversionTask',
+        'ec2:CancelExportTask',
+        'ec2:CreateImage',
+        'ec2:CreateInstanceExportTask',
+        'ec2:CreateTags',
+        'ec2:DescribeConversionTasks',
+        'ec2:DescribeExportTasks',
+        'ec2:DescribeExportImageTasks',
+        'ec2:DescribeImages',
+        'ec2:DescribeInstanceStatus',
+        'ec2:DescribeInstances',
+        'ec2:DescribeSnapshots',
+        'ec2:DescribeTags',
+        'ec2:ExportImage',
+        'ec2:ImportInstance',
+        'ec2:ImportVolume',
+        'ec2:StartInstances',
+        'ec2:StopInstances',
+        'ec2:TerminateInstances',
+        'ec2:ImportImage',
+        'ec2:ImportSnapshot',
+        'ec2:DescribeImportImageTasks',
+        'ec2:DescribeImportSnapshotTasks',
+        'ec2:CancelImportTask',
+        'ec2:RegisterImage',
+      ],
+      resources: ['*'],
+    });
   }
 }

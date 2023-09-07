@@ -3,6 +3,7 @@ import { Template } from 'aws-cdk-lib/assertions';
 import { DemoPipelineStack } from '../lib/demo-pipeline';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
 import { Vpc } from 'aws-cdk-lib/aws-ec2';
+import { ProjectKind } from '../lib';
 
 describe('Demo Pipeline', () => {
   const env = { account: '12341234', region: 'eu-central-1' };
@@ -17,6 +18,22 @@ describe('Demo Pipeline', () => {
       env,
       imageRepo,
       vpc,
+    });
+    const template = Template.fromStack(stack);
+    expect(template).toMatchSnapshot();
+  });
+
+  test('Snapshot Poky AMI Pipeline', () => {
+    const app = new cdk.App();
+    const newStack = new cdk.Stack(app, 'RepoStack', { env });
+    const imageRepo = new Repository(newStack, 'Repository', {});
+    const vpc = new Vpc(newStack, 'Bucket', {});
+
+    const stack = new DemoPipelineStack(app, 'MyTestStack', {
+      env,
+      imageRepo,
+      vpc,
+      projectKind: ProjectKind.PokyAmi,
     });
     const template = Template.fromStack(stack);
     expect(template).toMatchSnapshot();
