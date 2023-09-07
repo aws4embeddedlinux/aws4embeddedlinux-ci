@@ -7,7 +7,7 @@ import { Vpc } from 'aws-cdk-lib/aws-ec2';
 describe('Demo Pipeline', () => {
   const env = { account: '12341234', region: 'eu-central-1' };
 
-  test('Snapshot', () => {
+  test('Snapshot Poky Pipeline', () => {
     const app = new cdk.App();
     const newStack = new cdk.Stack(app, 'RepoStack', { env });
     const imageRepo = new Repository(newStack, 'Repository', {});

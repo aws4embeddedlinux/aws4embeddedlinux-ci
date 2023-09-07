@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Demo Pipeline Snapshot 1`] = `
+exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
 {
   "Parameters": {
     "BootstrapVersion": {
