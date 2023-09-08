@@ -1964,7 +1964,7 @@ def handler(event, context):
               "Action": "sts:AssumeRole",
               "Condition": {
                 "StringEquals": {
-                  "sts:ExternalId": "vmimport",
+                  "sts:ExternalId": "vmimport-MyTestStack",
                 },
               },
               "Effect": "Allow",
@@ -2025,7 +2025,7 @@ def handler(event, context):
             "PolicyName": "importPolicy",
           },
         ],
-        "RoleName": "vmimport",
+        "RoleName": "vmimport-MyTestStack",
       },
       "Type": "AWS::IAM::Role",
     },

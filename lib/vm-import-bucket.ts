@@ -1,7 +1,9 @@
 import { Construct } from 'constructs';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as cdk from 'aws-cdk-lib/core';
 
+const MAX_ALLOWED_LENGTH = 50;
 /**
  * ...
  */
@@ -31,10 +33,17 @@ export class VMImportBucket extends s3.Bucket {
       ],
     });
 
+    const stackName = cdk.Stack.of(this).stackName;
+    const sanitizedName = stackName.substring(
+      0,
+      Math.min(stackName.length, MAX_ALLOWED_LENGTH)
+    );
+    const roleName = `vmimport-${sanitizedName}`;
+
     new iam.Role(scope, 'VMImportRole', {
-      roleName: 'vmimport',
+      roleName: roleName,
       assumedBy: new iam.ServicePrincipal('vmie.amazonaws.com'),
-      externalIds: ['vmimport'],
+      externalIds: [roleName],
       inlinePolicies: { importPolicy },
     });
   }
