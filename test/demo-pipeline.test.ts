@@ -38,4 +38,24 @@ describe('Demo Pipeline', () => {
     const template = Template.fromStack(stack);
     expect(template).toMatchSnapshot();
   });
+
+  test('Poky AMI Pipeline - check role name trim', () => {
+    const app = new cdk.App();
+    const newStack = new cdk.Stack(app, 'RepoStack', { env });
+    const imageRepo = new Repository(newStack, 'Repository', {});
+    const vpc = new Vpc(newStack, 'Bucket', {});
+
+    const stack = new DemoPipelineStack(
+      app,
+      'PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992',
+      {
+        env,
+        imageRepo,
+        vpc,
+        projectKind: ProjectKind.PokyAmi,
+      }
+    );
+    const template = Template.fromStack(stack);
+    expect(template).toMatchSnapshot();
+  });
 });
