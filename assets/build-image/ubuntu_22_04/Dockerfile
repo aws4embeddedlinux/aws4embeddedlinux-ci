@@ -10,11 +10,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev \
     python3-subunit mesa-common-dev zstd liblz4-tool file locales \
     uuid-runtime sysstat iproute2 openssh-client curl python-is-python3 \
-    parted mtools dosfstools
+    parted mtools dosfstools jq
 
 # install repo tool
 RUN curl https://storage.googleapis.com/git-repo-downloads/repo > /bin/repo
 RUN chmod a+rx /bin/repo
+
+# Install aws cli v2
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
+RUN unzip /tmp/awscliv2.zip -d /tmp
+RUN /tmp/aws/install
 
 # install kas tool
 RUN pip3 install PyYAML==5.3.1 && pip3 install kas==3.0.2

@@ -1,0 +1,45 @@
+version: 0.2
+run-as: yoctouser
+
+env:
+  shell: bash
+
+phases:
+  pre_build:
+    run-as: root
+    commands:
+      - chown -R yoctouser /sstate-cache
+      - chown -R yoctouser /downloads
+      - chown yoctouser /build-output
+      - chmod 755 /sstate-cache
+      - chmod 755 /downloads
+      - chmod 755 /build-output
+  build:
+    commands:
+      - echo Build started on `date`
+      - repo init -u $CODEBUILD_SRC_DIR -b main -m manifest.xml
+      - repo sync
+      - . poky/oe-init-build-env $TMP_DIR
+      - bitbake-layers add-layer $CODEBUILD_SRC_DIR/meta-openembedded/meta-oe
+      - bitbake-layers add-layer $CODEBUILD_SRC_DIR/meta-openembedded/meta-python
+      - bitbake-layers add-layer $CODEBUILD_SRC_DIR/meta-openembedded/meta-networking
+      - bitbake-layers add-layer $CODEBUILD_SRC_DIR/meta-openembedded/meta-multimedia
+      - bitbake-layers add-layer $CODEBUILD_SRC_DIR/meta-openembedded/meta-filesystems
+      - bitbake-layers add-layer $CODEBUILD_SRC_DIR/meta-virtualization
+      - bitbake-layers add-layer $CODEBUILD_SRC_DIR/meta-aws
+      # Update our local conf to build the EC2 AMI.
+      - echo 'MACHINE = "aws-ec2-arm64"' >> $TMP_DIR/conf/local.conf
+      - echo 'INHERIT += "aws-ec2-image"' >> $TMP_DIR/conf/local.conf
+      - echo 'DISTRO_FEATURES += "usrmerge"' >> $TMP_DIR/conf/local.conf
+      - bitbake core-image-minimal
+      - echo Build completed on `date`
+  post_build:
+    commands:
+      - echo AMI Upload started on `date`
+      # This is required because the CDK asset uploader does not seem to carry permissions though.
+      - chmod +x $CODEBUILD_SRC_DIR/create-ec2-ami.sh
+      - $CODEBUILD_SRC_DIR/create-ec2-ami.sh $IMPORT_BUCKET 16 core-image-minimal aws-ec2-arm64 $TMP_DIR/tmp
+artifacts:
+  discard-paths: true
+  files:
+    - $TMP_DIR/tmp/deploy/images/aws-ec2-arm64/core-image-minimal*
