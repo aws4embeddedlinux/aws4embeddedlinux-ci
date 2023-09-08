@@ -1892,7 +1892,7 @@ def handler(event, context):
           "BranchName": "main",
           "S3": {
             "Bucket": "cdk-hnb659fds-assets-12341234-eu-central-1",
-            "Key": "e38f91b624a058246c962f71723dd402e107eed88a7a38070ff5ddd245bd3bff.zip",
+            "Key": "51cdb1798371a3656fb7f604ae18cd5413a8b77fd2d565a307072e1ba9e1aa2e.zip",
           },
         },
         "RepositoryName": "layer-repo-PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992",
@@ -3952,7 +3952,7 @@ def handler(event, context):
           "BranchName": "main",
           "S3": {
             "Bucket": "cdk-hnb659fds-assets-12341234-eu-central-1",
-            "Key": "e38f91b624a058246c962f71723dd402e107eed88a7a38070ff5ddd245bd3bff.zip",
+            "Key": "51cdb1798371a3656fb7f604ae18cd5413a8b77fd2d565a307072e1ba9e1aa2e.zip",
           },
         },
         "RepositoryName": "layer-repo-MyTestStack",

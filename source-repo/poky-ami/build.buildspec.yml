@@ -10,10 +10,8 @@ phases:
     commands:
       - chown -R yoctouser /sstate-cache
       - chown -R yoctouser /downloads
-      - chown yoctouser /build-output
       - chmod 755 /sstate-cache
       - chmod 755 /downloads
-      - chmod 755 /build-output
   build:
     commands:
       - echo Build started on `date`
