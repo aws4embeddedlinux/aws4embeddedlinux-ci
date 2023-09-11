@@ -36,7 +36,7 @@ phases:
       - echo AMI Upload started on `date`
       # This is required because the CDK asset uploader does not seem to carry permissions though.
       - chmod +x $CODEBUILD_SRC_DIR/create-ec2-ami.sh
-      - $CODEBUILD_SRC_DIR/create-ec2-ami.sh $IMPORT_BUCKET 16 core-image-minimal aws-ec2-arm64 $TMP_DIR/tmp
+      - $CODEBUILD_SRC_DIR/create-ec2-ami.sh $IMPORT_BUCKET 16 core-image-minimal aws-ec2-arm64 $TMP_DIR/tmp $ROLE_NAME
 artifacts:
   discard-paths: true
   files:

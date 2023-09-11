@@ -1,14 +1,19 @@
 import { Construct } from 'constructs';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import * as cdk from 'aws-cdk-lib/core';
 
-const MAX_ALLOWED_LENGTH = 50;
+const TAG = 'aws4embeddedlinux-ci';
+
+export interface VMImportBucketProps extends s3.BucketProps {
+  /**  The sanitized role name */
+  readonly sanitizedRoleName: string;
+}
+
 /**
  * ...
  */
 export class VMImportBucket extends s3.Bucket {
-  constructor(scope: Construct, id: string, props: s3.BucketProps) {
+  constructor(scope: Construct, id: string, props: VMImportBucketProps) {
     super(scope, id, {
       ...props,
     });
@@ -22,28 +27,31 @@ export class VMImportBucket extends s3.Bucket {
           resources: [this.bucketArn, `${this.bucketArn}/*`],
         }),
         new iam.PolicyStatement({
+          actions: ['ec2:CreateTags', 'ec2:DescribeTags'],
+          resources: ['*'],
+          conditions: {
+            StringEquals: {
+              'ec2:ResourceTag/CreatedBy': [TAG],
+            },
+          },
+        }),
+        new iam.PolicyStatement({
           actions: [
             'ec2:ModifySnapshotAttribute',
             'ec2:CopySnapshot',
-            'ec2:RegisterImage',
             'ec2:Describe*',
+            'ec2:RegisterImage',
+            'ec2:DeregisterImage',
           ],
           resources: ['*'],
         }),
       ],
     });
 
-    const stackName = cdk.Stack.of(this).stackName;
-    const sanitizedName = stackName.substring(
-      0,
-      Math.min(stackName.length, MAX_ALLOWED_LENGTH)
-    );
-    const roleName = `vmimport-${sanitizedName}`;
-
     new iam.Role(scope, 'VMImportRole', {
-      roleName: roleName,
+      roleName: props.sanitizedRoleName,
       assumedBy: new iam.ServicePrincipal('vmie.amazonaws.com'),
-      externalIds: [roleName],
+      externalIds: ['vmimport'],
       inlinePolicies: { importPolicy },
     });
   }

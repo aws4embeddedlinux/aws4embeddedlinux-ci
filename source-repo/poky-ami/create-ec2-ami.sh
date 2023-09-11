@@ -5,8 +5,8 @@ set -e
 [ "$DEBUG" == 'true' ] && set -x
 
 ARGC=$#
-if [ $ARGC -lt 3 ]; then
-    echo "ERROR: Please inform import bucket name as first argument and AMI disk size in GB as second, IMAGE_NAME as third and MACHINE_NAME as last."
+if [ $ARGC -lt 6 ]; then
+    echo "ERROR: Please inform import bucket name as first argument and AMI disk size in GB as second, IMAGE_NAME as third, MACHINE_NAME as forth, TMPDIR as fifth and ROLE NAME as last."
     exit 1
 fi
 IMPORT_BUCKET_NAME=$1
@@ -14,7 +14,9 @@ AMI_DISK_SIZE_GB=$2
 IMAGE_NAME=$3
 MACHINE_NAME=$4
 TMPDIR=${5:-build/tmp}
+ROLE_NAME=$6
 
+CREATED_BY_TAG="aws4embeddedlinux-ci"
 IMG_DIR="${TMPDIR}/deploy/images/${MACHINE_NAME}"
 
 TESTDATA_JSON="${IMG_DIR}/${IMAGE_NAME}-${MACHINE_NAME}.rootfs.testdata.json"
@@ -55,7 +57,15 @@ cat <<EOF > image-import.json
 }
 EOF
 echo "Importing image file into snapshot "
-IMPORT_TASK_ID=$(aws ec2 import-snapshot --disk-container "file://image-import.json" | jq -r '.ImportTaskId')
+
+command_output=$(aws ec2 import-snapshot --disk-container "file://image-import.json" --tag-specifications "ResourceType=import-snapshot-task,Tags=[{Key=CreatedBy,Value=$CREATED_BY_TAG}]" --role-name $ROLE_NAME )
+command_exit_code=$?
+
+if [[ "$command_exit_code" -ne 0 ]]; then
+  echo "Import Failed: ${command_output}, exiting." exit 2;
+fi
+
+IMPORT_TASK_ID=$(echo "${command_output}" | jq -r '.ImportTaskId')
 
 IMPORT_STATUS=$(aws ec2 describe-import-snapshot-tasks --import-task-ids $IMPORT_TASK_ID | jq -r '.ImportSnapshotTasks[].SnapshotTaskDetail.Status')
 x=0
