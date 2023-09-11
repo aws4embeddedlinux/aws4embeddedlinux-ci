@@ -163,6 +163,11 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                 "Ref": "DemoArtifactB63FBDE0",
               },
             },
+            {
+              "Name": "ROLE_NAME",
+              "Type": "PLAINTEXT",
+              "Value": "vmimport-PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc05",
+            },
           ],
           "Image": {
             "Fn::Join": [
@@ -1892,7 +1897,7 @@ def handler(event, context):
           "BranchName": "main",
           "S3": {
             "Bucket": "cdk-hnb659fds-assets-12341234-eu-central-1",
-            "Key": "51cdb1798371a3656fb7f604ae18cd5413a8b77fd2d565a307072e1ba9e1aa2e.zip",
+            "Key": "4cefb7dc67bb7131f0b6a42e4d88517a2e87522cd2f4318ff8bc86fe2f57f534.zip",
           },
         },
         "RepositoryName": "layer-repo-PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992",
@@ -1964,7 +1969,7 @@ def handler(event, context):
               "Action": "sts:AssumeRole",
               "Condition": {
                 "StringEquals": {
-                  "sts:ExternalId": "vmimport-PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc05",
+                  "sts:ExternalId": "vmimport",
                 },
               },
               "Effect": "Allow",
@@ -2011,10 +2016,26 @@ def handler(event, context):
                 },
                 {
                   "Action": [
+                    "ec2:CreateTags",
+                    "ec2:DescribeTags",
+                  ],
+                  "Condition": {
+                    "StringEquals": {
+                      "ec2:ResourceTag/CreatedBy": [
+                        "aws4embeddedlinux-ci",
+                      ],
+                    },
+                  },
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                {
+                  "Action": [
                     "ec2:ModifySnapshotAttribute",
                     "ec2:CopySnapshot",
-                    "ec2:RegisterImage",
                     "ec2:Describe*",
+                    "ec2:RegisterImage",
+                    "ec2:DeregisterImage",
                   ],
                   "Effect": "Allow",
                   "Resource": "*",
@@ -2222,6 +2243,11 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Value": {
                 "Ref": "DemoArtifactB63FBDE0",
               },
+            },
+            {
+              "Name": "ROLE_NAME",
+              "Type": "PLAINTEXT",
+              "Value": "vmimport-MyTestStack",
             },
           ],
           "Image": {
@@ -3952,7 +3978,7 @@ def handler(event, context):
           "BranchName": "main",
           "S3": {
             "Bucket": "cdk-hnb659fds-assets-12341234-eu-central-1",
-            "Key": "51cdb1798371a3656fb7f604ae18cd5413a8b77fd2d565a307072e1ba9e1aa2e.zip",
+            "Key": "4cefb7dc67bb7131f0b6a42e4d88517a2e87522cd2f4318ff8bc86fe2f57f534.zip",
           },
         },
         "RepositoryName": "layer-repo-MyTestStack",
@@ -4024,7 +4050,7 @@ def handler(event, context):
               "Action": "sts:AssumeRole",
               "Condition": {
                 "StringEquals": {
-                  "sts:ExternalId": "vmimport-MyTestStack",
+                  "sts:ExternalId": "vmimport",
                 },
               },
               "Effect": "Allow",
@@ -4071,10 +4097,26 @@ def handler(event, context):
                 },
                 {
                   "Action": [
+                    "ec2:CreateTags",
+                    "ec2:DescribeTags",
+                  ],
+                  "Condition": {
+                    "StringEquals": {
+                      "ec2:ResourceTag/CreatedBy": [
+                        "aws4embeddedlinux-ci",
+                      ],
+                    },
+                  },
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                {
+                  "Action": [
                     "ec2:ModifySnapshotAttribute",
                     "ec2:CopySnapshot",
-                    "ec2:RegisterImage",
                     "ec2:Describe*",
+                    "ec2:RegisterImage",
+                    "ec2:DeregisterImage",
                   ],
                   "Effect": "Allow",
                   "Resource": "*",

@@ -29,6 +29,8 @@ import { Bucket, IBucket } from 'aws-cdk-lib/aws-s3';
 import { SourceRepo, ProjectKind } from './constructs/source-repo';
 import { VMImportBucket } from './vm-import-bucket';
 
+const MAX_ALLOWED_LENGTH = 50;
+
 /**
  * Properties to allow customizing the build.
  */
@@ -72,15 +74,25 @@ export class DemoPipelineStack extends cdk.Stack {
     let environmentVariables = {};
 
     if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
+      const stackName = id || 'aws4embeddedlinux-ci';
+      const sanitizedName =
+        'vmimport-' +
+        stackName.substring(0, Math.min(stackName.length, MAX_ALLOWED_LENGTH));
+
       /** The bucket our images are sent to. */
       artifactBucket = new VMImportBucket(this, 'DemoArtifact', {
         versioned: true,
         enforceSSL: true,
+        sanitizedRoleName: sanitizedName,
       });
       environmentVariables = {
         IMPORT_BUCKET: {
           type: BuildEnvironmentVariableType.PLAINTEXT,
           value: artifactBucket.bucketName,
+        },
+        ROLE_NAME: {
+          type: BuildEnvironmentVariableType.PLAINTEXT,
+          value: sanitizedName,
         },
       };
     } else {
@@ -91,7 +103,6 @@ export class DemoPipelineStack extends cdk.Stack {
     }
 
     /** Create our CodePipeline Actions. */
-
     const sourceRepo = new SourceRepo(this, 'SourceRepo', {
       ...props,
       repoName: props.layerRepoName ?? `layer-repo-${this.stackName}`,
