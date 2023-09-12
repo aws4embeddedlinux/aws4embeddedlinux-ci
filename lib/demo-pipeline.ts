@@ -30,7 +30,6 @@ import { Bucket, IBucket } from 'aws-cdk-lib/aws-s3';
 import { SourceRepo, ProjectKind } from './constructs/source-repo';
 import { VMImportBucket } from './vm-import-bucket';
 import { Asset } from 'aws-cdk-lib/aws-s3-assets';
-import { IAsset } from 'aws-cdk-lib';
 
 const MAX_ALLOWED_LENGTH = 50;
 

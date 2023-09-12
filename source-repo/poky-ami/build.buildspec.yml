@@ -38,7 +38,7 @@ phases:
       - aws s3 cp ${SCRIPT_URL} $CODEBUILD_SRC_DIR/create-ec2-ami.sh
      # - chmod +x $CODEBUILD_SRC_DIR/create-ec2-ami.sh
       - chmod +x $CODEBUILD_SRC_DIR/create-ec2-ami.sh
-      - $CODEBUILD_SRC_DIR/$SCRIPT $IMPORT_BUCKET 16 core-image-minimal aws-ec2-arm64 $TMP_DIR/tmp $ROLE_NAME
+      - $CODEBUILD_SRC_DIR/create-ec2-ami.sh $IMPORT_BUCKET 16 core-image-minimal aws-ec2-arm64 $TMP_DIR/tmp $ROLE_NAME
 artifacts:
   discard-paths: true
   files:
