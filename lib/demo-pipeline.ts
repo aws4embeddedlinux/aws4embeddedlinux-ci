@@ -83,7 +83,7 @@ export class DemoPipelineStack extends cdk.Stack {
         stackName.substring(0, Math.min(stackName.length, MAX_ALLOWED_LENGTH));
 
       scriptAsset = new Asset(this, 'CreateAMIScript', {
-        path: path.join(__dirname, '../source-repo/poky-ami/create-ec2-ami.sh'),
+        path: path.join(__dirname, '../assets/create-ec2-ami.sh'),
       });
 
       artifactBucket = new VMImportBucket(this, 'DemoArtifact', {
