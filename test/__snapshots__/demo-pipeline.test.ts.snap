@@ -168,6 +168,11 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Type": "PLAINTEXT",
               "Value": "vmimport-PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc05",
             },
+            {
+              "Name": "SCRIPT_URL",
+              "Type": "PLAINTEXT",
+              "Value": "s3://cdk-hnb659fds-assets-12341234-eu-central-1/99859ec3a94f22bbfb5396eaaaf59f7879f9dce467d5444b6f96ce254f4827d0.sh",
+            },
           ],
           "Image": {
             "Fn::Join": [
@@ -587,6 +592,40 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               ],
               "Effect": "Allow",
               "Resource": "*",
+            },
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::cdk-hnb659fds-assets-12341234-eu-central-1",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::cdk-hnb659fds-assets-12341234-eu-central-1/*",
+                    ],
+                  ],
+                },
+              ],
             },
             {
               "Action": [
@@ -1897,7 +1936,7 @@ def handler(event, context):
           "BranchName": "main",
           "S3": {
             "Bucket": "cdk-hnb659fds-assets-12341234-eu-central-1",
-            "Key": "4cefb7dc67bb7131f0b6a42e4d88517a2e87522cd2f4318ff8bc86fe2f57f534.zip",
+            "Key": "badb1c79af3af5da1c94700936f734e02142112e09afaa9a297decff257a63cf.zip",
           },
         },
         "RepositoryName": "layer-repo-PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992",
@@ -2248,6 +2287,11 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Name": "ROLE_NAME",
               "Type": "PLAINTEXT",
               "Value": "vmimport-MyTestStack",
+            },
+            {
+              "Name": "SCRIPT_URL",
+              "Type": "PLAINTEXT",
+              "Value": "s3://cdk-hnb659fds-assets-12341234-eu-central-1/99859ec3a94f22bbfb5396eaaaf59f7879f9dce467d5444b6f96ce254f4827d0.sh",
             },
           ],
           "Image": {
@@ -2668,6 +2712,40 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               ],
               "Effect": "Allow",
               "Resource": "*",
+            },
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::cdk-hnb659fds-assets-12341234-eu-central-1",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::cdk-hnb659fds-assets-12341234-eu-central-1/*",
+                    ],
+                  ],
+                },
+              ],
             },
             {
               "Action": [
@@ -3978,7 +4056,7 @@ def handler(event, context):
           "BranchName": "main",
           "S3": {
             "Bucket": "cdk-hnb659fds-assets-12341234-eu-central-1",
-            "Key": "4cefb7dc67bb7131f0b6a42e4d88517a2e87522cd2f4318ff8bc86fe2f57f534.zip",
+            "Key": "badb1c79af3af5da1c94700936f734e02142112e09afaa9a297decff257a63cf.zip",
           },
         },
         "RepositoryName": "layer-repo-MyTestStack",

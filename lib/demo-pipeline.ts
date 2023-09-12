@@ -7,6 +7,7 @@ import * as targets from 'aws-cdk-lib/aws-events-targets';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as efs from 'aws-cdk-lib/aws-efs';
+import * as path from 'path';
 
 import {
   BuildEnvironmentVariableType,
@@ -28,6 +29,8 @@ import {
 import { Bucket, IBucket } from 'aws-cdk-lib/aws-s3';
 import { SourceRepo, ProjectKind } from './constructs/source-repo';
 import { VMImportBucket } from './vm-import-bucket';
+import { Asset } from 'aws-cdk-lib/aws-s3-assets';
+import { IAsset } from 'aws-cdk-lib';
 
 const MAX_ALLOWED_LENGTH = 50;
 
@@ -72,6 +75,7 @@ export class DemoPipelineStack extends cdk.Stack {
 
     let artifactBucket: IBucket;
     let environmentVariables = {};
+    let scriptAsset!: Asset;
 
     if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
       const stackName = id || 'aws4embeddedlinux-ci';
@@ -79,7 +83,10 @@ export class DemoPipelineStack extends cdk.Stack {
         'vmimport-' +
         stackName.substring(0, Math.min(stackName.length, MAX_ALLOWED_LENGTH));
 
-      /** The bucket our images are sent to. */
+      scriptAsset = new Asset(this, 'CreateAMIScript', {
+        path: path.join(__dirname, '../source-repo/poky-ami/create-ec2-ami.sh'),
+      });
+
       artifactBucket = new VMImportBucket(this, 'DemoArtifact', {
         versioned: true,
         enforceSSL: true,
@@ -93,6 +100,10 @@ export class DemoPipelineStack extends cdk.Stack {
         ROLE_NAME: {
           type: BuildEnvironmentVariableType.PLAINTEXT,
           value: sanitizedName,
+        },
+        SCRIPT_URL: {
+          type: BuildEnvironmentVariableType.PLAINTEXT,
+          value: scriptAsset.s3ObjectUrl,
         },
       };
     } else {
@@ -155,6 +166,7 @@ export class DemoPipelineStack extends cdk.Stack {
     if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
       artifactBucket.grantReadWrite(project);
       project.addToRolePolicy(this.addVMExportPolicy());
+      scriptAsset.grantRead(project);
     }
 
     const buildOutput = new codepipeline.Artifact();
