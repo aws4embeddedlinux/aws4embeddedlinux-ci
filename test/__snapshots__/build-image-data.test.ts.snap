@@ -14,7 +14,7 @@ exports[`Build Image Data Snapshot 1`] = `
       "Properties": {
         "Content": {
           "S3Bucket": "cdk-hnb659fds-assets-111111111111-eu-central-1",
-          "S3Key": "arbitrary-file.zip",
+          "S3Key": "arbitrary-file.ext",
         },
         "Description": "/opt/awscli/aws",
       },
@@ -38,7 +38,7 @@ exports[`Build Image Data Snapshot 1`] = `
           "cdk-hnb659fds-assets-111111111111-eu-central-1",
         ],
         "SourceObjectKeys": [
-          "arbitrary-file.zip",
+          "arbitrary-file.ext",
         ],
       },
       "Type": "Custom::CDKBucketDeployment",
@@ -266,7 +266,7 @@ exports[`Build Image Data Snapshot 1`] = `
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-111111111111-eu-central-1",
-          "S3Key": "arbitrary-file.zip",
+          "S3Key": "arbitrary-file.ext",
         },
         "Environment": {
           "Variables": {
@@ -297,7 +297,7 @@ exports[`Build Image Data Snapshot 1`] = `
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-111111111111-eu-central-1",
-          "S3Key": "arbitrary-file.zip",
+          "S3Key": "arbitrary-file.ext",
         },
         "Description": {
           "Fn::Join": [

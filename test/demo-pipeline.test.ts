@@ -4,6 +4,7 @@ import { DemoPipelineStack } from '../lib/demo-pipeline';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
 import { Vpc } from 'aws-cdk-lib/aws-ec2';
 import { ProjectKind } from '../lib';
+import { normalizedTemplateFromStack } from './util';
 
 describe('Demo Pipeline', () => {
   const env = { account: '12341234', region: 'eu-central-1' };
@@ -35,7 +36,7 @@ describe('Demo Pipeline', () => {
       vpc,
       projectKind: ProjectKind.PokyAmi,
     });
-    const template = Template.fromStack(stack);
+    const template = normalizedTemplateFromStack(stack);
     expect(template).toMatchSnapshot();
   });
 
@@ -55,7 +56,7 @@ describe('Demo Pipeline', () => {
         projectKind: ProjectKind.PokyAmi,
       }
     );
-    const template = Template.fromStack(stack);
+    const template = normalizedTemplateFromStack(stack);
     expect(template).toMatchSnapshot();
   });
 });
