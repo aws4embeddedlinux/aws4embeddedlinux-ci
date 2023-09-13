@@ -1,6 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { BuildImageDataStack } from '../lib/build-image-data';
+import { normalizedTemplateFromStack } from './util';
 
 describe('Build Image Data', () => {
   const props = {
@@ -27,13 +28,7 @@ describe('Build Image Data', () => {
     const app = new cdk.App();
     const stack = new BuildImageDataStack(app, 'MyTestStack', props);
     /* We must change some randomly generated file names used in the S3 asset construct. */
-    const templateWithRandomKeys = Template.fromStack(stack);
-    const templateWithConstKeys = JSON.parse(
-      JSON.stringify(templateWithRandomKeys.toJSON()).replace(
-        /[a-z0-9]{64}\.zip/g,
-        'arbitrary-file.zip'
-      )
-    );
+    const templateWithConstKeys = normalizedTemplateFromStack(stack);
     expect(templateWithConstKeys).toMatchSnapshot();
   });
 });

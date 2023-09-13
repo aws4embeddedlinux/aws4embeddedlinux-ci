@@ -171,7 +171,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
             {
               "Name": "SCRIPT_URL",
               "Type": "PLAINTEXT",
-              "Value": "s3://cdk-hnb659fds-assets-12341234-eu-central-1/cb07978d00156c655bc2617e9ff6d544ec346fc8bfd37b01b644b4694d399265.sh",
+              "Value": "s3://cdk-hnb659fds-assets-12341234-eu-central-1/arbitrary-file.ext",
             },
           ],
           "Image": {
@@ -1936,7 +1936,7 @@ def handler(event, context):
           "BranchName": "main",
           "S3": {
             "Bucket": "cdk-hnb659fds-assets-12341234-eu-central-1",
-            "Key": "8328421057d696d22d2b958f640836605dbbf21ce1473e4db341cffcd075ae25.zip",
+            "Key": "arbitrary-file.ext",
           },
         },
         "RepositoryName": "layer-repo-PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992",
@@ -2291,7 +2291,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
             {
               "Name": "SCRIPT_URL",
               "Type": "PLAINTEXT",
-              "Value": "s3://cdk-hnb659fds-assets-12341234-eu-central-1/cb07978d00156c655bc2617e9ff6d544ec346fc8bfd37b01b644b4694d399265.sh",
+              "Value": "s3://cdk-hnb659fds-assets-12341234-eu-central-1/arbitrary-file.ext",
             },
           ],
           "Image": {
@@ -4056,7 +4056,7 @@ def handler(event, context):
           "BranchName": "main",
           "S3": {
             "Bucket": "cdk-hnb659fds-assets-12341234-eu-central-1",
-            "Key": "8328421057d696d22d2b958f640836605dbbf21ce1473e4db341cffcd075ae25.zip",
+            "Key": "arbitrary-file.ext",
           },
         },
         "RepositoryName": "layer-repo-MyTestStack",

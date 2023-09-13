@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: MIT-0
-set -e
+set -eo pipefail
 [ "$DEBUG" == 'true' ] && set -x
 
 ARGC=$#
@@ -65,13 +65,14 @@ fi
 
 IMPORT_TASK_ID=$(echo "${command_output}" | jq -r '.ImportTaskId')
 
-IMPORT_STATUS=$(aws ec2 describe-import-snapshot-tasks --import-task-ids $IMPORT_TASK_ID | jq -r '.ImportSnapshotTasks[].SnapshotTaskDetail.Status')
+IMPORT_STATUS=$(aws ec2 describe-import-snapshot-tasks --import-task-ids $IMPORT_TASK_ID --query 'ImportSnapshotTasks[].SnapshotTaskDetail.Status' --output text)
 x=0
 rm image-import.json
+echo $IMPORT_STATUS
 while [ "$IMPORT_STATUS" = "active" ] && [ $x -lt 120 ]
 do
-  IMPORT_STATUS=$(aws ec2 describe-import-snapshot-tasks --import-task-ids $IMPORT_TASK_ID | jq -r '.ImportSnapshotTasks[].SnapshotTaskDetail.Status')
-  IMPORT_STATUS_MSG=$(aws ec2 describe-import-snapshot-tasks --import-task-ids $IMPORT_TASK_ID | jq -r '.ImportSnapshotTasks[].SnapshotTaskDetail.StatusMessage')
+  IMPORT_STATUS=$(aws ec2 describe-import-snapshot-tasks --import-task-ids $IMPORT_TASK_ID --query 'ImportSnapshotTasks[].SnapshotTaskDetail.Status' --output text)
+  IMPORT_STATUS_MSG=$(aws ec2 describe-import-snapshot-tasks --import-task-ids $IMPORT_TASK_ID --query 'ImportSnapshotTasks[].SnapshotTaskDetail.StatusMessage' --output text)
   echo "Import Status: ${IMPORT_STATUS} / ${IMPORT_STATUS_MSG}"
   x=$(( $x + 1 ))
   sleep 15
@@ -84,7 +85,7 @@ else
     echo "Import Failed, exiting"; exit 2;
 fi
 
-SNAPSHOT_ID=$(aws ec2 describe-import-snapshot-tasks --import-task-ids $IMPORT_TASK_ID | jq -r '.ImportSnapshotTasks[].SnapshotTaskDetail.SnapshotId')
+SNAPSHOT_ID=$(aws ec2 describe-import-snapshot-tasks --import-task-ids $IMPORT_TASK_ID --query 'ImportSnapshotTasks[].SnapshotTaskDetail.SnapshotId' --output text)
 
 aws ec2 wait snapshot-completed --snapshot-ids $SNAPSHOT_ID
 
@@ -121,13 +122,13 @@ cat <<EOF > register-ami.json
 EOF
 
 AMI_NAME=$(echo "${IMAGE_NAME}-${DISTRO}-${DISTRO_CODENAME}-${DISTRO_VERSION}-${BUILDNAME}-${ARCHITECTURE}" | cut -c -128 | sed -e s/+/-/g)
-IMAGE_ID=$(aws ec2 describe-images --filters Name=name,Values=${AMI_NAME} | jq -r '.Images[].ImageId')
+IMAGE_ID=$(aws ec2 describe-images --filters Name=name,Values=${AMI_NAME} --query 'Images[].ImageId' --output text)
 if [ "$IMAGE_ID" != "" ]; then
     echo "Deregistering existing image $IMAGE_ID"
     aws ec2 deregister-image --image-id ${IMAGE_ID} 2>&1 > /dev/null
 fi
 echo "Registering AMI with Snapshot $SNAPSHOT_ID"
-AMI_ID=$(aws ec2 register-image --name ${AMI_NAME} --cli-input-json="file://register-ami.json" | jq -r '.ImageId')
+AMI_ID=$(aws ec2 register-image --name ${AMI_NAME} --cli-input-json="file://register-ami.json" --query 'ImageId' --output text)
 echo "AMI name: $AMI_NAME"
 echo "AMI ID: $AMI_ID"
 rm register-ami.json
