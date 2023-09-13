@@ -31,8 +31,6 @@ import { SourceRepo, ProjectKind } from './constructs/source-repo';
 import { VMImportBucket } from './vm-import-bucket';
 import { Asset } from 'aws-cdk-lib/aws-s3-assets';
 
-const MAX_ALLOWED_LENGTH = 50;
-
 /**
  * Properties to allow customizing the build.
  */
@@ -72,16 +70,11 @@ export class DemoPipelineStack extends cdk.Stack {
     const dlFS = this.addFileSystem('Downloads', props.vpc, projectSg);
     const tmpFS = this.addFileSystem('Temp', props.vpc, projectSg);
 
-    let artifactBucket: IBucket;
+    let artifactBucket: IBucket | VMImportBucket;
     let environmentVariables = {};
     let scriptAsset!: Asset;
 
     if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
-      const stackName = id || 'aws4embeddedlinux-ci';
-      const sanitizedName =
-        'vmimport-' +
-        stackName.substring(0, Math.min(stackName.length, MAX_ALLOWED_LENGTH));
-
       scriptAsset = new Asset(this, 'CreateAMIScript', {
         path: path.join(__dirname, '../assets/create-ec2-ami.sh'),
       });
@@ -89,7 +82,6 @@ export class DemoPipelineStack extends cdk.Stack {
       artifactBucket = new VMImportBucket(this, 'DemoArtifact', {
         versioned: true,
         enforceSSL: true,
-        sanitizedRoleName: sanitizedName,
       });
       environmentVariables = {
         IMPORT_BUCKET: {
@@ -98,7 +90,7 @@ export class DemoPipelineStack extends cdk.Stack {
         },
         ROLE_NAME: {
           type: BuildEnvironmentVariableType.PLAINTEXT,
-          value: sanitizedName,
+          value: (artifactBucket as VMImportBucket).roleName,
         },
         SCRIPT_URL: {
           type: BuildEnvironmentVariableType.PLAINTEXT,

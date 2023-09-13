@@ -166,7 +166,9 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
             {
               "Name": "ROLE_NAME",
               "Type": "PLAINTEXT",
-              "Value": "vmimport-PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc05",
+              "Value": {
+                "Ref": "VMImportRoleAC246CAD",
+              },
             },
             {
               "Name": "SCRIPT_URL",
@@ -2085,7 +2087,6 @@ def handler(event, context):
             "PolicyName": "importPolicy",
           },
         ],
-        "RoleName": "vmimport-PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc05",
       },
       "Type": "AWS::IAM::Role",
     },
@@ -2286,7 +2287,9 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
             {
               "Name": "ROLE_NAME",
               "Type": "PLAINTEXT",
-              "Value": "vmimport-MyTestStack",
+              "Value": {
+                "Ref": "VMImportRoleAC246CAD",
+              },
             },
             {
               "Name": "SCRIPT_URL",
@@ -4205,7 +4208,6 @@ def handler(event, context):
             "PolicyName": "importPolicy",
           },
         ],
-        "RoleName": "vmimport-MyTestStack",
       },
       "Type": "AWS::IAM::Role",
     },

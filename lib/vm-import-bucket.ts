@@ -6,13 +6,14 @@ const TAG = 'aws4embeddedlinux-ci';
 
 export interface VMImportBucketProps extends s3.BucketProps {
   /**  The sanitized role name */
-  readonly sanitizedRoleName: string;
+  readonly sanitizedRoleName?: string;
 }
 
 /**
  * ...
  */
 export class VMImportBucket extends s3.Bucket {
+  public readonly roleName: string;
   constructor(scope: Construct, id: string, props: VMImportBucketProps) {
     super(scope, id, {
       ...props,
@@ -48,11 +49,13 @@ export class VMImportBucket extends s3.Bucket {
       ],
     });
 
-    new iam.Role(scope, 'VMImportRole', {
+    const importRole = new iam.Role(scope, 'VMImportRole', {
       roleName: props.sanitizedRoleName,
       assumedBy: new iam.ServicePrincipal('vmie.amazonaws.com'),
       externalIds: ['vmimport'],
       inlinePolicies: { importPolicy },
     });
+
+    this.roleName = importRole.roleName;
   }
 }
