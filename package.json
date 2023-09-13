@@ -5,7 +5,7 @@
   "types": "dist/lib/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "copy-src": "if [ -f dist/source-repo ]; then rm -rf dist/source-repo; fi && cp -r source-repo dist && cp assets/create-ec2-ami.sh dist/assets",
+    "copy-src": "if [ -d dist/source-repo ]; then rm -rf dist/source-repo; fi && cp -r source-repo dist && cp assets/create-ec2-ami.sh dist/assets",
     "zip-data": "if [ -f dist/assets/build-image/data.zip ]; then rm -rf dist/assets/build-image; fi && mkdir -p dist/assets/build-image ; cd assets/build-image && zip -q -o ../../dist/assets/build-image/data.zip -r *",
     "clean": "tsc --build --clean && rm -rf dist && rm -rf cdk.out",
     "prebuild": "npm run zip-data && npm run copy-src",
