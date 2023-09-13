@@ -132,4 +132,3 @@ AMI_ID=$(aws ec2 register-image --name ${AMI_NAME} --cli-input-json="file://regi
 echo "AMI name: $AMI_NAME"
 echo "AMI ID: $AMI_ID"
 rm register-ami.json
-
