@@ -11,6 +11,7 @@
     "prebuild": "npm run zip-data && npm run copy-src",
     "watch": "tsc -w",
     "test": "jest",
+    "update-snapshot": "jest -u",
     "cdk": "cdk",
     "doc": "typedoc",
     "format": "eslint '**/*.{js,ts,json}' --quiet --fix",
