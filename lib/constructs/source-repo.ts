@@ -14,6 +14,8 @@ export enum ProjectKind {
   MetaAwsDemo = 'meta-aws-demo',
   /** Build an EC2 AMI */
   PokyAmi = 'poky-ami',
+  /** Build an kas based image */
+  Kas = 'kas',
 }
 
 export interface SourceRepoProps extends cdk.StackProps {
