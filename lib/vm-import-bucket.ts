@@ -46,6 +46,17 @@ export class VMImportBucket extends s3.Bucket {
           ],
           resources: ['*'],
         }),
+        new iam.PolicyStatement({
+          actions: [
+            'kms:CreateGrant',
+            'kms:Decrypt',
+            'kms:DescribeKey',
+            'kms:Encrypt',
+            'kms:GenerateDataKey*',
+            'kms:ReEncrypt*',
+          ],
+          resources: ['*'],
+        }),
       ],
     });
 

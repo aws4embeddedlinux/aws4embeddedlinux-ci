@@ -56,7 +56,7 @@ cat <<EOF > image-import.json
 EOF
 echo "Importing image file into snapshot "
 
-command_output=$(aws ec2 import-snapshot --disk-container "file://image-import.json" --tag-specifications "ResourceType=import-snapshot-task,Tags=[{Key=CreatedBy,Value=$CREATED_BY_TAG}]" --role-name $ROLE_NAME )
+command_output=$(aws ec2 import-snapshot --disk-container "file://image-import.json" --tag-specifications "ResourceType=import-snapshot-task,Tags=[{Key=CreatedBy,Value=$CREATED_BY_TAG}]" --role-name $ROLE_NAME --encrypted)
 command_exit_code=$?
 
 if [[ "$command_exit_code" -ne 0 ]]; then
