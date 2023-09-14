@@ -1,0 +1,22 @@
+version: 0.2
+run-as: yoctouser
+
+env:
+  shell: bash
+
+phases:
+  pre_build:
+    run-as: root
+    commands:
+      - chown -R yoctouser /sstate-cache
+      - chown -R yoctouser /downloads
+  build:
+    commands:
+      - echo Build started on `date`
+      - export KAS_WORK_DIR=$TMP_DIR
+      - kas build kas.yml
+
+artifacts:
+  discard-paths: true
+  files:
+    - $TMP_DIR/build/tmp/deploy/images/qemux86-64/aws-biga-image-qemux86-64*

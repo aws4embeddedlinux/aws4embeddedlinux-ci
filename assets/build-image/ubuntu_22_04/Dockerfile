@@ -25,7 +25,7 @@ RUN unzip /tmp/awscliv2.zip -d /tmp
 RUN /tmp/aws/install
 
 # install kas tool
-RUN pip3 install PyYAML==5.3.1 && pip3 install kas==3.0.2
+RUN pip3 install PyYAML==5.3.1 && pip3 install kas==4.0.0
 
 RUN locale-gen en_US.UTF-8
 
