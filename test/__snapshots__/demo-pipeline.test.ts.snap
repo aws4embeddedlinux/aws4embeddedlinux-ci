@@ -6057,7 +6057,7 @@ def handler(event, context):
           "BranchName": "main",
           "S3": {
             "Bucket": "cdk-hnb659fds-assets-12341234-eu-central-1",
-            "Key": "be6ddd2184e42352f78f888697689395d48c33c2e70b76fb33f225cd85cd6224.zip",
+            "Key": "1de2dc6cbcd5d77c4571a033541f7c54c370a8404216a48e1a05fb19708f8572.zip",
           },
         },
         "RepositoryName": "layer-repo-MyTestStack",

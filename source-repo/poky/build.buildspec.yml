@@ -10,11 +10,8 @@ phases:
     commands:
       - chown -R yoctouser /sstate-cache
       - chown -R yoctouser /downloads
-      - chown yoctouser /build-output
       - chmod 755 /sstate-cache
       - chmod 755 /downloads
-      - chmod 755 /build-output
-      - apt-get install -yq repo
   build:
     commands:
       - echo Build started on `date`
@@ -22,20 +19,13 @@ phases:
       - repo sync
       - . poky/oe-init-build-env $TMP_DIR
       - bitbake core-image-minimal
-
   post_build:
     commands:
-      - echo Build completed on `date`
-      - bitbake -m
-      - ps aux | grep bitbake
-      - find $TMP_DIR -name '*.socket' -delete
-      - export BUILD_OUTPUT="$(uuidgen -t).tar"
-      - tar cf $BUILD_OUTPUT -C $TMP_DIR tmp
-      - cp -r $BUILD_OUTPUT /build-output
-      - echo $BUILD_OUTPUT > /build-output/tmpfile
+      # Prune old files in our EFS Mounts, that are not accessed by this or any build within 30 days
+      - find /sstate-cache -atime +30 -delete
+      - find /downloads -atime +30 -delete
 
 artifacts:
   discard-paths: true
   files:
-    - /build-output/tmpfile
     - $TMP_DIR/tmp/deploy/images/qemux86-64/core-image-minimal-qemux86-64*

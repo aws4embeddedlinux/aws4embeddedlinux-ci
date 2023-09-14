@@ -28,7 +28,6 @@ phases:
       # Update our local conf to build the EC2 AMI.
       - echo 'MACHINE = "aws-ec2-arm64"' >> $TMP_DIR/conf/local.conf
       - echo 'INHERIT += "aws-ec2-image"' >> $TMP_DIR/conf/local.conf
-      - echo 'DISTRO_FEATURES += "usrmerge"' >> $TMP_DIR/conf/local.conf
       - bitbake core-image-minimal
       - echo Build completed on `date`
   post_build:
@@ -37,7 +36,10 @@ phases:
       # This is required because the CDK asset uploader does not seem to carry permissions though.
       - aws s3 cp ${SCRIPT_URL} $CODEBUILD_SRC_DIR/create-ec2-ami.sh
       - chmod +x $CODEBUILD_SRC_DIR/create-ec2-ami.sh
-      - $CODEBUILD_SRC_DIR/create-ec2-ami.sh $IMPORT_BUCKET 16 core-image-minimal aws-ec2-arm64 $TMP_DIR/tmp $ROLE_NAME
+      - $CODEBUILD_SRC_DIR/create-ec2-ami.sh $IMPORT_BUCKET 16 core-image-minimal aws-ec2-arm64 $TMP_DIR/tmp $ROLE_NAME .rootfs ""
+      # Prune old files in our EFS Mounts, that are not accessed by this or any build within 30 days
+      - find /sstate-cache -atime +30 -delete
+      - find /downloads -atime +30 -delete
 artifacts:
   discard-paths: true
   files:
