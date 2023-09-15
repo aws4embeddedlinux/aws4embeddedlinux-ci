@@ -32,7 +32,8 @@
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
     "typedoc": "^0.24.8",
-    "typescript": "~5.0.4"
+    "typescript": "~5.0.4",
+    "cdk-nag": "^2.27.131"
   },
   "peerDependencies": {
     "aws-cdk-lib": "2.86.0",
