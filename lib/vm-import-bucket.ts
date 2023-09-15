@@ -55,7 +55,9 @@ export class VMImportBucket extends s3.Bucket {
             'kms:GenerateDataKey*',
             'kms:ReEncrypt*',
           ],
-          resources: ['*'],
+          resources: [
+            `arn:aws:kms:${this.stack.region}:${this.stack.account}:key/*`,
+          ],
         }),
       ],
     });
