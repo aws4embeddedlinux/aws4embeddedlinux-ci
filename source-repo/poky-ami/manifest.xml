@@ -4,8 +4,8 @@
   <remote fetch="https://github.com/openembedded/"      name="oe"/>
   <remote fetch="https://github.com/aws4embeddedlinux/" name="aws"/>
 
-  <project name="poky" remote="yocto" path="poky" revision="master" />
-  <project name="meta-openembedded" remote="oe" path="meta-openembedded" revision="master" />
-  <project name="meta-virtualization" remote="yocto" path="meta-virtualization" revision="4c21ae49dbe05923309892d2fac63d166fd7d508" upstream="master" />
-  <project name="meta-aws" remote="aws" path="meta-aws" revision="master" />
+  <project name="poky" remote="yocto" path="poky" revision="kirkstone" />
+  <project name="meta-openembedded" remote="oe" path="meta-openembedded" revision="kirkstone" />
+  <project name="meta-virtualization" remote="yocto" path="meta-virtualization" revision="kirkstone" />
+  <project name="meta-aws" remote="aws" path="meta-aws" revision="kirkstone" />
 </manifest>
