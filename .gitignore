@@ -13,3 +13,6 @@ cdk.out
 cdk.context.json
 /.idea/
 /aws4embeddedlinux-ci.iml
+
+# Ignore Mac DS_Store files
+**/.DS_Store
