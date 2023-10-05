@@ -10,6 +10,14 @@ exports[`Pipeline Networking Snapshot 1`] = `
     },
   },
   "Resources": {
+    "LogGroupF5B46931": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 365,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
     "PipelineVpc0543904A": {
       "Properties": {
         "CidrBlock": "10.0.0.0/16",
@@ -535,6 +543,83 @@ exports[`Pipeline Networking Snapshot 1`] = `
         },
       },
       "Type": "AWS::EC2::VPCGatewayAttachment",
+    },
+    "VPCFlowLogsFlowLogD2BDB2A5": {
+      "Properties": {
+        "DeliverLogsPermissionArn": {
+          "Fn::GetAtt": [
+            "VPCFlowLogsIAMRoleFF7B3C14",
+            "Arn",
+          ],
+        },
+        "LogDestinationType": "cloud-watch-logs",
+        "LogGroupName": {
+          "Ref": "LogGroupF5B46931",
+        },
+        "ResourceId": {
+          "Ref": "PipelineVpc0543904A",
+        },
+        "ResourceType": "VPC",
+        "TrafficType": "ALL",
+      },
+      "Type": "AWS::EC2::FlowLog",
+    },
+    "VPCFlowLogsIAMRoleDefaultPolicy0D9292CF": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:DescribeLogStreams",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "LogGroupF5B46931",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "VPCFlowLogsIAMRoleFF7B3C14",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "VPCFlowLogsIAMRoleDefaultPolicy0D9292CF",
+        "Roles": [
+          {
+            "Ref": "VPCFlowLogsIAMRoleFF7B3C14",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "VPCFlowLogsIAMRoleFF7B3C14": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "vpc-flow-logs.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
     },
   },
   "Rules": {
