@@ -21,7 +21,7 @@ describe('Demo Source Repository cdk-nag AwsSolutions Pack', () => {
     new SourceRepo(stack, 'MyTestStack', props);
 
     // WHEN
-    Aspects.of(stack).add(new AwsSolutionsChecks());
+    Aspects.of(stack).add(new AwsSolutionsChecks({ verbose: true }));
   });
 
   // THEN

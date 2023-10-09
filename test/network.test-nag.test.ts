@@ -17,7 +17,7 @@ describe('Pipeline Networking cdk-nag AwsSolutions Pack', () => {
     stack = new PipelineNetworkStack(app, props);
 
     // WHEN
-    Aspects.of(stack).add(new AwsSolutionsChecks());
+    Aspects.of(stack).add(new AwsSolutionsChecks({ verbose: true }));
   });
 
   // THEN

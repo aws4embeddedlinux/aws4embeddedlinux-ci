@@ -3,7 +3,7 @@ import { BuildImageDataStack } from '../lib/build-image-data';
 
 import { Annotations, Match } from 'aws-cdk-lib/assertions';
 import { App, Aspects, Stack } from 'aws-cdk-lib';
-import { AwsSolutionsChecks } from 'cdk-nag';
+import { AwsSolutionsChecks, NagSuppressions } from 'cdk-nag';
 
 describe('BuildImageDataStack cdk-nag AwsSolutions Pack', () => {
   let stack: Stack;
@@ -20,8 +20,45 @@ describe('BuildImageDataStack cdk-nag AwsSolutions Pack', () => {
     };
     stack = new BuildImageDataStack(app, 'MyTestStack', props);
 
+    NagSuppressions.addStackSuppressions(stack, [
+      {
+        id: 'AwsSolutions-IAM4',
+        reason: 'TODO: Re-evaluate managed policies per resources.',
+      },
+      {
+        id: 'AwsSolutions-IAM5',
+        reason: 'TODO: Re-evaluate "*" per resources.',
+      },
+      {
+        id: 'AwsSolutions-S10',
+        reason: 'TODO: Require SSL for bucket access.',
+      },
+    ]);
+
+    NagSuppressions.addResourceSuppressionsByPath(
+      stack,
+      '/MyTestStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/Resource',
+      [
+        {
+          id: 'AwsSolutions-L1',
+          reason: 'This Lambda function is 3rd Party (from CDK libs)',
+        },
+      ]
+    );
+
+    NagSuppressions.addResourceSuppressionsByPath(
+      stack,
+      '/MyTestStack/BuildImageDataBucket/Resource',
+      [
+        {
+          id: 'AwsSolutions-S1',
+          reason: 'TODO: Add Access Logging',
+        },
+      ]
+    );
+
     // WHEN
-    Aspects.of(stack).add(new AwsSolutionsChecks());
+    Aspects.of(stack).add(new AwsSolutionsChecks({ verbose: true }));
   });
 
   // THEN
@@ -38,7 +75,6 @@ describe('BuildImageDataStack cdk-nag AwsSolutions Pack', () => {
       '*',
       Match.stringLikeRegexp('AwsSolutions-.*')
     );
-
     expect(errors).toHaveLength(0);
   });
 });

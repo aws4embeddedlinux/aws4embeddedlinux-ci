@@ -15,7 +15,7 @@ describe('Build Image Repository cdk-nag AwsSolutions Pack', () => {
     app = new App();
     stack = new BuildImageRepoStack(app, 'MyTestStack', props);
     // WHEN
-    Aspects.of(stack).add(new AwsSolutionsChecks());
+    Aspects.of(stack).add(new AwsSolutionsChecks({ verbose: true }));
   });
   // THEN
   test('No unsuppressed Warnings', () => {
