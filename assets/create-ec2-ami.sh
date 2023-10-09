@@ -23,28 +23,28 @@ IMG_DIR="${TMPDIR}/deploy/images/${MACHINE_NAME}"
 
 TESTDATA_JSON="${IMG_DIR}/${IMAGE_NAME}-${MACHINE_NAME}${TESTDATA_JSON_EXTEN}.testdata.json"
 
-DISTRO=$(jq -r '.DISTRO' $TESTDATA_JSON)
-DISTRO_CODENAME=$(jq -r '.DISTRO_CODENAME' $TESTDATA_JSON)
-DISTRO_NAME=$(jq -r '.DISTRO_NAME' $TESTDATA_JSON)
-DISTRO_VERSION=$(jq -r '.DISTRO_VERSION' $TESTDATA_JSON)
-BUILDNAME=$(jq -r '.BUILDNAME' $TESTDATA_JSON)
-TARGET_ARCH=$(jq -r '.TARGET_ARCH' $TESTDATA_JSON)
-IMAGE_NAME=$(jq -r '.IMAGE_NAME' $TESTDATA_JSON)
-IMAGE_ROOTFS_SIZE=$(jq -r '.IMAGE_ROOTFS_SIZE' $TESTDATA_JSON)
+DISTRO=$(jq -r '.DISTRO' "$TESTDATA_JSON")
+DISTRO_CODENAME=$(jq -r '.DISTRO_CODENAME' "$TESTDATA_JSON")
+DISTRO_NAME=$(jq -r '.DISTRO_NAME' "$TESTDATA_JSON")
+DISTRO_VERSION=$(jq -r '.DISTRO_VERSION' "$TESTDATA_JSON")
+BUILDNAME=$(jq -r '.BUILDNAME' "$TESTDATA_JSON")
+TARGET_ARCH=$(jq -r '.TARGET_ARCH' "$TESTDATA_JSON")
+IMAGE_NAME=$(jq -r '.IMAGE_NAME' "$TESTDATA_JSON")
+IMAGE_ROOTFS_SIZE=$(jq -r '.IMAGE_ROOTFS_SIZE' "$TESTDATA_JSON")
 
 
-echo DISTRO=$DISTRO
-echo DISTRO_CODENAME=$DISTRO_CODENAME
-echo DISTRO_NAME=$DISTRO_NAME
-echo DISTRO_VERSION=$DISTRO_VERSION
-echo BUILDNAME=$BUILDNAME
-echo TARGET_ARCH=$TARGET_ARCH
-echo IMAGE_ROOTFS_SIZE=$IMAGE_ROOTFS_SIZE
-echo AMI_DISK_SIZE_GB=$AMI_DISK_SIZE_GB
+echo DISTRO="$DISTRO"
+echo DISTRO_CODENAME="$DISTRO_CODENAME"
+echo DISTRO_NAME="$DISTRO_NAME"
+echo DISTRO_VERSION="$DISTRO_VERSION"
+echo BUILDNAME="$BUILDNAME"
+echo TARGET_ARCH="$TARGET_ARCH"
+echo IMAGE_ROOTFS_SIZE="$IMAGE_ROOTFS_SIZE"
+echo AMI_DISK_SIZE_GB="$AMI_DISK_SIZE_GB"
 
 
 echo "Pushing image ${IMAGE_NAME}${IMAGE_EXTEN}.wic.vhd to s3://${IMPORT_BUCKET_NAME}"
-aws s3 cp ${IMG_DIR}/${IMAGE_NAME}${IMAGE_EXTEN}.wic.vhd s3://${IMPORT_BUCKET_NAME}
+aws s3 cp "${IMG_DIR}/${IMAGE_NAME}${IMAGE_EXTEN}.wic.vhd" "s3://${IMPORT_BUCKET_NAME}"
 
 cat <<EOF > image-import.json
 {
@@ -58,7 +58,7 @@ cat <<EOF > image-import.json
 EOF
 echo "Importing image file into snapshot "
 
-command_output=$(aws ec2 import-snapshot --disk-container "file://image-import.json" --tag-specifications "ResourceType=import-snapshot-task,Tags=[{Key=CreatedBy,Value=$CREATED_BY_TAG}]" --role-name $ROLE_NAME --encrypted)
+command_output=$(aws ec2 import-snapshot --disk-container "file://image-import.json" --tag-specifications "ResourceType=import-snapshot-task,Tags=[{Key=CreatedBy,Value=$CREATED_BY_TAG}]" --role-name "$ROLE_NAME" --encrypted)
 command_exit_code=$?
 
 if [[ "$command_exit_code" -ne 0 ]]; then
@@ -67,16 +67,16 @@ fi
 
 IMPORT_TASK_ID=$(echo "${command_output}" | jq -r '.ImportTaskId')
 
-IMPORT_STATUS=$(aws ec2 describe-import-snapshot-tasks --import-task-ids $IMPORT_TASK_ID --query 'ImportSnapshotTasks[].SnapshotTaskDetail.Status' --output text)
+IMPORT_STATUS=$(aws ec2 describe-import-snapshot-tasks --import-task-ids "$IMPORT_TASK_ID" --query 'ImportSnapshotTasks[].SnapshotTaskDetail.Status' --output text)
 x=0
 rm image-import.json
-echo $IMPORT_STATUS
+echo "$IMPORT_STATUS"
 while [ "$IMPORT_STATUS" = "active" ] && [ $x -lt 120 ]
 do
-  IMPORT_STATUS=$(aws ec2 describe-import-snapshot-tasks --import-task-ids $IMPORT_TASK_ID --query 'ImportSnapshotTasks[].SnapshotTaskDetail.Status' --output text)
-  IMPORT_STATUS_MSG=$(aws ec2 describe-import-snapshot-tasks --import-task-ids $IMPORT_TASK_ID --query 'ImportSnapshotTasks[].SnapshotTaskDetail.StatusMessage' --output text)
+  IMPORT_STATUS=$(aws ec2 describe-import-snapshot-tasks --import-task-ids "$IMPORT_TASK_ID" --query 'ImportSnapshotTasks[].SnapshotTaskDetail.Status' --output text)
+  IMPORT_STATUS_MSG=$(aws ec2 describe-import-snapshot-tasks --import-task-ids "$IMPORT_TASK_ID" --query 'ImportSnapshotTasks[].SnapshotTaskDetail.StatusMessage' --output text)
   echo "Import Status: ${IMPORT_STATUS} / ${IMPORT_STATUS_MSG}"
-  x=$(( $x + 1 ))
+  x=$(( x + 1 ))
   sleep 15
 done
 if [ $x -eq 120 ]; then
@@ -87,9 +87,9 @@ else
     echo "Import Failed, exiting"; exit 2;
 fi
 
-SNAPSHOT_ID=$(aws ec2 describe-import-snapshot-tasks --import-task-ids $IMPORT_TASK_ID --query 'ImportSnapshotTasks[].SnapshotTaskDetail.SnapshotId' --output text)
+SNAPSHOT_ID=$(aws ec2 describe-import-snapshot-tasks --import-task-ids "$IMPORT_TASK_ID" --query 'ImportSnapshotTasks[].SnapshotTaskDetail.SnapshotId' --output text)
 
-aws ec2 wait snapshot-completed --snapshot-ids $SNAPSHOT_ID
+aws ec2 wait snapshot-completed --snapshot-ids "$SNAPSHOT_ID"
 
 if [[ "$TARGET_ARCH" == "x86_64" ]]; then
     ARCHITECTURE="x86_64"
@@ -124,13 +124,13 @@ cat <<EOF > register-ami.json
 EOF
 
 AMI_NAME=$(echo "${IMAGE_NAME}-${DISTRO}-${DISTRO_CODENAME}-${DISTRO_VERSION}-${BUILDNAME}-${ARCHITECTURE}" | cut -c -128 | sed -e s/+/-/g)
-IMAGE_ID=$(aws ec2 describe-images --filters Name=name,Values=${AMI_NAME} --query 'Images[].ImageId' --output text)
+IMAGE_ID=$(aws ec2 describe-images --filters "Name=name,Values=${AMI_NAME}" --query 'Images[].ImageId' --output text)
 if [ "$IMAGE_ID" != "" ]; then
     echo "Deregistering existing image $IMAGE_ID"
-    aws ec2 deregister-image --image-id ${IMAGE_ID} 2>&1 > /dev/null
+    aws ec2 deregister-image --image-id "${IMAGE_ID}" > /dev/null 2>&1
 fi
 echo "Registering AMI with Snapshot $SNAPSHOT_ID"
-AMI_ID=$(aws ec2 register-image --name ${AMI_NAME} --cli-input-json="file://register-ami.json" --query 'ImageId' --output text)
+AMI_ID=$(aws ec2 register-image --name "${AMI_NAME}" --cli-input-json="file://register-ami.json" --query 'ImageId' --output text)
 echo "AMI name: $AMI_NAME"
 echo "AMI ID: $AMI_ID"
 rm register-ami.json
