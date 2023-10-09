@@ -40,6 +40,7 @@ export class BuildImageDataStack extends cdk.Stack {
       versioned: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
+      enforceSSL: true,
     });
 
     const dataBucketDeploymentRole = new iam.Role(

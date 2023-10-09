@@ -29,10 +29,6 @@ describe('BuildImageDataStack cdk-nag AwsSolutions Pack', () => {
         id: 'AwsSolutions-IAM5',
         reason: 'TODO: Re-evaluate "*" per resources.',
       },
-      {
-        id: 'AwsSolutions-S10',
-        reason: 'TODO: Require SSL for bucket access.',
-      },
     ]);
 
     NagSuppressions.addResourceSuppressionsByPath(
