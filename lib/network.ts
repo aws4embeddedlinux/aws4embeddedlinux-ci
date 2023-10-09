@@ -1,6 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 
 /**
  * The network resources to run the pipeline in.
@@ -17,6 +18,15 @@ export class PipelineNetworkStack extends cdk.Stack {
     // Filesystem to a CodeBuild Project).
     this.vpc = new ec2.Vpc(this, 'PipelineVpc', {
       ipAddresses: ec2.IpAddresses.cidr('10.0.0.0/16'),
+    });
+
+    new ec2.FlowLog(this, 'VPCFlowLogs', {
+      resourceType: ec2.FlowLogResourceType.fromVpc(this.vpc),
+      destination: ec2.FlowLogDestination.toCloudWatchLogs(
+        new LogGroup(this, 'LogGroup', {
+          retention: RetentionDays.ONE_YEAR,
+        })
+      ),
     });
   }
 }
