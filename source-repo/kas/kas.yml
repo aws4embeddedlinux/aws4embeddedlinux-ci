@@ -9,6 +9,8 @@ local_conf_header:
     qemu-config: |
         EXTRA_IMAGE_FEATURES ?= "debug-tweaks"
         IMAGE_INSTALL:append = " greengrass-bin"
+        INHERIT += "cve-check"
+        include cve-extra-exclusions.inc
 
 repos:
   poky:
