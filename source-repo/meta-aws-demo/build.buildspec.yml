@@ -14,7 +14,7 @@ phases:
       - chmod 755 /downloads
   build:
     commands:
-      - git clone https://github.com/aws4embeddedlinux/meta-aws-demos
+      - git clone https://github.com/aws4embeddedlinux/meta-aws-demos -b v0.0.1
       - cd meta-aws-demos
       - git submodule update --init --recursive
       - echo Build started on `date`

@@ -16,7 +16,7 @@ MACHINE_NAME=$4
 TMPDIR=${5:-build/tmp}
 ROLE_NAME=$6
 IMAGE_EXTEN=${7:-}
-TESTDATA_JSON_EXTEN=${8:.rootfs}
+TESTDATA_JSON_EXTEN=${8:-".rootfs"}
 
 CREATED_BY_TAG="aws4embeddedlinux-ci"
 IMG_DIR="${TMPDIR}/deploy/images/${MACHINE_NAME}"
