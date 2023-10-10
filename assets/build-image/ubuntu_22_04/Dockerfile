@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install packages used elsewhere in the build
 RUN apt-get install -y --no-install-recommends \
     uuid-runtime sysstat iproute2 openssh-client curl python-is-python3 \
-    parted mtools dosfstools jq gpg gpg-agent qemu-utils
+    parted mtools dosfstools jq gpg gpg-agent qemu-utils rsync
 
 # install repo tool
 RUN curl https://storage.googleapis.com/git-repo-downloads/repo > /bin/repo
@@ -46,5 +46,7 @@ ENV DL_DIR=/downloads
 ENV TMP_DIR=/tmp
 ENV OUTPUT_DIR=/build-output
 ENV BB_ENV_PASSTHROUGH_ADDITIONS="SSTATE_DIR DL_DIR"
+# BB_ENV_EXTRAWHITE is still used in Dunfell release and was renamed afterwards to BB_ENV_PASSTHROUGH_ADDITIONS
+ENV BB_ENV_EXTRAWHITE="SSTATE_DIR DL_DIR"
 
 USER yoctouser
