@@ -597,6 +597,62 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
             },
             {
               "Action": [
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:PutObject",
+                "s3:PutObjectTagging",
+                "s3:AbortMultipartUpload",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "DemoArtifactB63FBDE0",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "DemoArtifactB63FBDE0",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "ec2:CreateStoreImageTask",
+              "Effect": "Allow",
+              "Resource": "arn:aws:ec2:eu-central-1::image/*",
+            },
+            {
+              "Action": [
+                "ebs:CompleteSnapshot",
+                "ebs:GetSnapshotBlock",
+                "ebs:ListChangedBlocks",
+                "ebs:ListSnapshotBlocks",
+                "ebs:PutSnapshotBlock",
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:ec2:eu-central-1::snapshot/*",
+            },
+            {
+              "Action": [
+                "ec2:DescribeStoreImageTasks",
+                "ec2:GetEbsEncryptionByDefault",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
                 "s3:List*",
@@ -2724,6 +2780,62 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                 "ec2:DescribeImportSnapshotTasks",
                 "ec2:CancelImportTask",
                 "ec2:RegisterImage",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:PutObject",
+                "s3:PutObjectTagging",
+                "s3:AbortMultipartUpload",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "DemoArtifactB63FBDE0",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "DemoArtifactB63FBDE0",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "ec2:CreateStoreImageTask",
+              "Effect": "Allow",
+              "Resource": "arn:aws:ec2:eu-central-1::image/*",
+            },
+            {
+              "Action": [
+                "ebs:CompleteSnapshot",
+                "ebs:GetSnapshotBlock",
+                "ebs:ListChangedBlocks",
+                "ebs:ListSnapshotBlocks",
+                "ebs:PutSnapshotBlock",
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:ec2:eu-central-1::snapshot/*",
+            },
+            {
+              "Action": [
+                "ec2:DescribeStoreImageTasks",
+                "ec2:GetEbsEncryptionByDefault",
               ],
               "Effect": "Allow",
               "Resource": "*",

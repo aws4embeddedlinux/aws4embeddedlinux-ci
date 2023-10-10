@@ -134,3 +134,27 @@ AMI_ID=$(aws ec2 register-image --name "${AMI_NAME}" --cli-input-json="file://re
 echo "AMI name: $AMI_NAME"
 echo "AMI ID: $AMI_ID"
 rm register-ami.json
+
+echo "Backing up AMI with ID $AMI_ID in S3"
+OBJECT_KEY=$(aws ec2 create-store-image-task --image-id "$AMI_ID" --bucket "${IMPORT_BUCKET_NAME}" --query 'ObjectKey' --output text)
+echo "Backup AMI object key : $OBJECT_KEY"
+BACKUP_STATUS=$(aws ec2 describe-store-image-tasks --image-ids "$AMI_ID" --query 'StoreImageTaskResults[].StoreTaskState' --output text)
+x=0
+echo "Verifying AMI backup status: $BACKUP_STATUS"
+while [ "$BACKUP_STATUS" = "InProgress" ] && [ $x -lt 120 ]
+do
+  BACKUP_STATUS=$(aws ec2 describe-store-image-tasks --image-ids "$AMI_ID" --query 'StoreImageTaskResults[].StoreTaskState' --output text)
+  PROGRESS_PERCENTAGE=$(aws ec2 describe-store-image-tasks --image-ids "$AMI_ID" --query 'StoreImageTaskResults[].ProgressPercentage' --output text)
+  echo "Backup Status: ${BACKUP_STATUS} / ${PROGRESS_PERCENTAGE} % completed."
+  x=$(( x + 1 ))
+  sleep 15
+done
+if [ $x -eq 120 ]; then
+    echo "ERROR: Backup taking too long, exiting..."
+    exit 1
+elif [ "$BACKUP_STATUS" = "Completed" ]; then
+    echo "Backup completed Successfully"
+else
+    echo "Backup Failed, exiting"
+    exit 2
+fi

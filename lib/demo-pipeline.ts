@@ -157,6 +157,14 @@ export class DemoPipelineStack extends cdk.Stack {
     if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
       artifactBucket.grantReadWrite(project);
       project.addToRolePolicy(this.addVMExportPolicy());
+
+      //Permissions for BackUp to S3
+      project.addToRolePolicy(
+        this.addAMIS3BackupPolicy(artifactBucket.bucketArn)
+      );
+      project.addToRolePolicy(this.addAMIEC2EBSBackupPolicy(this.region));
+      project.addToRolePolicy(this.addAMIEBSBackupPolicy(this.region));
+      project.addToRolePolicy(this.addAMIBackupPolicy());
       scriptAsset.grantRead(project);
     }
 
@@ -314,6 +322,44 @@ def handler(event, context):
         'ec2:RegisterImage',
       ],
       resources: ['*'],
+    });
+  }
+
+  private addAMIS3BackupPolicy(artifactBucketArn: string): iam.PolicyStatement {
+    return new iam.PolicyStatement({
+      actions: [
+        's3:GetObject',
+        's3:ListBucket',
+        's3:PutObject',
+        's3:PutObjectTagging',
+        's3:AbortMultipartUpload',
+      ],
+      resources: [artifactBucketArn, `${artifactBucketArn}/*`],
+    });
+  }
+  private addAMIEBSBackupPolicy(region: string): iam.PolicyStatement {
+    return new iam.PolicyStatement({
+      actions: [
+        'ebs:CompleteSnapshot',
+        'ebs:GetSnapshotBlock',
+        'ebs:ListChangedBlocks',
+        'ebs:ListSnapshotBlocks',
+        'ebs:PutSnapshotBlock',
+      ],
+      resources: [`arn:aws:ec2:${region}::snapshot/*`],
+    });
+  }
+  private addAMIBackupPolicy(): iam.PolicyStatement {
+    return new iam.PolicyStatement({
+      actions: ['ec2:DescribeStoreImageTasks', 'ec2:GetEbsEncryptionByDefault'],
+      resources: ['*'],
+    });
+  }
+
+  private addAMIEC2EBSBackupPolicy(region: string): iam.PolicyStatement {
+    return new iam.PolicyStatement({
+      actions: ['ec2:CreateStoreImageTask'],
+      resources: [`arn:aws:ec2:${region}::image/*`],
     });
   }
 }
