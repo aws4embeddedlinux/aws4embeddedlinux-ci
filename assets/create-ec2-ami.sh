@@ -136,17 +136,17 @@ echo "AMI ID: $AMI_ID"
 rm register-ami.json
 
 echo "Backing up AMI with ID $AMI_ID in S3"
-OBJECT_KEY=$(aws ec2 create-store-image-task --image-id "$AMI_ID" --bucket s3://${IMPORT_BUCKET_NAME} --query 'ObjectKey' --output text)
+OBJECT_KEY=$(aws ec2 create-store-image-task --image-id "$AMI_ID" --bucket "${IMPORT_BUCKET_NAME}" --query 'ObjectKey' --output text)
 echo "Backup AMI object key : $OBJECT_KEY"
-BACKUP_STATUS=$(aws ec2 describe-store-image-tasks --query 'StoreTaskState' --output text)
+BACKUP_STATUS=$(aws ec2 describe-store-image-tasks --image-ids "$AMI_ID" --query 'StoreImageTaskResults[].StoreTaskState' --output text)
 x=0
 echo "Verifying AMI backup status: $BACKUP_STATUS"
 while [ "$BACKUP_STATUS" = "InProgress" ] && [ $x -lt 120 ]
 do
-  BACKUP_STATUS=$(aws ec2 describe-store-image-tasks --query 'StoreTaskState' --output text)
-  PROGRESS_PERCENTAGE=$(aws ec2 describe-store-image-tasks --query 'ProgressPercentage' --output text)
+  BACKUP_STATUS=$(aws ec2 describe-store-image-tasks --image-ids "$AMI_ID" --query 'StoreImageTaskResults[].StoreTaskState' --output text)
+  PROGRESS_PERCENTAGE=$(aws ec2 describe-store-image-tasks --image-ids "$AMI_ID" --query 'StoreImageTaskResults[].ProgressPercentage' --output text)
   echo "Backup Status: ${BACKUP_STATUS} / ${PROGRESS_PERCENTAGE} % completed."
-  x=$(($x + 1))
+  x=$(( x + 1 ))
   sleep 15
 done
 if [ $x -eq 120 ]; then
