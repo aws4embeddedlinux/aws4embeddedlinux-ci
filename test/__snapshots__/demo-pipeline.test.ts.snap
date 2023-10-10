@@ -634,6 +634,17 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
             },
             {
               "Action": [
+                "ebs:CompleteSnapshot",
+                "ebs:GetSnapshotBlock",
+                "ebs:ListChangedBlocks",
+                "ebs:ListSnapshotBlocks",
+                "ebs:PutSnapshotBlock",
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:ec2:eu-central-1::snapshot/*",
+            },
+            {
+              "Action": [
                 "ec2:DescribeStoreImageTasks",
                 "ec2:GetEbsEncryptionByDefault",
               ],
@@ -2809,6 +2820,17 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Action": "ec2:CreateStoreImageTask",
               "Effect": "Allow",
               "Resource": "arn:aws:ec2:eu-central-1::image/*",
+            },
+            {
+              "Action": [
+                "ebs:CompleteSnapshot",
+                "ebs:GetSnapshotBlock",
+                "ebs:ListChangedBlocks",
+                "ebs:ListSnapshotBlocks",
+                "ebs:PutSnapshotBlock",
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:ec2:eu-central-1::snapshot/*",
             },
             {
               "Action": [

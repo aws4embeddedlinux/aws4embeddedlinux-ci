@@ -163,7 +163,7 @@ export class DemoPipelineStack extends cdk.Stack {
         this.addAMIS3BackupPolicy(artifactBucket.bucketArn)
       );
       project.addToRolePolicy(this.addAMIEC2EBSBackupPolicy(this.region));
-      project.addToRolePolicy(this.addAMIEC2EBSBackupPolicy(this.region));
+      project.addToRolePolicy(this.addAMIEBSBackupPolicy(this.region));
       project.addToRolePolicy(this.addAMIBackupPolicy());
       scriptAsset.grantRead(project);
     }
