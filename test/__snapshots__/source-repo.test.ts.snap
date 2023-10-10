@@ -16,7 +16,7 @@ exports[`Demo Source Repository Snapshot 1`] = `
           "BranchName": "main",
           "S3": {
             "Bucket": "cdk-hnb659fds-assets-12341234-eu-central-1",
-            "Key": "1de2dc6cbcd5d77c4571a033541f7c54c370a8404216a48e1a05fb19708f8572.zip",
+            "Key": "f40b2cbf1fdec0205b387b3f150308ade73528ac2f0cbf82515149da5b202991.zip",
           },
         },
         "RepositoryName": "charlie",
