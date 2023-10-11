@@ -15,6 +15,8 @@ phases:
       - chmod 755 build.sh
   build:
     commands:
+      # BB_ENV_EXTRAWHITE is still used in Dunfell release and was renamed afterwards to BB_ENV_PASSTHROUGH_ADDITIONS
+      - export BB_ENV_EXTRAWHITE=$BB_ENV_PASSTHROUGH_ADDITIONS
       - echo Build started on `date`
       - ./build.sh h3ulcb
   post_build:
