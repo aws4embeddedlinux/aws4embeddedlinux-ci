@@ -16,6 +16,8 @@ export enum ProjectKind {
   PokyAmi = 'poky-ami',
   /** Build an kas based image */
   Kas = 'kas',
+  /** Build an Renesas image */
+  Renesas = 'renesas',
 }
 
 export interface SourceRepoProps extends cdk.StackProps {
