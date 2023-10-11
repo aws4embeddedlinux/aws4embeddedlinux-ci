@@ -6,7 +6,7 @@ set -eo pipefail
 
 ARGC=$#
 if [ $ARGC -lt 6 ]; then
-    echo "ERROR: Please inform import bucket name as first argument and AMI disk size in GB as second, IMAGE_NAME as third, MACHINE_NAME as forth, TMPDIR as fifth and ROLE NAME as last."
+    echo "ERROR: args 1: import bucket name 2:AMI disk size in GB 3:IMAGE_NAME 4:MACHINE_NAME 5:TMPDIR 6:ROLE NAME 7:IMAGE_EXTEN 8:TESTDATA_JSON_EXTEN."
     exit 1
 fi
 IMPORT_BUCKET_NAME=$1
@@ -16,7 +16,7 @@ MACHINE_NAME=$4
 TMPDIR=${5:-build/tmp}
 ROLE_NAME=$6
 IMAGE_EXTEN=${7:-}
-TESTDATA_JSON_EXTEN=${8:-".rootfs"}
+TESTDATA_JSON_EXTEN=${8:-}
 
 CREATED_BY_TAG="aws4embeddedlinux-ci"
 IMG_DIR="${TMPDIR}/deploy/images/${MACHINE_NAME}"
