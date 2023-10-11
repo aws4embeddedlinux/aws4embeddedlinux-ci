@@ -28,6 +28,11 @@ phases:
       # Update our local conf to build the EC2 AMI.
       - echo 'MACHINE = "aws-ec2-arm64"' >> $TMP_DIR/conf/local.conf
       - echo 'INHERIT += "aws-ec2-image"' >> $TMP_DIR/conf/local.conf
+      # Update our local conf to check for CVEs
+      - echo 'INHERIT += "cve-check"' >> $TMP_DIR/conf/local.conf
+      # this will suppress false positive CVEs
+      - echo 'include cve-extra-exclusions.inc' >> $TMP_DIR/conf/local.conf
+      # build the image
       - bitbake core-image-minimal
       - echo Build completed on `date`
   post_build:
@@ -44,3 +49,4 @@ artifacts:
   discard-paths: true
   files:
     - $TMP_DIR/tmp/deploy/images/aws-ec2-arm64/core-image-minimal*
+    - $TMP_DIR/tmp/log/cve/cve-summary*

@@ -18,6 +18,11 @@ phases:
       - repo init -u $CODEBUILD_SRC_DIR -b main -m manifest.xml
       - repo sync
       - . poky/oe-init-build-env $TMP_DIR
+      # Update our local conf to check for CVEs
+      - echo 'INHERIT += "cve-check"' >> $TMP_DIR/conf/local.conf
+      # this will suppress false positive CVEs
+      - echo 'include cve-extra-exclusions.inc' >> $TMP_DIR/conf/local.conf
+      # build the image
       - bitbake core-image-minimal
   post_build:
     commands:
@@ -29,3 +34,4 @@ artifacts:
   discard-paths: true
   files:
     - $TMP_DIR/tmp/deploy/images/qemux86-64/core-image-minimal-qemux86-64*
+    - $TMP_DIR/tmp/log/cve/cve-summary*
