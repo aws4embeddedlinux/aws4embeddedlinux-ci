@@ -14,11 +14,15 @@ phases:
       - chmod 755 /downloads
   build:
     commands:
-      - git clone https://github.com/aws4embeddedlinux/meta-aws-demos
+      - git clone https://github.com/aws4embeddedlinux/meta-aws-demos -b v0.0.1
       - cd meta-aws-demos
       - git submodule update --init --recursive
       - echo Build started on `date`
       - . ./init-build-env $TMP_DIR
+      # Update our local conf to check for CVEs
+      - echo 'INHERIT += "cve-check"' >> $TMP_DIR/conf/local.conf
+      # this will suppress false positive CVEs
+      - echo 'include cve-extra-exclusions.inc' >> $TMP_DIR/conf/local.conf
       - BUILD_DEVICE=qemu bitbake core-image-minimal
   post_build:
     commands:
@@ -30,3 +34,4 @@ artifacts:
   discard-paths: true
   files:
     - $TMP_DIR/tmp/deploy/images/qemux86-64/core-image-minimal-qemux86-64*
+    - $TMP_DIR/tmp/log/cve/cve-summary*

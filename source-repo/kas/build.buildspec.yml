@@ -25,3 +25,4 @@ artifacts:
   discard-paths: true
   files:
     - $TMP_DIR/build/tmp/deploy/images/qemux86-64/aws-biga-image-qemux86-64*
+    - $TMP_DIR/build/tmp/log/cve/cve-summary*

@@ -53,3 +53,4 @@ artifacts:
   discard-paths: true
   files:
     - $TMP_DIR/tmp/deploy/images/aws-ec2-arm64/core-image-minimal*
+    - $TMP_DIR/tmp/log/cve/cve-summary*
