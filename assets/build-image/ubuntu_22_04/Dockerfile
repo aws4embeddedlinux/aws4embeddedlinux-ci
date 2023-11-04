@@ -33,9 +33,6 @@ RUN locale-gen en_US.UTF-8
 RUN groupadd -g 1000 yoctouser
 RUN useradd -u 1000 -g 1000 -m yoctouser
 
-# This seems bad, but mesa-native is looking for something in /root/.cmake for some reason.
-RUN chown -R yoctouser /root
-
 # These will be mount points for an EFS volume. This allows the cache to be reused.
 RUN mkdir /downloads && chown -R yoctouser /downloads
 RUN mkdir /sstate-cache && chown -R yoctouser /sstate-cache
