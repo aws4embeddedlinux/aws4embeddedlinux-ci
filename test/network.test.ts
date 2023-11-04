@@ -7,6 +7,16 @@ describe('Pipeline Networking', () => {
     env: { account: '111111111111', region: 'eu-central-1' },
   };
 
+  test('Logs Have Retention Period', () => {
+    const app = new cdk.App();
+    const stack = new PipelineNetworkStack(app, props);
+    const template = Template.fromStack(stack);
+    template.resourceCountIs('AWS::Logs::LogGroup', 1);
+    template.allResourcesProperties('AWS::Logs::LogGroup', {
+      RetentionInDays: 3653,
+    });
+  });
+
   test('Snapshot', () => {
     const app = new cdk.App();
     const stack = new PipelineNetworkStack(app, props);

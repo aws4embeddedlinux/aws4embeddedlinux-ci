@@ -26,6 +26,10 @@ describe('Build Image Pipeline', () => {
     const stack = new BuildImagePipelineStack(repoStack, 'MyTestStack', props);
     const template = Template.fromStack(stack);
     template.resourceCountIs('AWS::CodePipeline::Pipeline', 1);
+    template.resourceCountIs('AWS::Logs::LogGroup', 1);
+    template.allResourcesProperties('AWS::Logs::LogGroup', {
+      RetentionInDays: 3653,
+    });
   });
 
   test('Snapshot', () => {

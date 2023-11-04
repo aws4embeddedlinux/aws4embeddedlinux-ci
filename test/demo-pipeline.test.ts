@@ -9,6 +9,24 @@ import { normalizedTemplateFromStack } from './util';
 describe('Demo Pipeline', () => {
   const env = { account: '12341234', region: 'eu-central-1' };
 
+  test('Logs Have Retention', () => {
+    const app = new cdk.App();
+    const newStack = new cdk.Stack(app, 'RepoStack', { env });
+    const imageRepo = new Repository(newStack, 'Repository', {});
+    const vpc = new Vpc(newStack, 'Bucket', {});
+
+    const stack = new DemoPipelineStack(app, 'MyTestStack', {
+      env,
+      imageRepo,
+      vpc,
+    });
+    const template = Template.fromStack(stack);
+    template.resourceCountIs('AWS::Logs::LogGroup', 1);
+    template.allResourcesProperties('AWS::Logs::LogGroup', {
+      RetentionInDays: 3653,
+    });
+  });
+
   test('Snapshot Poky Pipeline', () => {
     const app = new cdk.App();
     const newStack = new cdk.Stack(app, 'RepoStack', { env });
