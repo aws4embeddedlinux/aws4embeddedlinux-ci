@@ -30,6 +30,7 @@ import { Bucket, IBucket } from 'aws-cdk-lib/aws-s3';
 import { SourceRepo, ProjectKind } from './constructs/source-repo';
 import { VMImportBucket } from './vm-import-bucket';
 import { Asset } from 'aws-cdk-lib/aws-s3-assets';
+import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 
 /**
  * Properties to allow customizing the build.
@@ -152,6 +153,13 @@ export class DemoPipelineStack extends cdk.Stack {
           mountPoint: '/downloads',
         }),
       ],
+      logging: {
+        cloudWatch: {
+          logGroup: new LogGroup(this, 'PipelineBuildLogs', {
+            retention: RetentionDays.TEN_YEARS,
+          }),
+        },
+      },
     });
 
     if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
@@ -211,6 +219,7 @@ def handler(event, context):
     abandon=True,
     reason='OS image not found in ECR repository. Stopping pipeline until image is present.')
     `),
+        logRetention: RetentionDays.TEN_YEARS,
       }
     );
 

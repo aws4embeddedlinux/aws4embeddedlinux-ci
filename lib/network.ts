@@ -24,7 +24,7 @@ export class PipelineNetworkStack extends cdk.Stack {
       resourceType: ec2.FlowLogResourceType.fromVpc(this.vpc),
       destination: ec2.FlowLogDestination.toCloudWatchLogs(
         new LogGroup(this, 'LogGroup', {
-          retention: RetentionDays.ONE_YEAR,
+          retention: RetentionDays.TEN_YEARS,
         })
       ),
     });

@@ -7,6 +7,7 @@ import { IRepository } from 'aws-cdk-lib/aws-ecr';
 import { IBucket } from 'aws-cdk-lib/aws-s3';
 import * as events from 'aws-cdk-lib/aws-events';
 import { CodePipeline } from 'aws-cdk-lib/aws-events-targets';
+import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 
 /**
  * The type of Image to build on.
@@ -78,6 +79,13 @@ export class BuildImagePipelineStack extends cdk.Stack {
           IMAGE_TAG: {
             type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
             value: props.imageKind,
+          },
+        },
+        logging: {
+          cloudWatch: {
+            logGroup: new LogGroup(this, 'BuildImageBuildLogs', {
+              retention: RetentionDays.TEN_YEARS,
+            }),
           },
         },
       }
