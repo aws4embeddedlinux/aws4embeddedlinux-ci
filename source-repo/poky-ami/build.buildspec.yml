@@ -3,6 +3,9 @@ run-as: yoctouser
 
 env:
   shell: bash
+  # HOME is set to /root even when running as a non-root user.
+  variables:
+    HOME: "/home/yoctouser"
 
 phases:
   pre_build:
