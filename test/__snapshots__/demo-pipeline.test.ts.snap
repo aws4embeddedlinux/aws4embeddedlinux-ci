@@ -10,6 +10,71 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
     },
   },
   "Resources": {
+    "ArtifactAccessLoggingD6FCABA3": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AccessControl": "LogDeliveryWrite",
+        "OwnershipControls": {
+          "Rules": [
+            {
+              "ObjectOwnership": "ObjectWriter",
+            },
+          ],
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "ArtifactAccessLoggingPolicyDC97CE59": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "ArtifactAccessLoggingD6FCABA3",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "ArtifactAccessLoggingD6FCABA3",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "ArtifactAccessLoggingD6FCABA3",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
     "BuildProjectSecurityGroup28D27668": {
       "Properties": {
         "GroupDescription": "Security Group to allow attaching EFS",
@@ -82,6 +147,11 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
     "DemoArtifactB63FBDE0": {
       "DeletionPolicy": "Retain",
       "Properties": {
+        "LoggingConfiguration": {
+          "DestinationBucketName": {
+            "Ref": "ArtifactAccessLoggingD6FCABA3",
+          },
+        },
         "VersioningConfiguration": {
           "Status": "Enabled",
         },
@@ -2327,6 +2397,71 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
     },
   },
   "Resources": {
+    "ArtifactAccessLoggingD6FCABA3": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AccessControl": "LogDeliveryWrite",
+        "OwnershipControls": {
+          "Rules": [
+            {
+              "ObjectOwnership": "ObjectWriter",
+            },
+          ],
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "ArtifactAccessLoggingPolicyDC97CE59": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "ArtifactAccessLoggingD6FCABA3",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "ArtifactAccessLoggingD6FCABA3",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "ArtifactAccessLoggingD6FCABA3",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
     "BuildProjectSecurityGroup28D27668": {
       "Properties": {
         "GroupDescription": "Security Group to allow attaching EFS",
@@ -2399,6 +2534,11 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
     "DemoArtifactB63FBDE0": {
       "DeletionPolicy": "Retain",
       "Properties": {
+        "LoggingConfiguration": {
+          "DestinationBucketName": {
+            "Ref": "ArtifactAccessLoggingD6FCABA3",
+          },
+        },
         "VersioningConfiguration": {
           "Status": "Enabled",
         },
@@ -4644,6 +4784,71 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
     },
   },
   "Resources": {
+    "ArtifactAccessLoggingD6FCABA3": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AccessControl": "LogDeliveryWrite",
+        "OwnershipControls": {
+          "Rules": [
+            {
+              "ObjectOwnership": "ObjectWriter",
+            },
+          ],
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "ArtifactAccessLoggingPolicyDC97CE59": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "ArtifactAccessLoggingD6FCABA3",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "ArtifactAccessLoggingD6FCABA3",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "ArtifactAccessLoggingD6FCABA3",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
     "BuildProjectSecurityGroup28D27668": {
       "Properties": {
         "GroupDescription": "Security Group to allow attaching EFS",
@@ -4716,6 +4921,11 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
     "DemoArtifactB63FBDE0": {
       "DeletionPolicy": "Retain",
       "Properties": {
+        "LoggingConfiguration": {
+          "DestinationBucketName": {
+            "Ref": "ArtifactAccessLoggingD6FCABA3",
+          },
+        },
         "VersioningConfiguration": {
           "Status": "Enabled",
         },

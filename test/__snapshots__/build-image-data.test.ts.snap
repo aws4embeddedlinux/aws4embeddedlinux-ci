@@ -190,6 +190,11 @@ exports[`Build Image Data Snapshot 1`] = `
       "DeletionPolicy": "Delete",
       "Properties": {
         "BucketName": "test-bucket",
+        "LoggingConfiguration": {
+          "DestinationBucketName": {
+            "Ref": "LoggingBucket1E5A6F3B",
+          },
+        },
         "Tags": [
           {
             "Key": "aws-cdk:auto-delete-objects",
@@ -379,6 +384,71 @@ exports[`Build Image Data Snapshot 1`] = `
         ],
       },
       "Type": "AWS::IAM::Role",
+    },
+    "LoggingBucket1E5A6F3B": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AccessControl": "LogDeliveryWrite",
+        "OwnershipControls": {
+          "Rules": [
+            {
+              "ObjectOwnership": "ObjectWriter",
+            },
+          ],
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "LoggingBucketPolicy21938756": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "LoggingBucket1E5A6F3B",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "LoggingBucket1E5A6F3B",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "LoggingBucket1E5A6F3B",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
     },
   },
   "Rules": {
