@@ -34,6 +34,10 @@ export class BuildImageDataStack extends cdk.Stack {
    * @param env Environment passed to the stack.
    */
   private createDeploymentBucket(bucketName: string): s3.IBucket {
+    const accessLoggingBucket = new s3.Bucket(this, 'LoggingBucket', {
+      versioned: true,
+      enforceSSL: true,
+    });
     // Create a bucket, then allow a deployment Lambda to upload to it.
     const dataBucket = new s3.Bucket(this, 'BuildImageDataBucket', {
       bucketName,
@@ -41,6 +45,7 @@ export class BuildImageDataStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
       enforceSSL: true,
+      serverAccessLogsBucket: accessLoggingBucket,
     });
 
     const dataBucketDeploymentRole = new iam.Role(

@@ -75,6 +75,11 @@ export class DemoPipelineStack extends cdk.Stack {
     let environmentVariables = {};
     let scriptAsset!: Asset;
 
+    const accessLoggingBucket = new Bucket(this, 'ArtifactAccessLogging', {
+      versioned: true,
+      enforceSSL: true,
+    });
+
     if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
       scriptAsset = new Asset(this, 'CreateAMIScript', {
         path: path.join(__dirname, '../assets/create-ec2-ami.sh'),
@@ -83,6 +88,7 @@ export class DemoPipelineStack extends cdk.Stack {
       artifactBucket = new VMImportBucket(this, 'DemoArtifact', {
         versioned: true,
         enforceSSL: true,
+        serverAccessLogsBucket: accessLoggingBucket,
       });
       environmentVariables = {
         IMPORT_BUCKET: {
@@ -102,6 +108,7 @@ export class DemoPipelineStack extends cdk.Stack {
       artifactBucket = new Bucket(this, 'DemoArtifact', {
         versioned: true,
         enforceSSL: true,
+        serverAccessLogsBucket: accessLoggingBucket,
       });
     }
 
