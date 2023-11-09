@@ -219,7 +219,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
         },
         "EncryptionKey": {
           "Fn::GetAtt": [
-            "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+            "PipelineArtifactKeyEC0C0075",
             "Arn",
           ],
         },
@@ -793,7 +793,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "DemoPipelineArtifactsBucket90FE417D",
+                    "PipelineArtifacts4A9B2621",
                     "Arn",
                   ],
                 },
@@ -803,7 +803,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "DemoPipelineArtifactsBucket90FE417D",
+                          "PipelineArtifacts4A9B2621",
                           "Arn",
                         ],
                       },
@@ -824,7 +824,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+                  "PipelineArtifactKeyEC0C0075",
                   "Arn",
                 ],
               },
@@ -839,7 +839,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+                  "PipelineArtifactKeyEC0C0075",
                   "Arn",
                 ],
               },
@@ -893,14 +893,14 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
           "EncryptionKey": {
             "Id": {
               "Fn::GetAtt": [
-                "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+                "PipelineArtifactKeyEC0C0075",
                 "Arn",
               ],
             },
             "Type": "KMS",
           },
           "Location": {
-            "Ref": "DemoPipelineArtifactsBucket90FE417D",
+            "Ref": "PipelineArtifacts4A9B2621",
           },
           "Type": "S3",
         },
@@ -1097,7 +1097,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "DemoPipelineArtifactsBucket90FE417D",
+                    "PipelineArtifacts4A9B2621",
                     "Arn",
                   ],
                 },
@@ -1107,7 +1107,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "DemoPipelineArtifactsBucket90FE417D",
+                          "PipelineArtifacts4A9B2621",
                           "Arn",
                         ],
                       },
@@ -1125,7 +1125,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+                  "PipelineArtifactKeyEC0C0075",
                   "Arn",
                 ],
               },
@@ -1141,126 +1141,6 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "DemoPipelineArtifactsBucket90FE417D": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": [
-            {
-              "ServerSideEncryptionByDefault": {
-                "KMSMasterKeyID": {
-                  "Fn::GetAtt": [
-                    "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
-                    "Arn",
-                  ],
-                },
-                "SSEAlgorithm": "aws:kms",
-              },
-            },
-          ],
-        },
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls": true,
-          "BlockPublicPolicy": true,
-          "IgnorePublicAcls": true,
-          "RestrictPublicBuckets": true,
-        },
-      },
-      "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "DemoPipelineArtifactsBucketEncryptionKey6966F3E8": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "KeyPolicy": {
-          "Statement": [
-            {
-              "Action": "kms:*",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":iam::12341234:root",
-                    ],
-                  ],
-                },
-              },
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::KMS::Key",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "DemoPipelineArtifactsBucketEncryptionKeyAlias732C5699": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "AliasName": "alias/codepipeline-pokyamipipeline2exportsoutputfngetattpipelinevpc0543904acidrblock70dec992demopipeline07a6b81c",
-        "TargetKeyId": {
-          "Fn::GetAtt": [
-            "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::KMS::Alias",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "DemoPipelineArtifactsBucketPolicy453CC1AA": {
-      "Properties": {
-        "Bucket": {
-          "Ref": "DemoPipelineArtifactsBucket90FE417D",
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:*",
-              "Condition": {
-                "Bool": {
-                  "aws:SecureTransport": "false",
-                },
-              },
-              "Effect": "Deny",
-              "Principal": {
-                "AWS": "*",
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "DemoPipelineArtifactsBucket90FE417D",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "DemoPipelineArtifactsBucket90FE417D",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::S3::BucketPolicy",
     },
     "DemoPipelineBuildDemoBuildCodePipelineActionRoleA72EE94C": {
       "Properties": {
@@ -1524,7 +1404,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "DemoPipelineArtifactsBucket90FE417D",
+                    "PipelineArtifacts4A9B2621",
                     "Arn",
                   ],
                 },
@@ -1534,7 +1414,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "DemoPipelineArtifactsBucket90FE417D",
+                          "PipelineArtifacts4A9B2621",
                           "Arn",
                         ],
                       },
@@ -1555,7 +1435,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+                  "PipelineArtifactKeyEC0C0075",
                   "Arn",
                 ],
               },
@@ -1765,7 +1645,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "DemoPipelineArtifactsBucket90FE417D",
+                    "PipelineArtifacts4A9B2621",
                     "Arn",
                   ],
                 },
@@ -1775,7 +1655,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "DemoPipelineArtifactsBucket90FE417D",
+                          "PipelineArtifacts4A9B2621",
                           "Arn",
                         ],
                       },
@@ -1796,7 +1676,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+                  "PipelineArtifactKeyEC0C0075",
                   "Arn",
                 ],
               },
@@ -2177,6 +2057,120 @@ def handler(event, context):
         ],
       },
       "Type": "AWS::Events::Rule",
+    },
+    "PipelineArtifactKeyEC0C0075": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "KeyPolicy": {
+          "Statement": [
+            {
+              "Action": "kms:*",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::12341234:root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::KMS::Key",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineArtifacts4A9B2621": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "KMSMasterKeyID": {
+                  "Fn::GetAtt": [
+                    "PipelineArtifactKeyEC0C0075",
+                    "Arn",
+                  ],
+                },
+                "SSEAlgorithm": "aws:kms",
+              },
+            },
+          ],
+        },
+        "LoggingConfiguration": {
+          "DestinationBucketName": {
+            "Ref": "ArtifactAccessLoggingD6FCABA3",
+          },
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "PipelineArtifactsPolicy87787A0D": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "PipelineArtifacts4A9B2621",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineArtifacts4A9B2621",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineArtifacts4A9B2621",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
     },
     "PipelineBuildLogs0533272F": {
       "DeletionPolicy": "Retain",
@@ -2606,7 +2600,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
         },
         "EncryptionKey": {
           "Fn::GetAtt": [
-            "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+            "PipelineArtifactKeyEC0C0075",
             "Arn",
           ],
         },
@@ -3180,7 +3174,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "DemoPipelineArtifactsBucket90FE417D",
+                    "PipelineArtifacts4A9B2621",
                     "Arn",
                   ],
                 },
@@ -3190,7 +3184,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "DemoPipelineArtifactsBucket90FE417D",
+                          "PipelineArtifacts4A9B2621",
                           "Arn",
                         ],
                       },
@@ -3211,7 +3205,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+                  "PipelineArtifactKeyEC0C0075",
                   "Arn",
                 ],
               },
@@ -3226,7 +3220,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+                  "PipelineArtifactKeyEC0C0075",
                   "Arn",
                 ],
               },
@@ -3280,14 +3274,14 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
           "EncryptionKey": {
             "Id": {
               "Fn::GetAtt": [
-                "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+                "PipelineArtifactKeyEC0C0075",
                 "Arn",
               ],
             },
             "Type": "KMS",
           },
           "Location": {
-            "Ref": "DemoPipelineArtifactsBucket90FE417D",
+            "Ref": "PipelineArtifacts4A9B2621",
           },
           "Type": "S3",
         },
@@ -3484,7 +3478,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "DemoPipelineArtifactsBucket90FE417D",
+                    "PipelineArtifacts4A9B2621",
                     "Arn",
                   ],
                 },
@@ -3494,7 +3488,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "DemoPipelineArtifactsBucket90FE417D",
+                          "PipelineArtifacts4A9B2621",
                           "Arn",
                         ],
                       },
@@ -3512,7 +3506,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+                  "PipelineArtifactKeyEC0C0075",
                   "Arn",
                 ],
               },
@@ -3528,126 +3522,6 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "DemoPipelineArtifactsBucket90FE417D": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": [
-            {
-              "ServerSideEncryptionByDefault": {
-                "KMSMasterKeyID": {
-                  "Fn::GetAtt": [
-                    "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
-                    "Arn",
-                  ],
-                },
-                "SSEAlgorithm": "aws:kms",
-              },
-            },
-          ],
-        },
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls": true,
-          "BlockPublicPolicy": true,
-          "IgnorePublicAcls": true,
-          "RestrictPublicBuckets": true,
-        },
-      },
-      "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "DemoPipelineArtifactsBucketEncryptionKey6966F3E8": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "KeyPolicy": {
-          "Statement": [
-            {
-              "Action": "kms:*",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":iam::12341234:root",
-                    ],
-                  ],
-                },
-              },
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::KMS::Key",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "DemoPipelineArtifactsBucketEncryptionKeyAlias732C5699": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "AliasName": "alias/codepipeline-myteststackdemopipelinea8582e07",
-        "TargetKeyId": {
-          "Fn::GetAtt": [
-            "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::KMS::Alias",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "DemoPipelineArtifactsBucketPolicy453CC1AA": {
-      "Properties": {
-        "Bucket": {
-          "Ref": "DemoPipelineArtifactsBucket90FE417D",
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:*",
-              "Condition": {
-                "Bool": {
-                  "aws:SecureTransport": "false",
-                },
-              },
-              "Effect": "Deny",
-              "Principal": {
-                "AWS": "*",
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "DemoPipelineArtifactsBucket90FE417D",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "DemoPipelineArtifactsBucket90FE417D",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::S3::BucketPolicy",
     },
     "DemoPipelineBuildDemoBuildCodePipelineActionRoleA72EE94C": {
       "Properties": {
@@ -3911,7 +3785,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "DemoPipelineArtifactsBucket90FE417D",
+                    "PipelineArtifacts4A9B2621",
                     "Arn",
                   ],
                 },
@@ -3921,7 +3795,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "DemoPipelineArtifactsBucket90FE417D",
+                          "PipelineArtifacts4A9B2621",
                           "Arn",
                         ],
                       },
@@ -3942,7 +3816,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+                  "PipelineArtifactKeyEC0C0075",
                   "Arn",
                 ],
               },
@@ -4152,7 +4026,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "DemoPipelineArtifactsBucket90FE417D",
+                    "PipelineArtifacts4A9B2621",
                     "Arn",
                   ],
                 },
@@ -4162,7 +4036,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "DemoPipelineArtifactsBucket90FE417D",
+                          "PipelineArtifacts4A9B2621",
                           "Arn",
                         ],
                       },
@@ -4183,7 +4057,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+                  "PipelineArtifactKeyEC0C0075",
                   "Arn",
                 ],
               },
@@ -4565,6 +4439,120 @@ def handler(event, context):
       },
       "Type": "AWS::Events::Rule",
     },
+    "PipelineArtifactKeyEC0C0075": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "KeyPolicy": {
+          "Statement": [
+            {
+              "Action": "kms:*",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::12341234:root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::KMS::Key",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineArtifacts4A9B2621": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "KMSMasterKeyID": {
+                  "Fn::GetAtt": [
+                    "PipelineArtifactKeyEC0C0075",
+                    "Arn",
+                  ],
+                },
+                "SSEAlgorithm": "aws:kms",
+              },
+            },
+          ],
+        },
+        "LoggingConfiguration": {
+          "DestinationBucketName": {
+            "Ref": "ArtifactAccessLoggingD6FCABA3",
+          },
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "PipelineArtifactsPolicy87787A0D": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "PipelineArtifacts4A9B2621",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineArtifacts4A9B2621",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineArtifacts4A9B2621",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
     "PipelineBuildLogs0533272F": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -4918,68 +4906,6 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoArtifactB63FBDE0": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "LoggingConfiguration": {
-          "DestinationBucketName": {
-            "Ref": "ArtifactAccessLoggingD6FCABA3",
-          },
-        },
-        "VersioningConfiguration": {
-          "Status": "Enabled",
-        },
-      },
-      "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "DemoArtifactPolicy2E42C1C3": {
-      "Properties": {
-        "Bucket": {
-          "Ref": "DemoArtifactB63FBDE0",
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:*",
-              "Condition": {
-                "Bool": {
-                  "aws:SecureTransport": "false",
-                },
-              },
-              "Effect": "Deny",
-              "Principal": {
-                "AWS": "*",
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "DemoArtifactB63FBDE0",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "DemoArtifactB63FBDE0",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::S3::BucketPolicy",
-    },
     "DemoBuildProjectCA7F642A": {
       "DependsOn": [
         "DemoBuildProjectPolicyDocumentD1257A49",
@@ -4993,7 +4919,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
         },
         "EncryptionKey": {
           "Fn::GetAtt": [
-            "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+            "PipelineArtifactKeyEC0C0075",
             "Arn",
           ],
         },
@@ -5388,7 +5314,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "DemoPipelineArtifactsBucket90FE417D",
+                    "PipelineArtifacts4A9B2621",
                     "Arn",
                   ],
                 },
@@ -5398,7 +5324,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "DemoPipelineArtifactsBucket90FE417D",
+                          "PipelineArtifacts4A9B2621",
                           "Arn",
                         ],
                       },
@@ -5419,7 +5345,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+                  "PipelineArtifactKeyEC0C0075",
                   "Arn",
                 ],
               },
@@ -5434,7 +5360,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+                  "PipelineArtifactKeyEC0C0075",
                   "Arn",
                 ],
               },
@@ -5488,14 +5414,14 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
           "EncryptionKey": {
             "Id": {
               "Fn::GetAtt": [
-                "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+                "PipelineArtifactKeyEC0C0075",
                 "Arn",
               ],
             },
             "Type": "KMS",
           },
           "Location": {
-            "Ref": "DemoPipelineArtifactsBucket90FE417D",
+            "Ref": "PipelineArtifacts4A9B2621",
           },
           "Type": "S3",
         },
@@ -5591,7 +5517,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                 },
                 "Configuration": {
                   "BucketName": {
-                    "Ref": "DemoArtifactB63FBDE0",
+                    "Ref": "PipelineOutput78594CB5",
                   },
                   "Extract": "true",
                 },
@@ -5662,7 +5588,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "DemoArtifactB63FBDE0",
+                    "PipelineOutput78594CB5",
                     "Arn",
                   ],
                 },
@@ -5672,7 +5598,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "DemoArtifactB63FBDE0",
+                          "PipelineOutput78594CB5",
                           "Arn",
                         ],
                       },
@@ -5692,7 +5618,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "DemoPipelineArtifactsBucket90FE417D",
+                    "PipelineArtifacts4A9B2621",
                     "Arn",
                   ],
                 },
@@ -5702,7 +5628,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "DemoPipelineArtifactsBucket90FE417D",
+                          "PipelineArtifacts4A9B2621",
                           "Arn",
                         ],
                       },
@@ -5720,7 +5646,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+                  "PipelineArtifactKeyEC0C0075",
                   "Arn",
                 ],
               },
@@ -5736,126 +5662,6 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "DemoPipelineArtifactsBucket90FE417D": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": [
-            {
-              "ServerSideEncryptionByDefault": {
-                "KMSMasterKeyID": {
-                  "Fn::GetAtt": [
-                    "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
-                    "Arn",
-                  ],
-                },
-                "SSEAlgorithm": "aws:kms",
-              },
-            },
-          ],
-        },
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls": true,
-          "BlockPublicPolicy": true,
-          "IgnorePublicAcls": true,
-          "RestrictPublicBuckets": true,
-        },
-      },
-      "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "DemoPipelineArtifactsBucketEncryptionKey6966F3E8": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "KeyPolicy": {
-          "Statement": [
-            {
-              "Action": "kms:*",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":iam::12341234:root",
-                    ],
-                  ],
-                },
-              },
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::KMS::Key",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "DemoPipelineArtifactsBucketEncryptionKeyAlias732C5699": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "AliasName": "alias/codepipeline-myteststackdemopipelinea8582e07",
-        "TargetKeyId": {
-          "Fn::GetAtt": [
-            "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::KMS::Alias",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "DemoPipelineArtifactsBucketPolicy453CC1AA": {
-      "Properties": {
-        "Bucket": {
-          "Ref": "DemoPipelineArtifactsBucket90FE417D",
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:*",
-              "Condition": {
-                "Bool": {
-                  "aws:SecureTransport": "false",
-                },
-              },
-              "Effect": "Deny",
-              "Principal": {
-                "AWS": "*",
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "DemoPipelineArtifactsBucket90FE417D",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "DemoPipelineArtifactsBucket90FE417D",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::S3::BucketPolicy",
     },
     "DemoPipelineBuildDemoBuildCodePipelineActionRoleA72EE94C": {
       "Properties": {
@@ -6119,7 +5925,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "DemoPipelineArtifactsBucket90FE417D",
+                    "PipelineArtifacts4A9B2621",
                     "Arn",
                   ],
                 },
@@ -6129,7 +5935,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "DemoPipelineArtifactsBucket90FE417D",
+                          "PipelineArtifacts4A9B2621",
                           "Arn",
                         ],
                       },
@@ -6150,7 +5956,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+                  "PipelineArtifactKeyEC0C0075",
                   "Arn",
                 ],
               },
@@ -6360,7 +6166,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "DemoPipelineArtifactsBucket90FE417D",
+                    "PipelineArtifacts4A9B2621",
                     "Arn",
                   ],
                 },
@@ -6370,7 +6176,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "DemoPipelineArtifactsBucket90FE417D",
+                          "PipelineArtifacts4A9B2621",
                           "Arn",
                         ],
                       },
@@ -6391,7 +6197,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineArtifactsBucketEncryptionKey6966F3E8",
+                  "PipelineArtifactKeyEC0C0075",
                   "Arn",
                 ],
               },
@@ -6773,6 +6579,120 @@ def handler(event, context):
       },
       "Type": "AWS::Events::Rule",
     },
+    "PipelineArtifactKeyEC0C0075": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "KeyPolicy": {
+          "Statement": [
+            {
+              "Action": "kms:*",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::12341234:root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::KMS::Key",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineArtifacts4A9B2621": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "KMSMasterKeyID": {
+                  "Fn::GetAtt": [
+                    "PipelineArtifactKeyEC0C0075",
+                    "Arn",
+                  ],
+                },
+                "SSEAlgorithm": "aws:kms",
+              },
+            },
+          ],
+        },
+        "LoggingConfiguration": {
+          "DestinationBucketName": {
+            "Ref": "ArtifactAccessLoggingD6FCABA3",
+          },
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "PipelineArtifactsPolicy87787A0D": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "PipelineArtifacts4A9B2621",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineArtifacts4A9B2621",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineArtifacts4A9B2621",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
     "PipelineBuildLogs0533272F": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -6780,6 +6700,68 @@ def handler(event, context):
       },
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
+    },
+    "PipelineOutput78594CB5": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "LoggingConfiguration": {
+          "DestinationBucketName": {
+            "Ref": "ArtifactAccessLoggingD6FCABA3",
+          },
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "PipelineOutputPolicyCB4CC2E6": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "PipelineOutput78594CB5",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineOutput78594CB5",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineOutput78594CB5",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
     },
     "SourceRepoSourceRepositoryC86045A8": {
       "Properties": {

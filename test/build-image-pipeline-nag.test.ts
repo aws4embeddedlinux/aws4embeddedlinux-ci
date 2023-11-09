@@ -40,10 +40,6 @@ describe('BuildImagePipelineStack cdk-nag AwsSolutions Pack', () => {
         reason: 'TODO: Re-evaluate "*" per resources.',
       },
       {
-        id: 'AwsSolutions-S1',
-        reason: 'TODO: Re-evaluate bucket access logging.',
-      },
-      {
         id: 'AwsSolutions-KMS5',
         reason: 'TODO: Re-evaluate key rotation.',
       },

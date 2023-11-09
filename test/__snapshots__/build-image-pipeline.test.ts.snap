@@ -10,6 +10,71 @@ exports[`Build Image Pipeline Snapshot 1`] = `
     },
   },
   "Resources": {
+    "ArtifactAccessLoggingD6FCABA3": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AccessControl": "LogDeliveryWrite",
+        "OwnershipControls": {
+          "Rules": [
+            {
+              "ObjectOwnership": "ObjectWriter",
+            },
+          ],
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "ArtifactAccessLoggingPolicyDC97CE59": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "ArtifactAccessLoggingD6FCABA3",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "ArtifactAccessLoggingD6FCABA3",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "ArtifactAccessLoggingD6FCABA3",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
     "BuildImageBuildLogs65D4471D": {
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -28,14 +93,14 @@ exports[`Build Image Pipeline Snapshot 1`] = `
           "EncryptionKey": {
             "Id": {
               "Fn::GetAtt": [
-                "BuildImagePipelineArtifactsBucketEncryptionKey5E194B47",
+                "PipelineArtifactKeyEC0C0075",
                 "Arn",
               ],
             },
             "Type": "KMS",
           },
           "Location": {
-            "Ref": "BuildImagePipelineArtifactsBucketC6CC33E0",
+            "Ref": "PipelineArtifacts4A9B2621",
           },
           "Type": "S3",
         },
@@ -114,126 +179,6 @@ exports[`Build Image Pipeline Snapshot 1`] = `
         ],
       },
       "Type": "AWS::CodePipeline::Pipeline",
-    },
-    "BuildImagePipelineArtifactsBucketC6CC33E0": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": [
-            {
-              "ServerSideEncryptionByDefault": {
-                "KMSMasterKeyID": {
-                  "Fn::GetAtt": [
-                    "BuildImagePipelineArtifactsBucketEncryptionKey5E194B47",
-                    "Arn",
-                  ],
-                },
-                "SSEAlgorithm": "aws:kms",
-              },
-            },
-          ],
-        },
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls": true,
-          "BlockPublicPolicy": true,
-          "IgnorePublicAcls": true,
-          "RestrictPublicBuckets": true,
-        },
-      },
-      "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "BuildImagePipelineArtifactsBucketEncryptionKey5E194B47": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "KeyPolicy": {
-          "Statement": [
-            {
-              "Action": "kms:*",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":iam::111111111111:root",
-                    ],
-                  ],
-                },
-              },
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::KMS::Key",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "BuildImagePipelineArtifactsBucketEncryptionKeyAlias74B7C629": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "AliasName": "alias/codepipeline-repostackmyteststackbuildimagepipelineec25138e",
-        "TargetKeyId": {
-          "Fn::GetAtt": [
-            "BuildImagePipelineArtifactsBucketEncryptionKey5E194B47",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "AWS::KMS::Alias",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "BuildImagePipelineArtifactsBucketPolicyA1FD352D": {
-      "Properties": {
-        "Bucket": {
-          "Ref": "BuildImagePipelineArtifactsBucketC6CC33E0",
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:*",
-              "Condition": {
-                "Bool": {
-                  "aws:SecureTransport": "false",
-                },
-              },
-              "Effect": "Deny",
-              "Principal": {
-                "AWS": "*",
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "BuildImagePipelineArtifactsBucketC6CC33E0",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "BuildImagePipelineArtifactsBucketC6CC33E0",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::S3::BucketPolicy",
     },
     "BuildImagePipelineBuildCodePipelineActionRole15E18A3A": {
       "Properties": {
@@ -383,7 +328,7 @@ exports[`Build Image Pipeline Snapshot 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "BuildImagePipelineArtifactsBucketC6CC33E0",
+                    "PipelineArtifacts4A9B2621",
                     "Arn",
                   ],
                 },
@@ -393,7 +338,7 @@ exports[`Build Image Pipeline Snapshot 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "BuildImagePipelineArtifactsBucketC6CC33E0",
+                          "PipelineArtifacts4A9B2621",
                           "Arn",
                         ],
                       },
@@ -414,7 +359,7 @@ exports[`Build Image Pipeline Snapshot 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "BuildImagePipelineArtifactsBucketEncryptionKey5E194B47",
+                  "PipelineArtifactKeyEC0C0075",
                   "Arn",
                 ],
               },
@@ -521,7 +466,7 @@ exports[`Build Image Pipeline Snapshot 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "BuildImagePipelineArtifactsBucketC6CC33E0",
+                    "PipelineArtifacts4A9B2621",
                     "Arn",
                   ],
                 },
@@ -531,7 +476,7 @@ exports[`Build Image Pipeline Snapshot 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "BuildImagePipelineArtifactsBucketC6CC33E0",
+                          "PipelineArtifacts4A9B2621",
                           "Arn",
                         ],
                       },
@@ -551,7 +496,7 @@ exports[`Build Image Pipeline Snapshot 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "BuildImagePipelineArtifactsBucketEncryptionKey5E194B47",
+                  "PipelineArtifactKeyEC0C0075",
                   "Arn",
                 ],
               },
@@ -578,7 +523,7 @@ exports[`Build Image Pipeline Snapshot 1`] = `
         },
         "EncryptionKey": {
           "Fn::GetAtt": [
-            "BuildImagePipelineArtifactsBucketEncryptionKey5E194B47",
+            "PipelineArtifactKeyEC0C0075",
             "Arn",
           ],
         },
@@ -804,7 +749,7 @@ exports[`Build Image Pipeline Snapshot 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "BuildImagePipelineArtifactsBucketC6CC33E0",
+                    "PipelineArtifacts4A9B2621",
                     "Arn",
                   ],
                 },
@@ -814,7 +759,7 @@ exports[`Build Image Pipeline Snapshot 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "BuildImagePipelineArtifactsBucketC6CC33E0",
+                          "PipelineArtifacts4A9B2621",
                           "Arn",
                         ],
                       },
@@ -832,7 +777,7 @@ exports[`Build Image Pipeline Snapshot 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "BuildImagePipelineArtifactsBucketEncryptionKey5E194B47",
+                  "PipelineArtifactKeyEC0C0075",
                   "Arn",
                 ],
               },
@@ -847,7 +792,7 @@ exports[`Build Image Pipeline Snapshot 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "BuildImagePipelineArtifactsBucketEncryptionKey5E194B47",
+                  "PipelineArtifactKeyEC0C0075",
                   "Arn",
                 ],
               },
@@ -863,6 +808,120 @@ exports[`Build Image Pipeline Snapshot 1`] = `
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "PipelineArtifactKeyEC0C0075": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "KeyPolicy": {
+          "Statement": [
+            {
+              "Action": "kms:*",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::111111111111:root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::KMS::Key",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineArtifacts4A9B2621": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "KMSMasterKeyID": {
+                  "Fn::GetAtt": [
+                    "PipelineArtifactKeyEC0C0075",
+                    "Arn",
+                  ],
+                },
+                "SSEAlgorithm": "aws:kms",
+              },
+            },
+          ],
+        },
+        "LoggingConfiguration": {
+          "DestinationBucketName": {
+            "Ref": "ArtifactAccessLoggingD6FCABA3",
+          },
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "PipelineArtifactsPolicy87787A0D": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "PipelineArtifacts4A9B2621",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineArtifacts4A9B2621",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineArtifacts4A9B2621",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
     },
     "WeeklySchedule60EC10E3": {
       "Properties": {
