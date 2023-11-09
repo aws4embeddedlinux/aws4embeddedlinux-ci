@@ -42,17 +42,6 @@ describe('BuildImageDataStack cdk-nag AwsSolutions Pack', () => {
       ]
     );
 
-    NagSuppressions.addResourceSuppressionsByPath(
-      stack,
-      '/MyTestStack/BuildImageDataBucket/Resource',
-      [
-        {
-          id: 'AwsSolutions-S1',
-          reason: 'TODO: Add Access Logging',
-        },
-      ]
-    );
-
     // WHEN
     Aspects.of(stack).add(new AwsSolutionsChecks({ verbose: true }));
   });

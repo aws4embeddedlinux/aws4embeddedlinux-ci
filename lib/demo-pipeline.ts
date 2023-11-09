@@ -7,6 +7,8 @@ import * as targets from 'aws-cdk-lib/aws-events-targets';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as efs from 'aws-cdk-lib/aws-efs';
+import * as kms from 'aws-cdk-lib/aws-kms';
+import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as path from 'path';
 
 import {
@@ -26,11 +28,11 @@ import {
   Port,
   SecurityGroup,
 } from 'aws-cdk-lib/aws-ec2';
-import { Bucket, IBucket } from 'aws-cdk-lib/aws-s3';
 import { SourceRepo, ProjectKind } from './constructs/source-repo';
 import { VMImportBucket } from './vm-import-bucket';
 import { Asset } from 'aws-cdk-lib/aws-s3-assets';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
+import { RemovalPolicy } from 'aws-cdk-lib';
 
 /**
  * Properties to allow customizing the build.
@@ -71,11 +73,11 @@ export class DemoPipelineStack extends cdk.Stack {
     const dlFS = this.addFileSystem('Downloads', props.vpc, projectSg);
     const tmpFS = this.addFileSystem('Temp', props.vpc, projectSg);
 
-    let artifactBucket: IBucket | VMImportBucket;
+    let outputBucket: s3.IBucket | VMImportBucket;
     let environmentVariables = {};
     let scriptAsset!: Asset;
 
-    const accessLoggingBucket = new Bucket(this, 'ArtifactAccessLogging', {
+    const accessLoggingBucket = new s3.Bucket(this, 'ArtifactAccessLogging', {
       versioned: true,
       enforceSSL: true,
     });
@@ -85,7 +87,7 @@ export class DemoPipelineStack extends cdk.Stack {
         path: path.join(__dirname, '../assets/create-ec2-ami.sh'),
       });
 
-      artifactBucket = new VMImportBucket(this, 'DemoArtifact', {
+      outputBucket = new VMImportBucket(this, 'DemoArtifact', {
         versioned: true,
         enforceSSL: true,
         serverAccessLogsBucket: accessLoggingBucket,
@@ -93,11 +95,11 @@ export class DemoPipelineStack extends cdk.Stack {
       environmentVariables = {
         IMPORT_BUCKET: {
           type: BuildEnvironmentVariableType.PLAINTEXT,
-          value: artifactBucket.bucketName,
+          value: outputBucket.bucketName,
         },
         ROLE_NAME: {
           type: BuildEnvironmentVariableType.PLAINTEXT,
-          value: (artifactBucket as VMImportBucket).roleName,
+          value: (outputBucket as VMImportBucket).roleName,
         },
         SCRIPT_URL: {
           type: BuildEnvironmentVariableType.PLAINTEXT,
@@ -105,12 +107,26 @@ export class DemoPipelineStack extends cdk.Stack {
         },
       };
     } else {
-      artifactBucket = new Bucket(this, 'DemoArtifact', {
+      outputBucket = new s3.Bucket(this, 'PipelineOutput', {
         versioned: true,
         enforceSSL: true,
         serverAccessLogsBucket: accessLoggingBucket,
       });
     }
+
+    const encryptionKey = new kms.Key(this, 'PipelineArtifactKey', {
+      removalPolicy: RemovalPolicy.DESTROY,
+    });
+    const artifactBucket = new s3.Bucket(this, 'PipelineArtifacts', {
+      versioned: true,
+      enforceSSL: true,
+      serverAccessLogsBucket: accessLoggingBucket,
+      encryptionKey,
+      encryption: s3.BucketEncryption.KMS,
+      blockPublicAccess: new s3.BlockPublicAccess(
+        s3.BlockPublicAccess.BLOCK_ALL
+      ),
+    });
 
     /** Create our CodePipeline Actions. */
     const sourceRepo = new SourceRepo(this, 'SourceRepo', {
@@ -170,12 +186,12 @@ export class DemoPipelineStack extends cdk.Stack {
     });
 
     if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
-      artifactBucket.grantReadWrite(project);
+      outputBucket.grantReadWrite(project);
       project.addToRolePolicy(this.addVMExportPolicy());
 
       //Permissions for BackUp to S3
       project.addToRolePolicy(
-        this.addAMIS3BackupPolicy(artifactBucket.bucketArn)
+        this.addAMIS3BackupPolicy(outputBucket.bucketArn)
       );
       project.addToRolePolicy(this.addAMIEC2EBSBackupPolicy(this.region));
       project.addToRolePolicy(this.addAMIEBSBackupPolicy(this.region));
@@ -194,7 +210,7 @@ export class DemoPipelineStack extends cdk.Stack {
     const artifactAction = new codepipeline_actions.S3DeployAction({
       actionName: 'Demo-Artifact',
       input: buildOutput,
-      bucket: artifactBucket,
+      bucket: outputBucket,
     });
 
     /** Here we create the logic to check for presence of ECR image on the CodePipeline automatic triggering upon resource creation,
@@ -248,6 +264,7 @@ def handler(event, context):
 
     /** Now create the actual Pipeline */
     const pipeline = new codepipeline.Pipeline(this, 'DemoPipeline', {
+      artifactBucket,
       restartExecutionOnUpdate: true,
       stages: [
         {

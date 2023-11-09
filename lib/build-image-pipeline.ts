@@ -4,10 +4,12 @@ import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as codepipeline_actions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import { IRepository } from 'aws-cdk-lib/aws-ecr';
-import { IBucket } from 'aws-cdk-lib/aws-s3';
+import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as events from 'aws-cdk-lib/aws-events';
 import { CodePipeline } from 'aws-cdk-lib/aws-events-targets';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
+import * as kms from 'aws-cdk-lib/aws-kms';
+import { RemovalPolicy } from 'aws-cdk-lib';
 
 /**
  * The type of Image to build on.
@@ -28,7 +30,7 @@ export interface BuildImagePipelineProps extends cdk.StackProps {
   /** The Image type to create. */
   readonly imageKind: ImageKind;
   /** The data bucket from the BuildImageDataStack */
-  readonly dataBucket: IBucket;
+  readonly dataBucket: s3.IBucket;
   /** The ECR Repository to push to. */
   readonly repository: IRepository;
 }
@@ -98,7 +100,26 @@ export class BuildImagePipelineStack extends cdk.Stack {
       input: sourceOutput,
     });
 
+    const accessLoggingBucket = new s3.Bucket(this, 'ArtifactAccessLogging', {
+      versioned: true,
+      enforceSSL: true,
+    });
+    const encryptionKey = new kms.Key(this, 'PipelineArtifactKey', {
+      removalPolicy: RemovalPolicy.DESTROY,
+    });
+    const artifactBucket = new s3.Bucket(this, 'PipelineArtifacts', {
+      versioned: true,
+      enforceSSL: true,
+      serverAccessLogsBucket: accessLoggingBucket,
+      encryptionKey,
+      encryption: s3.BucketEncryption.KMS,
+      blockPublicAccess: new s3.BlockPublicAccess(
+        s3.BlockPublicAccess.BLOCK_ALL
+      ),
+    });
+
     const pipeline = new codepipeline.Pipeline(this, 'BuildImagePipeline', {
+      artifactBucket,
       pipelineName: `${props.imageKind}BuildImagePipeline`,
       stages: [
         {

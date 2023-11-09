@@ -48,10 +48,6 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
         id: 'AwsSolutions-KMS5',
         reason: 'TODO: Re-evaluate key rotation.',
       },
-      {
-        id: 'AwsSolutions-S1',
-        reason: 'TODO: Re-evaluate bucket access logging.',
-      },
     ]);
     // WHEN
     Aspects.of(stack).add(new AwsSolutionsChecks({ verbose: true }));
