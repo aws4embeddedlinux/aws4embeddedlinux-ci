@@ -296,6 +296,11 @@ def handler(event, context):
         statements: [stopPipelinePolicy, ecrPolicy],
       })
     );
+
+    new cdk.CfnOutput(this, 'BuildOutput', {
+      value: outputBucket.bucketArn,
+      description: 'The output bucket of this pipeline.',
+    });
   }
 
   /**

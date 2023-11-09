@@ -2,6 +2,17 @@
 
 exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
 {
+  "Outputs": {
+    "BuildOutput": {
+      "Description": "The output bucket of this pipeline.",
+      "Value": {
+        "Fn::GetAtt": [
+          "DemoArtifactB63FBDE0",
+          "Arn",
+        ],
+      },
+    },
+  },
   "Parameters": {
     "BootstrapVersion": {
       "Default": "/cdk-bootstrap/hnb659fds/version",
@@ -2383,6 +2394,17 @@ def handler(event, context):
 
 exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
 {
+  "Outputs": {
+    "BuildOutput": {
+      "Description": "The output bucket of this pipeline.",
+      "Value": {
+        "Fn::GetAtt": [
+          "DemoArtifactB63FBDE0",
+          "Arn",
+        ],
+      },
+    },
+  },
   "Parameters": {
     "BootstrapVersion": {
       "Default": "/cdk-bootstrap/hnb659fds/version",
@@ -4764,6 +4786,17 @@ def handler(event, context):
 
 exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
 {
+  "Outputs": {
+    "BuildOutput": {
+      "Description": "The output bucket of this pipeline.",
+      "Value": {
+        "Fn::GetAtt": [
+          "PipelineOutput78594CB5",
+          "Arn",
+        ],
+      },
+    },
+  },
   "Parameters": {
     "BootstrapVersion": {
       "Default": "/cdk-bootstrap/hnb659fds/version",
