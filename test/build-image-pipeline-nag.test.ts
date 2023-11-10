@@ -38,11 +38,7 @@ describe('BuildImagePipelineStack cdk-nag AwsSolutions Pack', () => {
       {
         id: 'AwsSolutions-IAM5',
         reason: 'TODO: Re-evaluate "*" per resources.',
-      },
-      {
-        id: 'AwsSolutions-KMS5',
-        reason: 'TODO: Re-evaluate key rotation.',
-      },
+      }
     ]);
     // WHEN
     Aspects.of(stack).add(new AwsSolutionsChecks({ verbose: true }));
