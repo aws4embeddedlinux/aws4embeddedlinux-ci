@@ -5,6 +5,8 @@ import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 import * as iam from 'aws-cdk-lib/aws-iam';
 
 import * as path from 'path';
+import * as kms from 'aws-cdk-lib/aws-kms';
+import { RemovalPolicy } from 'aws-cdk-lib';
 
 /**
  * Select options for the BuildImageDataStack.
@@ -38,10 +40,17 @@ export class BuildImageDataStack extends cdk.Stack {
       versioned: true,
       enforceSSL: true,
     });
+
+    const encryptionKey = new kms.Key(this, 'PipelineArtifactKey', {
+      removalPolicy: RemovalPolicy.DESTROY,
+      enableKeyRotation: true,
+    });
+
     // Create a bucket, then allow a deployment Lambda to upload to it.
     const dataBucket = new s3.Bucket(this, 'BuildImageDataBucket', {
       bucketName,
       versioned: true,
+      encryptionKey: encryptionKey,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
       enforceSSL: true,
@@ -67,7 +76,7 @@ export class BuildImageDataStack extends cdk.Stack {
     dataBucketDeploymentRole.addToPolicy(
       new iam.PolicyStatement({
         actions: ['kms:Decrypt'],
-        resources: [`arn:aws:kms:${region}:${account}:key/*`],
+        resources: [encryptionKey.keyArn],
       })
     );
 

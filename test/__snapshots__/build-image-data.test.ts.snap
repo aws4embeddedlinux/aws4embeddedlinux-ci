@@ -82,7 +82,12 @@ exports[`Build Image Data Snapshot 1`] = `
             {
               "Action": "kms:Decrypt",
               "Effect": "Allow",
-              "Resource": "arn:aws:kms:eu-central-1:111111111111:key/*",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "PipelineArtifactKeyEC0C0075",
+                  "Arn",
+                ],
+              },
             },
             {
               "Action": [
@@ -155,6 +160,22 @@ exports[`Build Image Data Snapshot 1`] = `
                 },
               ],
             },
+            {
+              "Action": [
+                "kms:Decrypt",
+                "kms:DescribeKey",
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "PipelineArtifactKeyEC0C0075",
+                  "Arn",
+                ],
+              },
+            },
           ],
           "Version": "2012-10-17",
         },
@@ -189,6 +210,21 @@ exports[`Build Image Data Snapshot 1`] = `
     "BuildImageDataBucketE6A8BC04": {
       "DeletionPolicy": "Delete",
       "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "KMSMasterKeyID": {
+                  "Fn::GetAtt": [
+                    "PipelineArtifactKeyEC0C0075",
+                    "Arn",
+                  ],
+                },
+                "SSEAlgorithm": "aws:kms",
+              },
+            },
+          ],
+        },
         "BucketName": "test-bucket",
         "LoggingConfiguration": {
           "DestinationBucketName": {
@@ -449,6 +485,38 @@ exports[`Build Image Data Snapshot 1`] = `
         },
       },
       "Type": "AWS::S3::BucketPolicy",
+    },
+    "PipelineArtifactKeyEC0C0075": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "EnableKeyRotation": true,
+        "KeyPolicy": {
+          "Statement": [
+            {
+              "Action": "kms:*",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::111111111111:root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::KMS::Key",
+      "UpdateReplacePolicy": "Delete",
     },
   },
   "Rules": {

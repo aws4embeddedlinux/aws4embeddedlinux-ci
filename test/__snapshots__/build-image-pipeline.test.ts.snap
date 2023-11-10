@@ -812,6 +812,7 @@ exports[`Build Image Pipeline Snapshot 1`] = `
     "PipelineArtifactKeyEC0C0075": {
       "DeletionPolicy": "Delete",
       "Properties": {
+        "EnableKeyRotation": true,
         "KeyPolicy": {
           "Statement": [
             {
