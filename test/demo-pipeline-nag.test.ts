@@ -44,10 +44,6 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
         id: 'AwsSolutions-IAM4',
         reason: 'TODO: Re-evaluate managed policies per resources.',
       },
-      {
-        id: 'AwsSolutions-KMS5',
-        reason: 'TODO: Re-evaluate key rotation.',
-      },
     ]);
     // WHEN
     Aspects.of(stack).add(new AwsSolutionsChecks({ verbose: true }));

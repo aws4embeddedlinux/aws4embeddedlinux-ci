@@ -7,6 +7,7 @@ const TAG = 'aws4embeddedlinux-ci';
 export interface VMImportBucketProps extends s3.BucketProps {
   /**  The sanitized role name */
   readonly sanitizedRoleName?: string;
+  readonly encryptionKeyArn: string;
 }
 
 /**
@@ -37,13 +38,11 @@ export class VMImportBucket extends s3.Bucket {
           },
         }),
         new iam.PolicyStatement({
-          actions: [
-            'ec2:ModifySnapshotAttribute',
-            'ec2:CopySnapshot',
-            'ec2:Describe*',
-            'ec2:RegisterImage',
-            'ec2:DeregisterImage',
-          ],
+          actions: ['ec2:CopySnapshot'],
+          resources: [`arn:aws:ec2:${this.stack.region}::snapshot/*`],
+        }),
+        new iam.PolicyStatement({
+          actions: ['ec2:DescribeSnapshots'],
           resources: ['*'],
         }),
         new iam.PolicyStatement({
@@ -51,13 +50,9 @@ export class VMImportBucket extends s3.Bucket {
             'kms:CreateGrant',
             'kms:Decrypt',
             'kms:DescribeKey',
-            'kms:Encrypt',
-            'kms:GenerateDataKey*',
-            'kms:ReEncrypt*',
+            'kms:GenerateDataKeyWithoutPlaintext',
           ],
-          resources: [
-            `arn:aws:kms:${this.stack.region}:${this.stack.account}:key/*`,
-          ],
+          resources: [props.encryptionKeyArn],
         }),
       ],
     });

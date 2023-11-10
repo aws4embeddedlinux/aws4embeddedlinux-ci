@@ -158,6 +158,21 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
     "DemoArtifactB63FBDE0": {
       "DeletionPolicy": "Retain",
       "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "KMSMasterKeyID": {
+                  "Fn::GetAtt": [
+                    "OutputBucketEncryptionKey0E569549",
+                    "Arn",
+                  ],
+                },
+                "SSEAlgorithm": "aws:kms",
+              },
+            },
+          ],
+        },
         "LoggingConfiguration": {
           "DestinationBucketName": {
             "Ref": "ArtifactAccessLoggingD6FCABA3",
@@ -668,34 +683,40 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
             },
             {
               "Action": [
-                "ec2:CancelConversionTask",
-                "ec2:CancelExportTask",
+                "kms:Decrypt",
+                "kms:DescribeKey",
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "OutputBucketEncryptionKey0E569549",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": [
                 "ec2:CreateImage",
-                "ec2:CreateInstanceExportTask",
                 "ec2:CreateTags",
-                "ec2:DescribeConversionTasks",
-                "ec2:DescribeExportTasks",
-                "ec2:DescribeExportImageTasks",
                 "ec2:DescribeImages",
-                "ec2:DescribeInstanceStatus",
-                "ec2:DescribeInstances",
                 "ec2:DescribeSnapshots",
-                "ec2:DescribeTags",
-                "ec2:ExportImage",
-                "ec2:ImportInstance",
-                "ec2:ImportVolume",
-                "ec2:StartInstances",
-                "ec2:StopInstances",
-                "ec2:TerminateInstances",
-                "ec2:ImportImage",
-                "ec2:ImportSnapshot",
-                "ec2:DescribeImportImageTasks",
                 "ec2:DescribeImportSnapshotTasks",
+                "ec2:DescribeTags",
                 "ec2:CancelImportTask",
-                "ec2:RegisterImage",
               ],
               "Effect": "Allow",
               "Resource": "*",
+            },
+            {
+              "Action": "ec2:ImportSnapshot",
+              "Effect": "Allow",
+              "Resource": [
+                "arn:aws:ec2:eu-central-1:12341234:import-snapshot-task/*",
+                "arn:aws:ec2:eu-central-1::snapshot/*",
+              ],
             },
             {
               "Action": [
@@ -730,9 +751,16 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               ],
             },
             {
-              "Action": "ec2:CreateStoreImageTask",
+              "Action": [
+                "ec2:RegisterImage",
+                "ec2:DeregisterImage",
+                "ec2:CreateStoreImageTask",
+              ],
               "Effect": "Allow",
-              "Resource": "arn:aws:ec2:eu-central-1::image/*",
+              "Resource": [
+                "arn:aws:ec2:eu-central-1::image/*",
+                "arn:aws:ec2:eu-central-1::snapshot/snap-*",
+              ],
             },
             {
               "Action": [
@@ -1097,6 +1125,21 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                   ],
                 },
               ],
+            },
+            {
+              "Action": [
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:Decrypt",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "OutputBucketEncryptionKey0E569549",
+                  "Arn",
+                ],
+              },
             },
             {
               "Action": [
@@ -2069,9 +2112,42 @@ def handler(event, context):
       },
       "Type": "AWS::Events::Rule",
     },
+    "OutputBucketEncryptionKey0E569549": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "EnableKeyRotation": true,
+        "KeyPolicy": {
+          "Statement": [
+            {
+              "Action": "kms:*",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::12341234:root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::KMS::Key",
+      "UpdateReplacePolicy": "Delete",
+    },
     "PipelineArtifactKeyEC0C0075": {
       "DeletionPolicy": "Delete",
       "Properties": {
+        "EnableKeyRotation": true,
         "KeyPolicy": {
           "Statement": [
             {
@@ -2330,13 +2406,12 @@ def handler(event, context):
                   "Resource": "*",
                 },
                 {
-                  "Action": [
-                    "ec2:ModifySnapshotAttribute",
-                    "ec2:CopySnapshot",
-                    "ec2:Describe*",
-                    "ec2:RegisterImage",
-                    "ec2:DeregisterImage",
-                  ],
+                  "Action": "ec2:CopySnapshot",
+                  "Effect": "Allow",
+                  "Resource": "arn:aws:ec2:eu-central-1::snapshot/*",
+                },
+                {
+                  "Action": "ec2:DescribeSnapshots",
                   "Effect": "Allow",
                   "Resource": "*",
                 },
@@ -2345,12 +2420,15 @@ def handler(event, context):
                     "kms:CreateGrant",
                     "kms:Decrypt",
                     "kms:DescribeKey",
-                    "kms:Encrypt",
-                    "kms:GenerateDataKey*",
-                    "kms:ReEncrypt*",
+                    "kms:GenerateDataKeyWithoutPlaintext",
                   ],
                   "Effect": "Allow",
-                  "Resource": "arn:aws:kms:eu-central-1:12341234:key/*",
+                  "Resource": {
+                    "Fn::GetAtt": [
+                      "OutputBucketEncryptionKey0E569549",
+                      "Arn",
+                    ],
+                  },
                 },
               ],
               "Version": "2012-10-17",
@@ -2550,6 +2628,21 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
     "DemoArtifactB63FBDE0": {
       "DeletionPolicy": "Retain",
       "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "KMSMasterKeyID": {
+                  "Fn::GetAtt": [
+                    "OutputBucketEncryptionKey0E569549",
+                    "Arn",
+                  ],
+                },
+                "SSEAlgorithm": "aws:kms",
+              },
+            },
+          ],
+        },
         "LoggingConfiguration": {
           "DestinationBucketName": {
             "Ref": "ArtifactAccessLoggingD6FCABA3",
@@ -3060,34 +3153,40 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
             },
             {
               "Action": [
-                "ec2:CancelConversionTask",
-                "ec2:CancelExportTask",
+                "kms:Decrypt",
+                "kms:DescribeKey",
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "OutputBucketEncryptionKey0E569549",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": [
                 "ec2:CreateImage",
-                "ec2:CreateInstanceExportTask",
                 "ec2:CreateTags",
-                "ec2:DescribeConversionTasks",
-                "ec2:DescribeExportTasks",
-                "ec2:DescribeExportImageTasks",
                 "ec2:DescribeImages",
-                "ec2:DescribeInstanceStatus",
-                "ec2:DescribeInstances",
                 "ec2:DescribeSnapshots",
-                "ec2:DescribeTags",
-                "ec2:ExportImage",
-                "ec2:ImportInstance",
-                "ec2:ImportVolume",
-                "ec2:StartInstances",
-                "ec2:StopInstances",
-                "ec2:TerminateInstances",
-                "ec2:ImportImage",
-                "ec2:ImportSnapshot",
-                "ec2:DescribeImportImageTasks",
                 "ec2:DescribeImportSnapshotTasks",
+                "ec2:DescribeTags",
                 "ec2:CancelImportTask",
-                "ec2:RegisterImage",
               ],
               "Effect": "Allow",
               "Resource": "*",
+            },
+            {
+              "Action": "ec2:ImportSnapshot",
+              "Effect": "Allow",
+              "Resource": [
+                "arn:aws:ec2:eu-central-1:12341234:import-snapshot-task/*",
+                "arn:aws:ec2:eu-central-1::snapshot/*",
+              ],
             },
             {
               "Action": [
@@ -3122,9 +3221,16 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               ],
             },
             {
-              "Action": "ec2:CreateStoreImageTask",
+              "Action": [
+                "ec2:RegisterImage",
+                "ec2:DeregisterImage",
+                "ec2:CreateStoreImageTask",
+              ],
               "Effect": "Allow",
-              "Resource": "arn:aws:ec2:eu-central-1::image/*",
+              "Resource": [
+                "arn:aws:ec2:eu-central-1::image/*",
+                "arn:aws:ec2:eu-central-1::snapshot/snap-*",
+              ],
             },
             {
               "Action": [
@@ -3489,6 +3595,21 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                   ],
                 },
               ],
+            },
+            {
+              "Action": [
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:Decrypt",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "OutputBucketEncryptionKey0E569549",
+                  "Arn",
+                ],
+              },
             },
             {
               "Action": [
@@ -4461,9 +4582,42 @@ def handler(event, context):
       },
       "Type": "AWS::Events::Rule",
     },
+    "OutputBucketEncryptionKey0E569549": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "EnableKeyRotation": true,
+        "KeyPolicy": {
+          "Statement": [
+            {
+              "Action": "kms:*",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::12341234:root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::KMS::Key",
+      "UpdateReplacePolicy": "Delete",
+    },
     "PipelineArtifactKeyEC0C0075": {
       "DeletionPolicy": "Delete",
       "Properties": {
+        "EnableKeyRotation": true,
         "KeyPolicy": {
           "Statement": [
             {
@@ -4722,13 +4876,12 @@ def handler(event, context):
                   "Resource": "*",
                 },
                 {
-                  "Action": [
-                    "ec2:ModifySnapshotAttribute",
-                    "ec2:CopySnapshot",
-                    "ec2:Describe*",
-                    "ec2:RegisterImage",
-                    "ec2:DeregisterImage",
-                  ],
+                  "Action": "ec2:CopySnapshot",
+                  "Effect": "Allow",
+                  "Resource": "arn:aws:ec2:eu-central-1::snapshot/*",
+                },
+                {
+                  "Action": "ec2:DescribeSnapshots",
                   "Effect": "Allow",
                   "Resource": "*",
                 },
@@ -4737,12 +4890,15 @@ def handler(event, context):
                     "kms:CreateGrant",
                     "kms:Decrypt",
                     "kms:DescribeKey",
-                    "kms:Encrypt",
-                    "kms:GenerateDataKey*",
-                    "kms:ReEncrypt*",
+                    "kms:GenerateDataKeyWithoutPlaintext",
                   ],
                   "Effect": "Allow",
-                  "Resource": "arn:aws:kms:eu-central-1:12341234:key/*",
+                  "Resource": {
+                    "Fn::GetAtt": [
+                      "OutputBucketEncryptionKey0E569549",
+                      "Arn",
+                    ],
+                  },
                 },
               ],
               "Version": "2012-10-17",
@@ -6615,6 +6771,7 @@ def handler(event, context):
     "PipelineArtifactKeyEC0C0075": {
       "DeletionPolicy": "Delete",
       "Properties": {
+        "EnableKeyRotation": true,
         "KeyPolicy": {
           "Statement": [
             {

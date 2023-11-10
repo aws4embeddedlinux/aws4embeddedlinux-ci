@@ -106,6 +106,7 @@ export class BuildImagePipelineStack extends cdk.Stack {
     });
     const encryptionKey = new kms.Key(this, 'PipelineArtifactKey', {
       removalPolicy: RemovalPolicy.DESTROY,
+      enableKeyRotation: true,
     });
     const artifactBucket = new s3.Bucket(this, 'PipelineArtifacts', {
       versioned: true,

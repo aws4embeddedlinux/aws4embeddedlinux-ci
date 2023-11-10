@@ -87,9 +87,20 @@ export class DemoPipelineStack extends cdk.Stack {
         path: path.join(__dirname, '../assets/create-ec2-ami.sh'),
       });
 
+      const outputBucketEncryptionKey = new kms.Key(
+        this,
+        'OutputBucketEncryptionKey',
+        {
+          removalPolicy: RemovalPolicy.DESTROY,
+          enableKeyRotation: true,
+        }
+      );
+
       outputBucket = new VMImportBucket(this, 'DemoArtifact', {
         versioned: true,
         enforceSSL: true,
+        encryptionKey: outputBucketEncryptionKey,
+        encryptionKeyArn: outputBucketEncryptionKey.keyArn,
         serverAccessLogsBucket: accessLoggingBucket,
       });
       environmentVariables = {
@@ -116,6 +127,7 @@ export class DemoPipelineStack extends cdk.Stack {
 
     const encryptionKey = new kms.Key(this, 'PipelineArtifactKey', {
       removalPolicy: RemovalPolicy.DESTROY,
+      enableKeyRotation: true,
     });
     const artifactBucket = new s3.Bucket(this, 'PipelineArtifacts', {
       versioned: true,
@@ -189,10 +201,19 @@ export class DemoPipelineStack extends cdk.Stack {
       outputBucket.grantReadWrite(project);
       project.addToRolePolicy(this.addVMExportPolicy());
 
-      //Permissions for BackUp to S3
       project.addToRolePolicy(
-        this.addAMIS3BackupPolicy(outputBucket.bucketArn)
-      );
+        new iam.PolicyStatement({
+          actions: ['ec2:ImportSnapshot'],
+          resources: [
+            `arn:aws:ec2:${this.region}:${this.account}:import-snapshot-task/*`,
+            `arn:aws:ec2:${this.region}::snapshot/*`,
+          ],
+        })
+      ),
+        //Permissions for BackUp to S3
+        project.addToRolePolicy(
+          this.addAMIS3BackupPolicy(outputBucket.bucketArn)
+        );
       project.addToRolePolicy(this.addAMIEC2EBSBackupPolicy(this.region));
       project.addToRolePolicy(this.addAMIEBSBackupPolicy(this.region));
       project.addToRolePolicy(this.addAMIBackupPolicy());
@@ -333,31 +354,13 @@ def handler(event, context):
   private addVMExportPolicy(): iam.PolicyStatement {
     return new iam.PolicyStatement({
       actions: [
-        'ec2:CancelConversionTask',
-        'ec2:CancelExportTask',
         'ec2:CreateImage',
-        'ec2:CreateInstanceExportTask',
         'ec2:CreateTags',
-        'ec2:DescribeConversionTasks',
-        'ec2:DescribeExportTasks',
-        'ec2:DescribeExportImageTasks',
         'ec2:DescribeImages',
-        'ec2:DescribeInstanceStatus',
-        'ec2:DescribeInstances',
         'ec2:DescribeSnapshots',
-        'ec2:DescribeTags',
-        'ec2:ExportImage',
-        'ec2:ImportInstance',
-        'ec2:ImportVolume',
-        'ec2:StartInstances',
-        'ec2:StopInstances',
-        'ec2:TerminateInstances',
-        'ec2:ImportImage',
-        'ec2:ImportSnapshot',
-        'ec2:DescribeImportImageTasks',
         'ec2:DescribeImportSnapshotTasks',
+        'ec2:DescribeTags',
         'ec2:CancelImportTask',
-        'ec2:RegisterImage',
       ],
       resources: ['*'],
     });
@@ -387,6 +390,7 @@ def handler(event, context):
       resources: [`arn:aws:ec2:${region}::snapshot/*`],
     });
   }
+
   private addAMIBackupPolicy(): iam.PolicyStatement {
     return new iam.PolicyStatement({
       actions: ['ec2:DescribeStoreImageTasks', 'ec2:GetEbsEncryptionByDefault'],
@@ -396,8 +400,15 @@ def handler(event, context):
 
   private addAMIEC2EBSBackupPolicy(region: string): iam.PolicyStatement {
     return new iam.PolicyStatement({
-      actions: ['ec2:CreateStoreImageTask'],
-      resources: [`arn:aws:ec2:${region}::image/*`],
+      actions: [
+        'ec2:RegisterImage',
+        'ec2:DeregisterImage',
+        'ec2:CreateStoreImageTask',
+      ],
+      resources: [
+        `arn:aws:ec2:${region}::image/*`,
+        `arn:aws:ec2:${region}::snapshot/snap-*`,
+      ],
     });
   }
 }
