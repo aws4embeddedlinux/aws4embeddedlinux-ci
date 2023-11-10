@@ -358,6 +358,7 @@ def handler(event, context):
         'ec2:CreateTags',
         'ec2:DescribeImages',
         'ec2:DescribeSnapshots',
+        'ec2:DescribeImportSnapshotTasks',
         'ec2:DescribeTags',
         'ec2:CancelImportTask',
       ],
