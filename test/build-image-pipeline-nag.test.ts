@@ -38,7 +38,7 @@ describe('BuildImagePipelineStack cdk-nag AwsSolutions Pack', () => {
       {
         id: 'AwsSolutions-IAM5',
         reason: 'TODO: Re-evaluate "*" per resources.',
-      }
+      },
     ]);
     // WHEN
     Aspects.of(stack).add(new AwsSolutionsChecks({ verbose: true }));

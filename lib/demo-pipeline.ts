@@ -200,6 +200,7 @@ export class DemoPipelineStack extends cdk.Stack {
     if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
       outputBucket.grantReadWrite(project);
       project.addToRolePolicy(this.addVMExportPolicy());
+      project.addToRolePolicy(this.addRegistrationPolicy());
 
       //Permissions for BackUp to S3
       project.addToRolePolicy(
@@ -346,16 +347,9 @@ def handler(event, context):
     return new iam.PolicyStatement({
       actions: [
         'ec2:CancelConversionTask', //*
-        'ec2:CancelExportTask' /**
-
-                 EC2.CancelExportTask    Cancels an active export task.    ec2:CancelExportTask    arn:aws:ec2:us-east-1:123456789012:export-image-task/for the property ExportTaskId get first match of the regex pattern /^(export-ami-.+)$/g
-                 arn:aws:ec2:us-east-1:123456789012:export-instance-task/for the property ExportTaskId get first match of the regex pattern /^(export-i-.+)$/g
-                 **/,
-        'ec2:CreateImage', //arn:aws:ec2:us-east-1::image/ImageId
-        //arn:aws:ec2:us-east-1:123456789012:instance/InstanceId
-        // arn:aws:ec2:us-east-1::snapshot/SnapshotId
-        'ec2:CreateInstanceExportTask', //arn:aws:ec2:us-east-1:123456789012:export-instance-task/*
-        // arn:aws:ec2:us-east-1:123456789012:instance/InstanceId
+        'ec2:CancelExportTask',
+        'ec2:CreateImage',
+        'ec2:CreateInstanceExportTask',
         'ec2:CreateTags', //*
         'ec2:DescribeConversionTasks', //*
         'ec2:DescribeExportTasks', // *
@@ -365,25 +359,26 @@ def handler(event, context):
         'ec2:DescribeInstances', //*
         'ec2:DescribeSnapshots', //*
         'ec2:DescribeTags', //*
-        'ec2:ExportImage', //arn:aws:ec2:us-east-1:123456789012:export-image-task/ExportImageTaskId
-        //arn:aws:ec2:us-east-1::image/ImageId
-        'ec2:ImportInstance', //arn:aws:ec2:us-east-1:123456789012:instance/InstanceId
-        // arn:aws:ec2:us-east-1:123456789012:volume/VolumeId
-        //arn:aws:ec2:us-east-1:123456789012:security-group/LaunchSpecification.GroupIds[]
-        //arn:aws:ec2:us-east-1:123456789012:subnet/LaunchSpecification.SubnetId
-        'ec2:ImportVolume', //arn:aws:ec2:us-east-1:123456789012:volume/VolumeId
-        'ec2:ImportImage', // 	arn:aws:ec2:us-east-1::image/ImageId
-        // arn:aws:ec2:us-east-1:123456789012:import-image-task/ImportImageTaskId
-        //arn:aws:ec2:us-east-1::snapshot/DiskContainers[].SnapshotId
-        'ec2:ImportSnapshot', // 	arn:aws:ec2:us-east-1:123456789012:import-snapshot-task/ImportSnapshotTaskId
-        // arn:aws:ec2:us-east-1::snapshot/*
+        'ec2:ExportImage',
+        'ec2:ImportInstance',
+        'ec2:ImportVolume',
+        'ec2:ImportImage',
+        'ec2:ImportSnapshot',
         'ec2:DescribeImportImageTasks', //*
-        'ec2:RegisterImage', //resources: [`arn:aws:ec2:${this.stack.region}::image/*`, `arn:aws:ec2:${this.stack.region}::snapshot/*`],
         'ec2:DescribeImportSnapshotTasks', //*
-        'ec2:CancelImportTask', //arn:aws:ec2:us-east-1:123456789012:import-image-task/for the property ExportTaskId get first match of the regex pattern /^(export-ami-.+)$/g
-        // arn:aws:ec2:us-east-1:123456789012:import-snapshot-task/for the property ExportTaskId get first match of the regex pattern /^(export-i-.+)$/g
+        'ec2:CancelImportTask',
       ],
       resources: ['*'],
+    });
+  }
+
+  private addRegistrationPolicy(): iam.PolicyStatement {
+    return new iam.PolicyStatement({
+      actions: ['ec2:RegisterImage', 'ec2:DeregisterImage'],
+      resources: [
+        `arn:aws:ec2:${this.region}::image/*`,
+        `arn:aws:ec2:${this.region}::snapshot/*`,
+      ],
     });
   }
 
@@ -399,7 +394,6 @@ def handler(event, context):
       resources: [artifactBucketArn, `${artifactBucketArn}/*`],
     });
   }
-
   private addAMIEBSBackupPolicy(region: string): iam.PolicyStatement {
     return new iam.PolicyStatement({
       actions: [

@@ -718,12 +718,22 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                 "ec2:ImportImage",
                 "ec2:ImportSnapshot",
                 "ec2:DescribeImportImageTasks",
-                "ec2:RegisterImage",
                 "ec2:DescribeImportSnapshotTasks",
                 "ec2:CancelImportTask",
               ],
               "Effect": "Allow",
               "Resource": "*",
+            },
+            {
+              "Action": [
+                "ec2:RegisterImage",
+                "ec2:DeregisterImage",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                "arn:aws:ec2:eu-central-1::image/*",
+                "arn:aws:ec2:eu-central-1::snapshot/*",
+              ],
             },
             {
               "Action": [
@@ -2406,26 +2416,12 @@ def handler(event, context):
                   "Resource": "*",
                 },
                 {
-                  "Action": [
-                    "ec2:ModifySnapshotAttribute",
-                    "ec2:CopySnapshot",
-                  ],
+                  "Action": "ec2:CopySnapshot",
                   "Effect": "Allow",
                   "Resource": "arn:aws:ec2:eu-central-1::snapshot/*",
                 },
                 {
-                  "Action": [
-                    "ec2:RegisterImage",
-                    "ec2:DeregisterImage",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": [
-                    "arn:aws:ec2:eu-central-1::image/*",
-                    "arn:aws:ec2:eu-central-1::snapshot/*",
-                  ],
-                },
-                {
-                  "Action": "ec2:Describe*",
+                  "Action": "ec2:DescribeSnapshots",
                   "Effect": "Allow",
                   "Resource": "*",
                 },
@@ -2434,9 +2430,7 @@ def handler(event, context):
                     "kms:CreateGrant",
                     "kms:Decrypt",
                     "kms:DescribeKey",
-                    "kms:Encrypt",
-                    "kms:GenerateDataKey*",
-                    "kms:ReEncrypt*",
+                    "kms:GenerateDataKeyWithoutPlaintext",
                   ],
                   "Effect": "Allow",
                   "Resource": {
@@ -3204,12 +3198,22 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                 "ec2:ImportImage",
                 "ec2:ImportSnapshot",
                 "ec2:DescribeImportImageTasks",
-                "ec2:RegisterImage",
                 "ec2:DescribeImportSnapshotTasks",
                 "ec2:CancelImportTask",
               ],
               "Effect": "Allow",
               "Resource": "*",
+            },
+            {
+              "Action": [
+                "ec2:RegisterImage",
+                "ec2:DeregisterImage",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                "arn:aws:ec2:eu-central-1::image/*",
+                "arn:aws:ec2:eu-central-1::snapshot/*",
+              ],
             },
             {
               "Action": [
@@ -4892,26 +4896,12 @@ def handler(event, context):
                   "Resource": "*",
                 },
                 {
-                  "Action": [
-                    "ec2:ModifySnapshotAttribute",
-                    "ec2:CopySnapshot",
-                  ],
+                  "Action": "ec2:CopySnapshot",
                   "Effect": "Allow",
                   "Resource": "arn:aws:ec2:eu-central-1::snapshot/*",
                 },
                 {
-                  "Action": [
-                    "ec2:RegisterImage",
-                    "ec2:DeregisterImage",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": [
-                    "arn:aws:ec2:eu-central-1::image/*",
-                    "arn:aws:ec2:eu-central-1::snapshot/*",
-                  ],
-                },
-                {
-                  "Action": "ec2:Describe*",
+                  "Action": "ec2:DescribeSnapshots",
                   "Effect": "Allow",
                   "Resource": "*",
                 },
@@ -4920,9 +4910,7 @@ def handler(event, context):
                     "kms:CreateGrant",
                     "kms:Decrypt",
                     "kms:DescribeKey",
-                    "kms:Encrypt",
-                    "kms:GenerateDataKey*",
-                    "kms:ReEncrypt*",
+                    "kms:GenerateDataKeyWithoutPlaintext",
                   ],
                   "Effect": "Allow",
                   "Resource": {

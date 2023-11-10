@@ -38,18 +38,11 @@ export class VMImportBucket extends s3.Bucket {
           },
         }),
         new iam.PolicyStatement({
-          actions: ['ec2:ModifySnapshotAttribute', 'ec2:CopySnapshot'],
+          actions: ['ec2:CopySnapshot'],
           resources: [`arn:aws:ec2:${this.stack.region}::snapshot/*`],
         }),
         new iam.PolicyStatement({
-          actions: ['ec2:RegisterImage', 'ec2:DeregisterImage'],
-          resources: [
-            `arn:aws:ec2:${this.stack.region}::image/*`,
-            `arn:aws:ec2:${this.stack.region}::snapshot/*`,
-          ],
-        }),
-        new iam.PolicyStatement({
-          actions: ['ec2:Describe*'],
+          actions: ['ec2:DescribeSnapshots'],
           resources: ['*'],
         }),
         new iam.PolicyStatement({
@@ -57,9 +50,7 @@ export class VMImportBucket extends s3.Bucket {
             'kms:CreateGrant',
             'kms:Decrypt',
             'kms:DescribeKey',
-            'kms:Encrypt',
-            'kms:GenerateDataKey*',
-            'kms:ReEncrypt*',
+            'kms:GenerateDataKeyWithoutPlaintext',
           ],
           resources: [props.encryptionKeyArn],
         }),

@@ -43,7 +43,7 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
       {
         id: 'AwsSolutions-IAM4',
         reason: 'TODO: Re-evaluate managed policies per resources.',
-      }
+      },
     ]);
     // WHEN
     Aspects.of(stack).add(new AwsSolutionsChecks({ verbose: true }));
