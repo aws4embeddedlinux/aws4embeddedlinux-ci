@@ -200,12 +200,20 @@ export class DemoPipelineStack extends cdk.Stack {
     if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
       outputBucket.grantReadWrite(project);
       project.addToRolePolicy(this.addVMExportPolicy());
-      project.addToRolePolicy(this.addRegistrationPolicy());
 
-      //Permissions for BackUp to S3
       project.addToRolePolicy(
-        this.addAMIS3BackupPolicy(outputBucket.bucketArn)
-      );
+        new iam.PolicyStatement({
+          actions: ['ec2:ImportSnapshot'],
+          resources: [
+            `arn:aws:ec2:${this.region}:${this.account}:import-snapshot-task/*`,
+            `arn:aws:ec2:${this.region}::snapshot/*`,
+          ],
+        })
+      ),
+        //Permissions for BackUp to S3
+        project.addToRolePolicy(
+          this.addAMIS3BackupPolicy(outputBucket.bucketArn)
+        );
       project.addToRolePolicy(this.addAMIEC2EBSBackupPolicy(this.region));
       project.addToRolePolicy(this.addAMIEBSBackupPolicy(this.region));
       project.addToRolePolicy(this.addAMIBackupPolicy());
@@ -346,39 +354,14 @@ def handler(event, context):
   private addVMExportPolicy(): iam.PolicyStatement {
     return new iam.PolicyStatement({
       actions: [
-        'ec2:CancelConversionTask', //*
-        'ec2:CancelExportTask',
         'ec2:CreateImage',
-        'ec2:CreateInstanceExportTask',
-        'ec2:CreateTags', //*
-        'ec2:DescribeConversionTasks', //*
-        'ec2:DescribeExportTasks', // *
-        'ec2:DescribeExportImageTasks', //*
-        'ec2:DescribeImages', //*
-        'ec2:DescribeInstanceStatus', //*
-        'ec2:DescribeInstances', //*
-        'ec2:DescribeSnapshots', //*
-        'ec2:DescribeTags', //*
-        'ec2:ExportImage',
-        'ec2:ImportInstance',
-        'ec2:ImportVolume',
-        'ec2:ImportImage',
-        'ec2:ImportSnapshot',
-        'ec2:DescribeImportImageTasks', //*
-        'ec2:DescribeImportSnapshotTasks', //*
+        'ec2:CreateTags',
+        'ec2:DescribeImages',
+        'ec2:DescribeSnapshots',
+        'ec2:DescribeTags',
         'ec2:CancelImportTask',
       ],
       resources: ['*'],
-    });
-  }
-
-  private addRegistrationPolicy(): iam.PolicyStatement {
-    return new iam.PolicyStatement({
-      actions: ['ec2:RegisterImage', 'ec2:DeregisterImage'],
-      resources: [
-        `arn:aws:ec2:${this.region}::image/*`,
-        `arn:aws:ec2:${this.region}::snapshot/*`,
-      ],
     });
   }
 
@@ -416,7 +399,11 @@ def handler(event, context):
 
   private addAMIEC2EBSBackupPolicy(region: string): iam.PolicyStatement {
     return new iam.PolicyStatement({
-      actions: ['ec2:CreateStoreImageTask'],
+      actions: [
+        'ec2:RegisterImage',
+        'ec2:DeregisterImage',
+        'ec2:CreateStoreImageTask',
+      ],
       resources: [`arn:aws:ec2:${region}::image/*`],
     });
   }
