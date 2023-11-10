@@ -405,7 +405,10 @@ def handler(event, context):
         'ec2:DeregisterImage',
         'ec2:CreateStoreImageTask',
       ],
-      resources: [`arn:aws:ec2:${region}::image/*`],
+      resources: [
+        `arn:aws:ec2:${region}::image/*`,
+        `arn:aws:ec2:${region}::snapshot/snap-*`,
+      ],
     });
   }
 }

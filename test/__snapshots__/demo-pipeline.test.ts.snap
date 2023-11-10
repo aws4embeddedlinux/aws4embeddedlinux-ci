@@ -757,7 +757,10 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                 "ec2:CreateStoreImageTask",
               ],
               "Effect": "Allow",
-              "Resource": "arn:aws:ec2:eu-central-1::image/*",
+              "Resource": [
+                "arn:aws:ec2:eu-central-1::image/*",
+                "arn:aws:ec2:eu-central-1::snapshot/snap-*",
+              ],
             },
             {
               "Action": [
@@ -3224,7 +3227,10 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                 "ec2:CreateStoreImageTask",
               ],
               "Effect": "Allow",
-              "Resource": "arn:aws:ec2:eu-central-1::image/*",
+              "Resource": [
+                "arn:aws:ec2:eu-central-1::image/*",
+                "arn:aws:ec2:eu-central-1::snapshot/snap-*",
+              ],
             },
             {
               "Action": [

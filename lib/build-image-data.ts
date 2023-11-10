@@ -70,9 +70,6 @@ export class BuildImageDataStack extends cdk.Stack {
       }
     );
 
-    const region = cdk.Stack.of(this).region;
-    const account = cdk.Stack.of(this).account;
-
     dataBucketDeploymentRole.addToPolicy(
       new iam.PolicyStatement({
         actions: ['kms:Decrypt'],
