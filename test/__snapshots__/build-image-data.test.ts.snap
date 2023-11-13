@@ -58,18 +58,23 @@ exports[`Build Image Data Snapshot 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": [
+        "Policies": [
           {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
+            "PolicyDocument": {
+              "Statement": [
                 {
-                  "Ref": "AWS::Partition",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": " /aws/lambda/BuildImageData-*",
                 },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
               ],
-            ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "cwPolicy",
           },
         ],
       },
