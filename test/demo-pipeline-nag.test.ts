@@ -27,6 +27,7 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
       vpc,
       projectKind: ProjectKind.PokyAmi,
     });
+
     NagSuppressions.addStackSuppressions(stack, [
       {
         id: 'CdkNagValidationFailure',
@@ -36,15 +37,102 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
         id: 'AwsSolutions-CB3',
         reason: 'TODO: Verify CodeBuild Privilege mode is required here.',
       },
-      {
-        id: 'AwsSolutions-IAM5',
-        reason: 'TODO: Re-evaluate "*" per resources.',
-      },
+
       {
         id: 'AwsSolutions-IAM4',
         reason: 'TODO: Re-evaluate managed policies per resources.',
       },
     ]);
+
+    NagSuppressions.addResourceSuppressionsByPath(
+      stack,
+      '/MyTestStack/VMImportRole/Resource',
+      [
+        {
+          id: 'AwsSolutions-IAM5',
+          reason: 'Read permissions needed on bucket.',
+          appliesTo: [
+            {
+              regex: '/Resource::<DemoArtifactB63FBDE0.Arn>/\\*$/g',
+            },
+            {
+              regex: '/Resource::arn:aws:ec2:eu-central-1::snapshot/\\*$/g',
+            },
+            {
+              regex: '/Resource::\\*$/g',
+            },
+          ],
+        },
+      ]
+    );
+
+    NagSuppressions.addResourceSuppressionsByPath(
+      stack,
+      '/MyTestStack/DemoBuildProject/Role/DefaultPolicy/Resource',
+      [
+        {
+          id: 'AwsSolutions-IAM5',
+          reason:
+            'This is a default CDK created role, with default policy permissions.',
+        },
+      ]
+    );
+    NagSuppressions.addResourceSuppressionsByPath(
+      stack,
+      '/MyTestStack/DemoBuildProject/PolicyDocument/Resource',
+      [
+        {
+          id: 'AwsSolutions-IAM5',
+          reason:
+            'This is a default CDK created policy, with default policy permissions.',
+        },
+      ]
+    );
+    NagSuppressions.addResourceSuppressionsByPath(
+      stack,
+      '/MyTestStack/DemoPipeline/Role/DefaultPolicy/Resource',
+      [
+        {
+          id: 'AwsSolutions-IAM5',
+          reason:
+            'This is a default CDK created policy, with default policy permissions.',
+        },
+      ]
+    );
+    NagSuppressions.addResourceSuppressionsByPath(
+      stack,
+      '/MyTestStack/DemoPipeline/Source/Source/CodePipelineActionRole/DefaultPolicy/Resource',
+      [
+        {
+          id: 'AwsSolutions-IAM5',
+          reason:
+            'This is a default CDK created policy, with default policy permissions.',
+        },
+      ]
+    );
+
+    NagSuppressions.addResourceSuppressionsByPath(
+      stack,
+      '/MyTestStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource',
+      [
+        {
+          id: 'AwsSolutions-IAM5',
+          reason:
+            'This is a default CDK created policy, with default policy permissions.',
+        },
+      ]
+    );
+    NagSuppressions.addResourceSuppressionsByPath(
+      stack,
+      '/MyTestStack/DemoPipeline/Artifact/Demo-Artifact/CodePipelineActionRole/DefaultPolicy/Resource',
+      [
+        {
+          id: 'AwsSolutions-IAM5',
+          reason:
+            'This is a default CDK created policy, with default policy permissions.',
+        },
+      ]
+    );
     // WHEN
     Aspects.of(stack).add(new AwsSolutionsChecks({ verbose: true }));
   });
