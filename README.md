@@ -24,7 +24,11 @@ Be sure to:
 
 ## Security
 
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+See [SECURITY](SECURITY.md) for more information.
+
+## Contributing
+
+See [CONTRIBUTING](CONTRIBUTING.md) for more information.
 
 ## License
 
