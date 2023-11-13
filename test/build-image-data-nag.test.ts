@@ -49,7 +49,8 @@ describe('BuildImageDataStack cdk-nag AwsSolutions Pack', () => {
       [
         {
           id: 'AwsSolutions-IAM5',
-          reason: '/aws/lambda/BuildImageData-* is needed here.',
+          reason:
+            '/aws/lambda/BuildImageData-CustomCDKBucketDeployment* is needed here.',
         },
       ]
     );

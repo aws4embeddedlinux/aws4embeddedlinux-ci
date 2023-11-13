@@ -66,7 +66,9 @@ export class BuildImageDataStack extends cdk.Stack {
             'logs:CreateLogStream',
             'logs:PutLogEvents',
           ],
-          resources: [' /aws/lambda/BuildImageData-*'],
+          resources: [
+            `arn:aws:logs:${this.region}:${this.account}:log-group:/aws/lambda/BuildImageData-CustomCDKBucketDeployment*"`,
+          ],
         }),
       ],
     });

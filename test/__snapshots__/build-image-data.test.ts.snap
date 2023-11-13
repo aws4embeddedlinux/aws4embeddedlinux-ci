@@ -69,7 +69,7 @@ exports[`Build Image Data Snapshot 1`] = `
                     "logs:PutLogEvents",
                   ],
                   "Effect": "Allow",
-                  "Resource": " /aws/lambda/BuildImageData-*",
+                  "Resource": "arn:aws:logs:eu-central-1:111111111111:log-group:/aws/lambda/BuildImageData-CustomCDKBucketDeployment*"",
                 },
               ],
               "Version": "2012-10-17",
