@@ -18,6 +18,8 @@ export enum ProjectKind {
   Kas = 'kas',
   /** Build an Renesas image */
   Renesas = 'renesas',
+  /** Build an IMX image using NXP layers. */
+  NxpImx = 'nxp-imx',
 }
 
 export interface SourceRepoProps extends cdk.StackProps {
