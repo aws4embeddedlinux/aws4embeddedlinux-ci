@@ -33,8 +33,8 @@ export class BuildImageDataStack extends cdk.Stack {
   /**
    * Create a bucket and S3 deployment to this bucket.
    *
-   * @param bucketName The name of the bucket. Must be globally unique.
-   * @param env Environment passed to the stack.
+   * @param bucketName - The name of the bucket. Must be globally unique.
+   * @param env - Environment passed to the stack.
    */
   private createDeploymentBucket(bucketName: string): s3.IBucket {
     const accessLoggingBucket = new s3.Bucket(this, 'LoggingBucket', {
