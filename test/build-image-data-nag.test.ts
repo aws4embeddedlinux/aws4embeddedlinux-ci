@@ -20,17 +20,6 @@ describe('BuildImageDataStack cdk-nag AwsSolutions Pack', () => {
     };
     stack = new BuildImageDataStack(app, 'MyTestStack', props);
 
-    NagSuppressions.addStackSuppressions(stack, [
-      {
-        id: 'AwsSolutions-IAM4',
-        reason: 'TODO: Re-evaluate managed policies per resources.',
-      },
-      {
-        id: 'AwsSolutions-IAM5',
-        reason: 'TODO: Re-evaluate "*" per resources.',
-      },
-    ]);
-
     NagSuppressions.addResourceSuppressionsByPath(
       stack,
       '/MyTestStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/Resource',
@@ -38,6 +27,30 @@ describe('BuildImageDataStack cdk-nag AwsSolutions Pack', () => {
         {
           id: 'AwsSolutions-L1',
           reason: 'This Lambda function is 3rd Party (from CDK libs)',
+        },
+      ]
+    );
+
+    NagSuppressions.addResourceSuppressionsByPath(
+      stack,
+      'MyTestStack/BuildImageBucketRole/DefaultPolicy/Resource',
+      [
+        {
+          id: 'AwsSolutions-IAM5',
+          reason:
+            'Because these are the default permissions assigned to a CDK default created role.',
+        },
+      ]
+    );
+
+    NagSuppressions.addResourceSuppressionsByPath(
+      stack,
+      '/MyTestStack/BuildImageBucketRole/Resource',
+      [
+        {
+          id: 'AwsSolutions-IAM5',
+          reason:
+            '/aws/lambda/BuildImageData-CustomCDKBucketDeployment* is needed here.',
         },
       ]
     );

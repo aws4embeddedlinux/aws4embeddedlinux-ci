@@ -35,11 +35,43 @@ describe('BuildImagePipelineStack cdk-nag AwsSolutions Pack', () => {
         id: 'AwsSolutions-CB3',
         reason: 'Privilege Mode Required To Build Docker Containers.',
       },
-      {
-        id: 'AwsSolutions-IAM5',
-        reason: 'TODO: Re-evaluate "*" per resources.',
-      },
     ]);
+
+    NagSuppressions.addResourceSuppressionsByPath(
+      repoStack,
+      '/RepoStack/MyTestStack/BuildImagePipeline/Role/DefaultPolicy/Resource',
+      [
+        {
+          id: 'AwsSolutions-IAM5',
+          reason:
+            'Because these are the default permissions assigned to a CDK default created role.',
+        },
+      ]
+    );
+    NagSuppressions.addResourceSuppressionsByPath(
+      repoStack,
+      '/RepoStack/MyTestStack/BuildImagePipeline/Source/Build-Image-Source/CodePipelineActionRole/DefaultPolicy/Resource',
+      [
+        {
+          id: 'AwsSolutions-IAM5',
+          reason:
+            'Because these are the default permissions assigned to a CDK default created role.',
+        },
+      ]
+    );
+
+    NagSuppressions.addResourceSuppressionsByPath(
+      repoStack,
+      '/RepoStack/MyTestStack/BuildImageProject/Role/DefaultPolicy/Resource',
+      [
+        {
+          id: 'AwsSolutions-IAM5',
+          reason:
+            'Because these are the default permissions assigned to a CDK default created role.',
+        },
+      ]
+    );
+
     // WHEN
     Aspects.of(stack).add(new AwsSolutionsChecks({ verbose: true }));
   });
@@ -59,7 +91,6 @@ describe('BuildImagePipelineStack cdk-nag AwsSolutions Pack', () => {
       '*',
       Match.stringLikeRegexp('AwsSolutions-.*')
     );
-
     expect(errors).toHaveLength(0);
   });
 });

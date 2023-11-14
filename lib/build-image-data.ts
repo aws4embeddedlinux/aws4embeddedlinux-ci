@@ -7,6 +7,7 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import * as path from 'path';
 import * as kms from 'aws-cdk-lib/aws-kms';
 import { RemovalPolicy } from 'aws-cdk-lib';
+import { PolicyDocument } from 'aws-cdk-lib/aws-iam';
 
 /**
  * Select options for the BuildImageDataStack.
@@ -32,8 +33,8 @@ export class BuildImageDataStack extends cdk.Stack {
   /**
    * Create a bucket and S3 deployment to this bucket.
    *
-   * @param bucketName The name of the bucket. Must be globally unique.
-   * @param env Environment passed to the stack.
+   * @param bucketName - The name of the bucket. Must be globally unique.
+   * @param env - Environment passed to the stack.
    */
   private createDeploymentBucket(bucketName: string): s3.IBucket {
     const accessLoggingBucket = new s3.Bucket(this, 'LoggingBucket', {
@@ -57,16 +58,27 @@ export class BuildImageDataStack extends cdk.Stack {
       serverAccessLogsBucket: accessLoggingBucket,
     });
 
+    const cwPolicy = new iam.PolicyDocument({
+      statements: [
+        new iam.PolicyStatement({
+          actions: [
+            'logs:CreateLogGroup',
+            'logs:CreateLogStream',
+            'logs:PutLogEvents',
+          ],
+          resources: [
+            `arn:aws:logs:${this.region}:${this.account}:log-group:/aws/lambda/BuildImageData-CustomCDKBucketDeployment*"`,
+          ],
+        }),
+      ],
+    });
+
     const dataBucketDeploymentRole = new iam.Role(
       this,
       'BuildImageBucketRole',
       {
         assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
-        managedPolicies: [
-          iam.ManagedPolicy.fromAwsManagedPolicyName(
-            'service-role/AWSLambdaBasicExecutionRole'
-          ),
-        ],
+        inlinePolicies: { cwPolicy },
       }
     );
 
