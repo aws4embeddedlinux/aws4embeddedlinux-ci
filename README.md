@@ -23,10 +23,10 @@ See [SECURITY](SECURITY.md) for more information about reporting issues with thi
 ### Git Credentials and Build Time Secrets
 [AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html) is the preferred method of adding secrets to your pipeline. This service provides a structured means of access and avoids pitfalls with putting secrets in environment variables, source repos, etc.
 
-1. Create a Secret in Secrets Manager and add your secret value.
-1. Grant Permission access permissions to the CodeBuild pipeline project.
-11. Find the IAM role for the CodeBuild Project in the CodeBuild console page under the "Build Details". This is also called the "Service Role".
-11. In the IAM console page, add a new policy, replacing \<Secret ARN> with the ARN of the secret created.
+1. Create a _Secret_ in Secrets Manager and add your secret value.
+1. Grant permissions to the CodeBuild pipeline project.
+   1. Find the IAM role for the CodeBuild Project in the CodeBuild console page under the "Build Details". This is also called the "Service Role".
+   1. In the IAM console page, add a new policy, replacing \<Secret ARN> with the ARN of the secret created.
 ```json
 {
     "Version": "2012-10-17",
