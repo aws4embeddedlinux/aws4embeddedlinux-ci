@@ -21,7 +21,7 @@ This will link through the system `node_modules` install. When using a system no
 See [SECURITY](SECURITY.md) for more information about reporting issues with this project.
 
 ### Git Credentials and Build Time Secrets
-[AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html) is the preferred method of adding secrets to your pipeline. This service provides a structured means of access and avoids pitfalls with putting secrets in environment variables, source repos, etc. 
+[AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html) is the preferred method of adding secrets to your pipeline. This service provides a structured means of access and avoids pitfalls with putting secrets in environment variables, source repos, etc.
 
 1. Create a Secret in Secrets Manager and add your secret value.
 1. Grant Permission access permissions to the CodeBuild pipeline project.
