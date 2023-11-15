@@ -21,41 +21,29 @@ This will link through the system `node_modules` install. When using a system no
 See [SECURITY](SECURITY.md) for more information about reporting issues with this project.
 
 ### Git Credentials and Build Time Secrets
-If you need to access secrets like Git credentials in your CodeBuild Project you should access them via the AWS Secrets Manager, instead of adding them as plain text.
+[AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html) is the preferred method of adding secrets to your pipeline. This service provides a structured means of access and avoids pitfalls with putting secrets in environment variables, source repos, etc. 
 
-1. In console, go to AWS Secretes Manager and create a secret
-    - select other type of secret
-    - after successful generation go to secret details and copy Secret ARN
-2. Go to AWS CodeCommit and modify the build.buildspec.yml of your project.
-    - add this to access the secret stored in AWS Secrets Manager, replace \<Secret ARN> by the copied ARN in step 1.
+1. Create a Secret in Secrets Manager and add your secret value.
+1. Grant Permission access permissions to the CodeBuild pipeline project.
+11. Find the IAM role for the CodeBuild Project in the CodeBuild console page under the "Build Details". This is also called the "Service Role".
+11. In the IAM console page, add a new policy, replacing \<Secret ARN> with the ARN of the secret created.
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [ {
+        "Effect": "Allow",
+        "Action": "secretsmanager:GetSecretValue",
+        "Resource": "<Secret ARN>"
+    } ]
+}
+```
 
-        ```
-        env:
-          secrets-manager:
-            SECRET_VALUE: "<Secret ARN>"
-        phases:
-          build:
-            commands:
-              - echo $SECRET_VALUE
-        ```
-
-    - run the build, it will fail AccessDeniedException and show you which IAM user you have to give permissions in the next step
-
-3. Add IAM permissions to allow CodeBuild access the secret
-
-    - find role, add policy, replace \<Secret ARN> by the copied ARN in step 1.
-        ```
-            {
-            "Version": "2012-10-17",
-            "Statement": [
-            {
-            "Effect": "Allow",
-            "Action": "secretsmanager:GetSecretValue",
-            "Resource": "<Secret ARN>"
-            }
-            ]
-            }
-        ```
+The secret can then be used in the CodeBuild Project by adding it to the BuildSpec. See the [CodeBuild Documentation](https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html) for more details.
+```yaml
+env:
+    secrets-manager:
+        SECRET_VALUE: "<Secret ARN>"
+```
 
 ### CVE Checking With Yocto
 
