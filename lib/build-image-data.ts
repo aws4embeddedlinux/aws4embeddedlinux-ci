@@ -7,7 +7,6 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import * as path from 'path';
 import * as kms from 'aws-cdk-lib/aws-kms';
 import { RemovalPolicy } from 'aws-cdk-lib';
-import { PolicyDocument } from 'aws-cdk-lib/aws-iam';
 
 /**
  * Select options for the BuildImageDataStack.
