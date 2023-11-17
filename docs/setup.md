@@ -11,10 +11,11 @@ mkdir my-project
 cd my-project
 cdk init app --language typescript
 ```
-1. Add the cdk library with `npm install aws4embeddedlinux/aws4embeddedlinux-ci`
-1. Create your application using the library. Refer to the [Library Documentation](TODO) and the [Examples](github.com/aws4embeddedlinux/aws4embeddedlinux-ci-examples) for more details.
-1. Deploy your application using `cdk deploy`.
-
+2. Add the cdk library with `npm install aws4embeddedlinux/aws4embeddedlinux-ci`
+3. Create your application using the library. Refer to the [Library Documentation](TODO) and the [Examples](github.com/aws4embeddedlinux/aws4embeddedlinux-ci-examples) for more details.
+4. Deploy your application using `cdk deploy`.
+5. After the application is deployed, the 'Build Image' Pipeline needs to be run. This will create an Ubuntu based container for building Yocto. This container is used by the other pipelines. If the other pipelines are run before this container is created and pushed to [ECR](https://aws.amazon.com/ecr/), they will fail. This Build Image Pipeline will run weekly by default to keep this container patched.
+6. Now the application pipeline is able to be run. This will push contents of the Yocto deploy directory into S3.
 
 ## Examples
 
