@@ -48,7 +48,7 @@ export class BuildImagePipelineStack extends cdk.Stack {
     const sourceAction = new codepipeline_actions.S3SourceAction({
       actionName: 'Build-Image-Source',
       bucket: props.dataBucket,
-      bucketKey: 'data.zip', // TODO(glimsdal): Parameterize.
+      bucketKey: 'data.zip',
       output: sourceOutput,
     });
 

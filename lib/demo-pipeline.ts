@@ -340,7 +340,6 @@ def handler(event, context):
   ): string {
     const fs = new efs.FileSystem(this, `DemoPipeline${name}Filesystem`, {
       vpc,
-      // TODO(nateglims): Reconsider this when development is slowing down.
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
     fs.connections.allowFrom(securityGroup, Port.tcp(2049));
