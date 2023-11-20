@@ -35,7 +35,7 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
       },
       {
         id: 'AwsSolutions-CB3',
-        reason: 'TODO: Verify CodeBuild Privilege mode is required here.',
+        reason: 'CodeBuild Privilege mode is required for this pipeline.',
       },
 
       {
