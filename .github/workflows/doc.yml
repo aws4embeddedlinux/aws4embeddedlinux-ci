@@ -1,7 +1,7 @@
 name: Typedoc build and deploy doc to GH pages
 on:
     push:
-        branches: ["doc"]
+        branches: ["main"]
 
     workflow_dispatch:
 
