@@ -17,10 +17,6 @@ import { RemovalPolicy } from 'aws-cdk-lib';
 export enum ImageKind {
   /** Ubuntu 22.04 (LTS) */
   Ubuntu22_04 = 'ubuntu_22_04',
-  /** Fedora 37 */
-  Fedora37 = 'fedora_37',
-  /** Debian GNU/Linux 11.x (Bullseye) */
-  Debian11 = 'debian_11',
 }
 
 /**
