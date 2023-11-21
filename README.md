@@ -44,6 +44,8 @@ $ npm link aws4embeddedlinux-ci
 
 This will link through the system `node_modules` install. When using a system node install on Linux, this can require sudo access. To avoid this, use a [node version manager](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm#using-a-node-version-manager-to-install-nodejs-and-npm) or [set a node prefix](https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally).
 
+## Known issues
+- Windows is not supported currently
 
 
 ## Security
