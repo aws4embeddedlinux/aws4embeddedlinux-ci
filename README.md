@@ -34,7 +34,6 @@ You can use [`npm link`](https://docs.npmjs.com/cli/v10/commands/npm-link) to de
 ### In this library repo:
 ```bash
 npm install
-npm link
 ```
 
 ### In your-project folder:
