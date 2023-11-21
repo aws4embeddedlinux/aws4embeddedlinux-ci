@@ -20,12 +20,12 @@ export enum ImageKind {
 }
 
 /**
- * Select options for the BuildImagePipelineStack.
+ * Select options for the {@link BuildImagePipelineStack}.
  */
 export interface BuildImagePipelineProps extends cdk.StackProps {
   /** The Image type to create. */
   readonly imageKind: ImageKind;
-  /** The data bucket from the BuildImageDataStack */
+  /** The data bucket from the {@link BuildImageDataStack} */
   readonly dataBucket: s3.IBucket;
   /** The ECR Repository to push to. */
   readonly repository: IRepository;
@@ -34,6 +34,8 @@ export interface BuildImagePipelineProps extends cdk.StackProps {
 /**
  * The pipeline for building the CodeBuild Image used in other pipelines. This
  * will produce an image for an OS based on verified Yocto hosts.
+ *
+ * For configuration options see {@link BuildImagePipelineProps}.
  */
 export class BuildImagePipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: BuildImagePipelineProps) {

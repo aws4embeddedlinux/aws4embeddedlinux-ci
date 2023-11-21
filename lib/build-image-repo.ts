@@ -4,6 +4,8 @@ import * as ecr from 'aws-cdk-lib/aws-ecr';
 
 /**
  * The ECR Repository to store build host images.
+ *
+ * This is the output of the {@link BuildImagePipelineStack}
  */
 export class BuildImageRepoStack extends cdk.Stack {
   /** The respository to put the build host container in. */

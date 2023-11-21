@@ -9,7 +9,7 @@ import * as kms from 'aws-cdk-lib/aws-kms';
 import { RemovalPolicy } from 'aws-cdk-lib';
 
 /**
- * Select options for the BuildImageDataStack.
+ * Select options for the {@link BuildImageDataStack}.
  */
 export interface BuildImageDataProps extends cdk.StackProps {
   /** The bucket name for image build sources. This must be globally unique. */
@@ -17,10 +17,10 @@ export interface BuildImageDataProps extends cdk.StackProps {
 }
 
 /**
- * Input (Source) data for our Build Image Pipeline.
+ * Input (Source) data for our {@link BuildImagePipelineStack}.
  */
 export class BuildImageDataStack extends cdk.Stack {
-  /** The bucket where source for Build Images are. */
+  /** The bucket which will be consumed by the {@link BuildImagePipelineStack}. */
   public readonly bucket: s3.IBucket;
 
   constructor(scope: Construct, id: string, props: BuildImageDataProps) {
