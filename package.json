@@ -13,7 +13,7 @@
     "test": "jest",
     "update-snapshot": "jest -u",
     "cdk": "cdk",
-    "doc": "typedoc",
+    "doc": "typedoc --sort source-order --readme README.md",
     "format": "eslint '**/*.{js,ts,json}' --quiet --fix",
     "check": "eslint '**/*.{js,ts,json}'",
     "prepare": "npm run build"
