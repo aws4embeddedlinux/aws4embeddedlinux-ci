@@ -37,7 +37,7 @@ import { RemovalPolicy } from 'aws-cdk-lib';
 /**
  * Properties to allow customizing the build.
  */
-export interface DemoPipelineProps extends cdk.StackProps {
+export interface EmbeddedLinuxPipelineProps extends cdk.StackProps {
   /** ECR Repository where the Build Host Image resides. */
   readonly imageRepo: IRepository;
   /** Tag for the Build Host Image */
@@ -53,8 +53,8 @@ export interface DemoPipelineProps extends cdk.StackProps {
 /**
  * The stack demonstrating how to build a pipeline for meta-aws-demos
  */
-export class DemoPipelineStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props: DemoPipelineProps) {
+export class EmbeddedLinuxPipelineStack extends cdk.Stack {
+  constructor(scope: Construct, id: string, props: EmbeddedLinuxPipelineProps) {
     super(scope, id, props);
 
     /** Set up networking access and EFS FileSystems. */
@@ -96,7 +96,7 @@ export class DemoPipelineStack extends cdk.Stack {
         }
       );
 
-      outputBucket = new VMImportBucket(this, 'DemoArtifact', {
+      outputBucket = new VMImportBucket(this, 'PipelineOutput', {
         versioned: true,
         enforceSSL: true,
         encryptionKey: outputBucketEncryptionKey,
@@ -157,7 +157,7 @@ export class DemoPipelineStack extends cdk.Stack {
       codeBuildCloneOutput: true,
     });
 
-    const project = new PipelineProject(this, 'DemoBuildProject', {
+    const project = new PipelineProject(this, 'EmbeddedLinuxBuildProject', {
       buildSpec: BuildSpec.fromSourceFilename('build.buildspec.yml'),
       environment: {
         computeType: ComputeType.X2_LARGE,
@@ -223,13 +223,13 @@ export class DemoPipelineStack extends cdk.Stack {
     const buildOutput = new codepipeline.Artifact();
     const buildAction = new codepipeline_actions.CodeBuildAction({
       input: sourceOutput,
-      actionName: 'Demo-Build',
+      actionName: 'Build',
       outputs: [buildOutput],
       project,
     });
 
     const artifactAction = new codepipeline_actions.S3DeployAction({
-      actionName: 'Demo-Artifact',
+      actionName: 'Artifact',
       input: buildOutput,
       bucket: outputBucket,
     });
@@ -284,7 +284,7 @@ def handler(event, context):
     );
 
     /** Now create the actual Pipeline */
-    const pipeline = new codepipeline.Pipeline(this, 'DemoPipeline', {
+    const pipeline = new codepipeline.Pipeline(this, 'EmbeddedLinuxPipeline', {
       artifactBucket,
       restartExecutionOnUpdate: true,
       stages: [
@@ -338,7 +338,7 @@ def handler(event, context):
     vpc: IVpc,
     securityGroup: ISecurityGroup
   ): string {
-    const fs = new efs.FileSystem(this, `DemoPipeline${name}Filesystem`, {
+    const fs = new efs.FileSystem(this, `EmbeddedLinuxPipeline${name}Filesystem`, {
       vpc,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });

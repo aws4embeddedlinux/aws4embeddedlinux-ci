@@ -24,7 +24,7 @@ cdk init app --language typescript
 ```
 2. Add the cdk library with `npm install aws4embeddedlinux/aws4embeddedlinux-ci`
 3. Create your application using the library. Refer to the [API Documentation](https://aws4embeddedlinux.github.io/aws4embeddedlinux-ci) and the [Examples](github.com/aws4embeddedlinux/aws4embeddedlinux-ci-examples) for more details.
-4. Deploy your application using `cdk deploy`.
+4. Deploy your application using `cdk deploy --require-approval never`.
 5. After the application is deployed, the 'Build Image' Pipeline needs to be run. This will create an Ubuntu based container for building Yocto. This container is used by the other pipelines. If the other pipelines are run before this container is created and pushed to [ECR](https://aws.amazon.com/ecr/), they will fail. This Build Image Pipeline will run weekly by default to keep this container patched.
 6. Now the application pipeline is able to be run. This will push contents of the Yocto deploy directory into S3.
 
@@ -33,18 +33,19 @@ You can use [`npm link`](https://docs.npmjs.com/cli/v10/commands/npm-link) to de
 
 ### In this library repo:
 ```bash
-$ npm link
-$ cd your-project
+npm install
 ```
 
 ### In your-project folder:
 ```bash
-$ npm link aws4embeddedlinux-ci
+npm install
+npm link ../aws4embeddedlinux-ci
 ```
 
 This will link through the system `node_modules` install. When using a system node install on Linux, this can require sudo access. To avoid this, use a [node version manager](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm#using-a-node-version-manager-to-install-nodejs-and-npm) or [set a node prefix](https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally).
 
-
+## Known issues
+- Windows is not supported currently
 
 ## Security
 

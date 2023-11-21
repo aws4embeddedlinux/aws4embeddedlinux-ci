@@ -1,4 +1,4 @@
-import { DemoPipelineStack } from '../lib/demo-pipeline';
+import { EmbeddedLinuxPipelineStack } from '../lib/embedded-linux-pipeline';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
 import { Vpc } from 'aws-cdk-lib/aws-ec2';
 
@@ -7,7 +7,7 @@ import { App, Aspects, Stack } from 'aws-cdk-lib';
 import { AwsSolutionsChecks, NagSuppressions } from 'cdk-nag';
 import { ProjectKind } from '../lib';
 
-describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
+describe('Pipeline cdk-nag AwsSolutions Pack', () => {
   let stack: Stack;
   let app: App;
   let vpc: Vpc;
@@ -21,7 +21,7 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
     imageRepo = new Repository(newStack, 'Repository', {});
     vpc = new Vpc(newStack, 'Bucket', {});
 
-    stack = new DemoPipelineStack(app, 'MyTestStack', {
+    stack = new EmbeddedLinuxPipelineStack(app, 'MyTestStack', {
       env,
       imageRepo,
       vpc,
@@ -53,7 +53,7 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
           reason: 'Read permissions needed on bucket.',
           appliesTo: [
             {
-              regex: '/Resource::<DemoArtifactB63FBDE0.Arn>/\\*$/g',
+              regex: '/Resource::<PipelineOutput78594CB5.Arn>/\\*$/g',
             },
             {
               regex: '/Resource::arn:aws:ec2:eu-central-1::snapshot/\\*$/g',
@@ -68,7 +68,7 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
 
     NagSuppressions.addResourceSuppressionsByPath(
       stack,
-      '/MyTestStack/DemoBuildProject/Role/DefaultPolicy/Resource',
+      '/MyTestStack/EmbeddedLinuxBuildProject/Role/DefaultPolicy/Resource',
       [
         {
           id: 'AwsSolutions-IAM5',
@@ -79,7 +79,7 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
     );
     NagSuppressions.addResourceSuppressionsByPath(
       stack,
-      '/MyTestStack/DemoBuildProject/PolicyDocument/Resource',
+      '/MyTestStack/EmbeddedLinuxBuildProject/PolicyDocument/Resource',
       [
         {
           id: 'AwsSolutions-IAM5',
@@ -90,7 +90,7 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
     );
     NagSuppressions.addResourceSuppressionsByPath(
       stack,
-      '/MyTestStack/DemoPipeline/Role/DefaultPolicy/Resource',
+      '/MyTestStack/EmbeddedLinuxPipeline/Role/DefaultPolicy/Resource',
       [
         {
           id: 'AwsSolutions-IAM5',
@@ -101,7 +101,7 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
     );
     NagSuppressions.addResourceSuppressionsByPath(
       stack,
-      '/MyTestStack/DemoPipeline/Source/Source/CodePipelineActionRole/DefaultPolicy/Resource',
+      '/MyTestStack/EmbeddedLinuxPipeline/Source/Source/CodePipelineActionRole/DefaultPolicy/Resource',
       [
         {
           id: 'AwsSolutions-IAM5',
@@ -124,7 +124,7 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
     );
     NagSuppressions.addResourceSuppressionsByPath(
       stack,
-      '/MyTestStack/DemoPipeline/Artifact/Demo-Artifact/CodePipelineActionRole/DefaultPolicy/Resource',
+      '/MyTestStack/EmbeddedLinuxPipeline/Artifact/Artifact/CodePipelineActionRole/DefaultPolicy/Resource',
       [
         {
           id: 'AwsSolutions-IAM5',

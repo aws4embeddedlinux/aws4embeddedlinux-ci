@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Demo Source Repository Snapshot 1`] = `
+exports[`Pipeline Source Repository Snapshot 1`] = `
 {
   "Parameters": {
     "BootstrapVersion": {
