@@ -11,7 +11,7 @@ export interface VMImportBucketProps extends s3.BucketProps {
 }
 
 /**
- * ...
+ * An S3 Bucket with roles for the VM Import/Export service.
  */
 export class VMImportBucket extends s3.Bucket {
   public readonly roleName: string;
