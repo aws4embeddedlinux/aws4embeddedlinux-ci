@@ -51,7 +51,9 @@ export interface EmbeddedLinuxPipelineProps extends cdk.StackProps {
 }
 
 /**
- * The stack demonstrating how to build a pipeline for meta-aws-demos
+ * The stack for creating a build pipeline.
+ *
+ * See {@link EmbeddedLinuxPipelineProps} for configration options.
  */
 export class EmbeddedLinuxPipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: EmbeddedLinuxPipelineProps) {

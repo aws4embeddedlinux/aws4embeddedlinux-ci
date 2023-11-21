@@ -31,6 +31,9 @@ export interface SourceRepoProps extends cdk.StackProps {
 
 /**
  * The repository for the Source Stage of the pipeline.
+ *
+ * The initial contents of this repository are seeded by the assets contained
+ * in the `source-repo/` folder of this library.
  */
 export class SourceRepo extends Construct {
   /** The CodeCommit Repo itself. */

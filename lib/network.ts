@@ -5,6 +5,9 @@ import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 
 /**
  * The network resources to run the pipeline in.
+ *
+ * This stack is provided for when users do not have an existing VPC with
+ * private and public subnets for the pipeline.
  */
 export class PipelineNetworkStack extends cdk.Stack {
   /** The VPC for the pipeline to reside in. */
