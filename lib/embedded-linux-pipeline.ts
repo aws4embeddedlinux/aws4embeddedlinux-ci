@@ -96,7 +96,7 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
         }
       );
 
-      outputBucket = new VMImportBucket(this, 'DemoArtifact', {
+      outputBucket = new VMImportBucket(this, 'PipelineOutput', {
         versioned: true,
         enforceSSL: true,
         encryptionKey: outputBucketEncryptionKey,
@@ -157,7 +157,7 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
       codeBuildCloneOutput: true,
     });
 
-    const project = new PipelineProject(this, 'DemoBuildProject', {
+    const project = new PipelineProject(this, 'EmbeddedLinuxBuildProject', {
       buildSpec: BuildSpec.fromSourceFilename('build.buildspec.yml'),
       environment: {
         computeType: ComputeType.X2_LARGE,
@@ -223,13 +223,13 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
     const buildOutput = new codepipeline.Artifact();
     const buildAction = new codepipeline_actions.CodeBuildAction({
       input: sourceOutput,
-      actionName: 'Demo-Build',
+      actionName: 'Build',
       outputs: [buildOutput],
       project,
     });
 
     const artifactAction = new codepipeline_actions.S3DeployAction({
-      actionName: 'Demo-Artifact',
+      actionName: 'Artifact',
       input: buildOutput,
       bucket: outputBucket,
     });
