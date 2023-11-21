@@ -1,6 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { DemoPipelineStack } from '../lib/demo-pipeline';
+import { EmbeddedLinuxPipelineStack } from '../lib/embedded-linux-pipeline';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
 import { Vpc } from 'aws-cdk-lib/aws-ec2';
 import { ProjectKind } from '../lib';
@@ -15,7 +15,7 @@ describe('Demo Pipeline', () => {
     const imageRepo = new Repository(newStack, 'Repository', {});
     const vpc = new Vpc(newStack, 'Bucket', {});
 
-    const stack = new DemoPipelineStack(app, 'MyTestStack', {
+    const stack = new EmbeddedLinuxPipelineStack(app, 'MyTestStack', {
       env,
       imageRepo,
       vpc,
@@ -33,7 +33,7 @@ describe('Demo Pipeline', () => {
     const imageRepo = new Repository(newStack, 'Repository', {});
     const vpc = new Vpc(newStack, 'Bucket', {});
 
-    const stack = new DemoPipelineStack(app, 'MyTestStack', {
+    const stack = new EmbeddedLinuxPipelineStack(app, 'MyTestStack', {
       env,
       imageRepo,
       vpc,
@@ -50,7 +50,7 @@ describe('Demo Pipeline', () => {
     const imageRepo = new Repository(newStack, 'Repository', {});
     const vpc = new Vpc(newStack, 'Bucket', {});
 
-    const stack = new DemoPipelineStack(app, 'MyTestStack', {
+    const stack = new EmbeddedLinuxPipelineStack(app, 'MyTestStack', {
       env,
       imageRepo,
       vpc,
@@ -65,7 +65,7 @@ describe('Demo Pipeline', () => {
     const imageRepo = new Repository(newStack, 'Repository', {});
     const vpc = new Vpc(newStack, 'Bucket', {});
 
-    const stack = new DemoPipelineStack(app, 'MyTestStack', {
+    const stack = new EmbeddedLinuxPipelineStack(app, 'MyTestStack', {
       env,
       imageRepo,
       vpc,
@@ -81,7 +81,7 @@ describe('Demo Pipeline', () => {
     const imageRepo = new Repository(newStack, 'Repository', {});
     const vpc = new Vpc(newStack, 'Bucket', {});
 
-    const stack = new DemoPipelineStack(
+    const stack = new EmbeddedLinuxPipelineStack(
       app,
       'PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992',
       {

@@ -130,7 +130,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                     },
                     ":codepipeline:eu-central-1:12341234:",
                     {
-                      "Ref": "DemoPipeline5714470A",
+                      "Ref": "EmbeddedLinuxPipeline1DDFB4FE",
                     },
                   ],
                 ],
@@ -327,7 +327,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                 "",
                 [
                   {
-                    "Ref": "DemoPipelineTempFilesystem05795DC7",
+                    "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
                   },
                   ".efs.eu-central-1.amazonaws.com:/",
                 ],
@@ -343,7 +343,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                 "",
                 [
                   {
-                    "Ref": "DemoPipelineSStateFilesystemF88B93FB",
+                    "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
                   },
                   ".efs.eu-central-1.amazonaws.com:/",
                 ],
@@ -359,7 +359,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                 "",
                 [
                   {
-                    "Ref": "DemoPipelineDownloadsFilesystem9EA5E4D6",
+                    "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
                   },
                   ".efs.eu-central-1.amazonaws.com:/",
                 ],
@@ -922,10 +922,10 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "DemoPipeline5714470A": {
+    "EmbeddedLinuxPipeline1DDFB4FE": {
       "DependsOn": [
-        "DemoPipelineRoleDefaultPolicy1BE8AC9C",
-        "DemoPipelineRole3523FC71",
+        "EmbeddedLinuxPipelineRoleDefaultPolicyD23E75B9",
+        "EmbeddedLinuxPipelineRole1094A815",
       ],
       "Properties": {
         "ArtifactStore": {
@@ -946,7 +946,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
         "RestartExecutionOnUpdate": true,
         "RoleArn": {
           "Fn::GetAtt": [
-            "DemoPipelineRole3523FC71",
+            "EmbeddedLinuxPipelineRole1094A815",
             "Arn",
           ],
         },
@@ -979,7 +979,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                 ],
                 "RoleArn": {
                   "Fn::GetAtt": [
-                    "DemoPipelineSourceCodePipelineActionRole4BDC8A1E",
+                    "EmbeddedLinuxPipelineSourceCodePipelineActionRoleF0FC21D6",
                     "Arn",
                   ],
                 },
@@ -1015,7 +1015,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                 ],
                 "RoleArn": {
                   "Fn::GetAtt": [
-                    "DemoPipelineBuildDemoBuildCodePipelineActionRoleA72EE94C",
+                    "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7",
                     "Arn",
                   ],
                 },
@@ -1047,7 +1047,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                 "Name": "Demo-Artifact",
                 "RoleArn": {
                   "Fn::GetAtt": [
-                    "DemoPipelineArtifactDemoArtifactCodePipelineActionRole95890F74",
+                    "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85",
                     "Arn",
                   ],
                 },
@@ -1060,7 +1060,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::CodePipeline::Pipeline",
     },
-    "DemoPipelineArtifactDemoArtifactCodePipelineActionRole95890F74": {
+    "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -1088,7 +1088,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "DemoPipelineArtifactDemoArtifactCodePipelineActionRoleDefaultPolicy390E3C67": {
+    "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRoleDefaultPolicyF836ECDF": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1187,16 +1187,16 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoPipelineArtifactDemoArtifactCodePipelineActionRoleDefaultPolicy390E3C67",
+        "PolicyName": "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRoleDefaultPolicyF836ECDF",
         "Roles": [
           {
-            "Ref": "DemoPipelineArtifactDemoArtifactCodePipelineActionRole95890F74",
+            "Ref": "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoPipelineBuildDemoBuildCodePipelineActionRoleA72EE94C": {
+    "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -1224,7 +1224,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "DemoPipelineBuildDemoBuildCodePipelineActionRoleDefaultPolicy95E8762B": {
+    "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRoleDefaultPolicyD7EE2672": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1245,38 +1245,38 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoPipelineBuildDemoBuildCodePipelineActionRoleDefaultPolicy95E8762B",
+        "PolicyName": "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRoleDefaultPolicyD7EE2672",
         "Roles": [
           {
-            "Ref": "DemoPipelineBuildDemoBuildCodePipelineActionRoleA72EE94C",
+            "Ref": "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoPipelineDownloadsFilesystem9EA5E4D6": {
+    "EmbeddedLinuxPipelineDownloadsFilesystem1772812C": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "Encrypted": true,
         "FileSystemTags": [
           {
             "Key": "Name",
-            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/DemoPipelineDownloadsFilesystem",
+            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EmbeddedLinuxPipelineDownloadsFilesystem",
           },
         ],
       },
       "Type": "AWS::EFS::FileSystem",
       "UpdateReplacePolicy": "Delete",
     },
-    "DemoPipelineDownloadsFilesystemEfsMountTarget1714C4592": {
+    "EmbeddedLinuxPipelineDownloadsFilesystemEfsMountTarget1CA5C8C01": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineDownloadsFilesystem9EA5E4D6",
+          "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineDownloadsFilesystemEfsSecurityGroup5B873263",
+              "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
               "GroupId",
             ],
           },
@@ -1287,15 +1287,15 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineDownloadsFilesystemEfsMountTarget2762EB0A1": {
+    "EmbeddedLinuxPipelineDownloadsFilesystemEfsMountTarget2BC3B1054": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineDownloadsFilesystem9EA5E4D6",
+          "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineDownloadsFilesystemEfsSecurityGroup5B873263",
+              "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
               "GroupId",
             ],
           },
@@ -1306,15 +1306,15 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineDownloadsFilesystemEfsMountTarget3C74F575D": {
+    "EmbeddedLinuxPipelineDownloadsFilesystemEfsMountTarget3C062C6FF": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineDownloadsFilesystem9EA5E4D6",
+          "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineDownloadsFilesystemEfsSecurityGroup5B873263",
+              "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
               "GroupId",
             ],
           },
@@ -1325,9 +1325,9 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineDownloadsFilesystemEfsSecurityGroup5B873263": {
+    "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38": {
       "Properties": {
-        "GroupDescription": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/DemoPipelineDownloadsFilesystem/EfsSecurityGroup",
+        "GroupDescription": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EmbeddedLinuxPipelineDownloadsFilesystem/EfsSecurityGroup",
         "SecurityGroupEgress": [
           {
             "CidrIp": "0.0.0.0/0",
@@ -1338,7 +1338,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/DemoPipelineDownloadsFilesystem",
+            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EmbeddedLinuxPipelineDownloadsFilesystem",
           },
         ],
         "VpcId": {
@@ -1347,13 +1347,13 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "DemoPipelineDownloadsFilesystemEfsSecurityGroupfromPokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992BuildProjectSecurityGroup1FC90CF520499E3F3CB5": {
+    "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroupfromPokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992BuildProjectSecurityGroup1FC90CF5204930D27033": {
       "Properties": {
         "Description": "from PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992BuildProjectSecurityGroup1FC90CF5:2049",
         "FromPort": 2049,
         "GroupId": {
           "Fn::GetAtt": [
-            "DemoPipelineDownloadsFilesystemEfsSecurityGroup5B873263",
+            "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
             "GroupId",
           ],
         },
@@ -1368,24 +1368,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
-    "DemoPipelineEventsRole9A8BDCF2": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "events.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "DemoPipelineEventsRoleDefaultPolicy162769CF": {
+    "EmbeddedLinuxPipelineEventsRoleDefaultPolicy7234197B": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1402,7 +1385,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                     },
                     ":codepipeline:eu-central-1:12341234:",
                     {
-                      "Ref": "DemoPipeline5714470A",
+                      "Ref": "EmbeddedLinuxPipeline1DDFB4FE",
                     },
                   ],
                 ],
@@ -1411,16 +1394,33 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoPipelineEventsRoleDefaultPolicy162769CF",
+        "PolicyName": "EmbeddedLinuxPipelineEventsRoleDefaultPolicy7234197B",
         "Roles": [
           {
-            "Ref": "DemoPipelineEventsRole9A8BDCF2",
+            "Ref": "EmbeddedLinuxPipelineEventsRoleF9DA96F1",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoPipelineRole3523FC71": {
+    "EmbeddedLinuxPipelineEventsRoleF9DA96F1": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EmbeddedLinuxPipelineRole1094A815": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -1437,7 +1437,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "DemoPipelineRoleDefaultPolicy1BE8AC9C": {
+    "EmbeddedLinuxPipelineRoleDefaultPolicyD23E75B9": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1499,7 +1499,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineSourceCodePipelineActionRole4BDC8A1E",
+                  "EmbeddedLinuxPipelineSourceCodePipelineActionRoleF0FC21D6",
                   "Arn",
                 ],
               },
@@ -1509,7 +1509,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineBuildDemoBuildCodePipelineActionRoleA72EE94C",
+                  "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7",
                   "Arn",
                 ],
               },
@@ -1519,7 +1519,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineArtifactDemoArtifactCodePipelineActionRole95890F74",
+                  "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85",
                   "Arn",
                 ],
               },
@@ -1527,24 +1527,38 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoPipelineRoleDefaultPolicy1BE8AC9C",
+        "PolicyName": "EmbeddedLinuxPipelineRoleDefaultPolicyD23E75B9",
         "Roles": [
           {
-            "Ref": "DemoPipelineRole3523FC71",
+            "Ref": "EmbeddedLinuxPipelineRole1094A815",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoPipelineSStateFilesystemEfsMountTarget12B1DB013": {
+    "EmbeddedLinuxPipelineSStateFilesystem36BA2630": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "Encrypted": true,
+        "FileSystemTags": [
+          {
+            "Key": "Name",
+            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EmbeddedLinuxPipelineSStateFilesystem",
+          },
+        ],
+      },
+      "Type": "AWS::EFS::FileSystem",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "EmbeddedLinuxPipelineSStateFilesystemEfsMountTarget15401AFF6": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineSStateFilesystemF88B93FB",
+          "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineSStateFilesystemEfsSecurityGroupC07715A9",
+              "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
               "GroupId",
             ],
           },
@@ -1555,15 +1569,15 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineSStateFilesystemEfsMountTarget2F3D98C99": {
+    "EmbeddedLinuxPipelineSStateFilesystemEfsMountTarget25BFCAE34": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineSStateFilesystemF88B93FB",
+          "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineSStateFilesystemEfsSecurityGroupC07715A9",
+              "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
               "GroupId",
             ],
           },
@@ -1574,15 +1588,15 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineSStateFilesystemEfsMountTarget3C2D2B41A": {
+    "EmbeddedLinuxPipelineSStateFilesystemEfsMountTarget347551AC1": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineSStateFilesystemF88B93FB",
+          "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineSStateFilesystemEfsSecurityGroupC07715A9",
+              "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
               "GroupId",
             ],
           },
@@ -1593,9 +1607,9 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineSStateFilesystemEfsSecurityGroupC07715A9": {
+    "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2": {
       "Properties": {
-        "GroupDescription": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/DemoPipelineSStateFilesystem/EfsSecurityGroup",
+        "GroupDescription": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EmbeddedLinuxPipelineSStateFilesystem/EfsSecurityGroup",
         "SecurityGroupEgress": [
           {
             "CidrIp": "0.0.0.0/0",
@@ -1606,7 +1620,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/DemoPipelineSStateFilesystem",
+            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EmbeddedLinuxPipelineSStateFilesystem",
           },
         ],
         "VpcId": {
@@ -1615,13 +1629,13 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "DemoPipelineSStateFilesystemEfsSecurityGroupfromPokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992BuildProjectSecurityGroup1FC90CF520491E850BFA": {
+    "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroupfromPokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992BuildProjectSecurityGroup1FC90CF5204976011793": {
       "Properties": {
         "Description": "from PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992BuildProjectSecurityGroup1FC90CF5:2049",
         "FromPort": 2049,
         "GroupId": {
           "Fn::GetAtt": [
-            "DemoPipelineSStateFilesystemEfsSecurityGroupC07715A9",
+            "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
             "GroupId",
           ],
         },
@@ -1636,49 +1650,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
-    "DemoPipelineSStateFilesystemF88B93FB": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "Encrypted": true,
-        "FileSystemTags": [
-          {
-            "Key": "Name",
-            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/DemoPipelineSStateFilesystem",
-          },
-        ],
-      },
-      "Type": "AWS::EFS::FileSystem",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "DemoPipelineSourceCodePipelineActionRole4BDC8A1E": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":iam::12341234:root",
-                    ],
-                  ],
-                },
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "DemoPipelineSourceCodePipelineActionRoleDefaultPolicy47E6288E": {
+    "EmbeddedLinuxPipelineSourceCodePipelineActionRoleDefaultPolicyE4783D85": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1755,38 +1727,66 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoPipelineSourceCodePipelineActionRoleDefaultPolicy47E6288E",
+        "PolicyName": "EmbeddedLinuxPipelineSourceCodePipelineActionRoleDefaultPolicyE4783D85",
         "Roles": [
           {
-            "Ref": "DemoPipelineSourceCodePipelineActionRole4BDC8A1E",
+            "Ref": "EmbeddedLinuxPipelineSourceCodePipelineActionRoleF0FC21D6",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoPipelineTempFilesystem05795DC7": {
+    "EmbeddedLinuxPipelineSourceCodePipelineActionRoleF0FC21D6": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::12341234:root",
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EmbeddedLinuxPipelineTempFilesystem8ECAD602": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "Encrypted": true,
         "FileSystemTags": [
           {
             "Key": "Name",
-            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/DemoPipelineTempFilesystem",
+            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EmbeddedLinuxPipelineTempFilesystem",
           },
         ],
       },
       "Type": "AWS::EFS::FileSystem",
       "UpdateReplacePolicy": "Delete",
     },
-    "DemoPipelineTempFilesystemEfsMountTarget105627E5D": {
+    "EmbeddedLinuxPipelineTempFilesystemEfsMountTarget1C1FB920C": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineTempFilesystem05795DC7",
+          "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineTempFilesystemEfsSecurityGroupE7972A92",
+              "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
               "GroupId",
             ],
           },
@@ -1797,15 +1797,15 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineTempFilesystemEfsMountTarget207DE96E2": {
+    "EmbeddedLinuxPipelineTempFilesystemEfsMountTarget240F5557C": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineTempFilesystem05795DC7",
+          "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineTempFilesystemEfsSecurityGroupE7972A92",
+              "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
               "GroupId",
             ],
           },
@@ -1816,15 +1816,15 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineTempFilesystemEfsMountTarget32C9BA9D8": {
+    "EmbeddedLinuxPipelineTempFilesystemEfsMountTarget31EDABBCB": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineTempFilesystem05795DC7",
+          "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineTempFilesystemEfsSecurityGroupE7972A92",
+              "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
               "GroupId",
             ],
           },
@@ -1835,9 +1835,9 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineTempFilesystemEfsSecurityGroupE7972A92": {
+    "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213": {
       "Properties": {
-        "GroupDescription": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/DemoPipelineTempFilesystem/EfsSecurityGroup",
+        "GroupDescription": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EmbeddedLinuxPipelineTempFilesystem/EfsSecurityGroup",
         "SecurityGroupEgress": [
           {
             "CidrIp": "0.0.0.0/0",
@@ -1848,7 +1848,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/DemoPipelineTempFilesystem",
+            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EmbeddedLinuxPipelineTempFilesystem",
           },
         ],
         "VpcId": {
@@ -1857,13 +1857,13 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "DemoPipelineTempFilesystemEfsSecurityGroupfromPokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992BuildProjectSecurityGroup1FC90CF5204998B02077": {
+    "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupfromPokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992BuildProjectSecurityGroup1FC90CF520495E3C3DB5": {
       "Properties": {
         "Description": "from PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992BuildProjectSecurityGroup1FC90CF5:2049",
         "FromPort": 2049,
         "GroupId": {
           "Fn::GetAtt": [
-            "DemoPipelineTempFilesystemEfsSecurityGroupE7972A92",
+            "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
             "GroupId",
           ],
         },
@@ -2280,7 +2280,7 @@ def handler(event, context):
       },
       "Type": "AWS::CodeCommit::Repository",
     },
-    "SourceRepoSourceRepositoryPokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992DemoPipeline07A6B81CmainEventRule95D87280": {
+    "SourceRepoSourceRepositoryPokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992EmbeddedLinuxPipeline27218C26mainEventRuleA20329DD": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -2320,7 +2320,7 @@ def handler(event, context):
                   },
                   ":codepipeline:eu-central-1:12341234:",
                   {
-                    "Ref": "DemoPipeline5714470A",
+                    "Ref": "EmbeddedLinuxPipeline1DDFB4FE",
                   },
                 ],
               ],
@@ -2328,7 +2328,7 @@ def handler(event, context):
             "Id": "Target0",
             "RoleArn": {
               "Fn::GetAtt": [
-                "DemoPipelineEventsRole9A8BDCF2",
+                "EmbeddedLinuxPipelineEventsRoleF9DA96F1",
                 "Arn",
               ],
             },
@@ -2600,7 +2600,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                     },
                     ":codepipeline:eu-central-1:12341234:",
                     {
-                      "Ref": "DemoPipeline5714470A",
+                      "Ref": "EmbeddedLinuxPipeline1DDFB4FE",
                     },
                   ],
                 ],
@@ -2797,7 +2797,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                 "",
                 [
                   {
-                    "Ref": "DemoPipelineTempFilesystem05795DC7",
+                    "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
                   },
                   ".efs.eu-central-1.amazonaws.com:/",
                 ],
@@ -2813,7 +2813,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                 "",
                 [
                   {
-                    "Ref": "DemoPipelineSStateFilesystemF88B93FB",
+                    "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
                   },
                   ".efs.eu-central-1.amazonaws.com:/",
                 ],
@@ -2829,7 +2829,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                 "",
                 [
                   {
-                    "Ref": "DemoPipelineDownloadsFilesystem9EA5E4D6",
+                    "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
                   },
                   ".efs.eu-central-1.amazonaws.com:/",
                 ],
@@ -3392,10 +3392,10 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "DemoPipeline5714470A": {
+    "EmbeddedLinuxPipeline1DDFB4FE": {
       "DependsOn": [
-        "DemoPipelineRoleDefaultPolicy1BE8AC9C",
-        "DemoPipelineRole3523FC71",
+        "EmbeddedLinuxPipelineRoleDefaultPolicyD23E75B9",
+        "EmbeddedLinuxPipelineRole1094A815",
       ],
       "Properties": {
         "ArtifactStore": {
@@ -3416,7 +3416,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
         "RestartExecutionOnUpdate": true,
         "RoleArn": {
           "Fn::GetAtt": [
-            "DemoPipelineRole3523FC71",
+            "EmbeddedLinuxPipelineRole1094A815",
             "Arn",
           ],
         },
@@ -3449,7 +3449,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                 ],
                 "RoleArn": {
                   "Fn::GetAtt": [
-                    "DemoPipelineSourceCodePipelineActionRole4BDC8A1E",
+                    "EmbeddedLinuxPipelineSourceCodePipelineActionRoleF0FC21D6",
                     "Arn",
                   ],
                 },
@@ -3485,7 +3485,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                 ],
                 "RoleArn": {
                   "Fn::GetAtt": [
-                    "DemoPipelineBuildDemoBuildCodePipelineActionRoleA72EE94C",
+                    "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7",
                     "Arn",
                   ],
                 },
@@ -3517,7 +3517,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                 "Name": "Demo-Artifact",
                 "RoleArn": {
                   "Fn::GetAtt": [
-                    "DemoPipelineArtifactDemoArtifactCodePipelineActionRole95890F74",
+                    "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85",
                     "Arn",
                   ],
                 },
@@ -3530,7 +3530,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::CodePipeline::Pipeline",
     },
-    "DemoPipelineArtifactDemoArtifactCodePipelineActionRole95890F74": {
+    "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -3558,7 +3558,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "DemoPipelineArtifactDemoArtifactCodePipelineActionRoleDefaultPolicy390E3C67": {
+    "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRoleDefaultPolicyF836ECDF": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -3657,16 +3657,16 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoPipelineArtifactDemoArtifactCodePipelineActionRoleDefaultPolicy390E3C67",
+        "PolicyName": "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRoleDefaultPolicyF836ECDF",
         "Roles": [
           {
-            "Ref": "DemoPipelineArtifactDemoArtifactCodePipelineActionRole95890F74",
+            "Ref": "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoPipelineBuildDemoBuildCodePipelineActionRoleA72EE94C": {
+    "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -3694,7 +3694,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "DemoPipelineBuildDemoBuildCodePipelineActionRoleDefaultPolicy95E8762B": {
+    "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRoleDefaultPolicyD7EE2672": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -3715,38 +3715,38 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoPipelineBuildDemoBuildCodePipelineActionRoleDefaultPolicy95E8762B",
+        "PolicyName": "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRoleDefaultPolicyD7EE2672",
         "Roles": [
           {
-            "Ref": "DemoPipelineBuildDemoBuildCodePipelineActionRoleA72EE94C",
+            "Ref": "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoPipelineDownloadsFilesystem9EA5E4D6": {
+    "EmbeddedLinuxPipelineDownloadsFilesystem1772812C": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "Encrypted": true,
         "FileSystemTags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/DemoPipelineDownloadsFilesystem",
+            "Value": "MyTestStack/EmbeddedLinuxPipelineDownloadsFilesystem",
           },
         ],
       },
       "Type": "AWS::EFS::FileSystem",
       "UpdateReplacePolicy": "Delete",
     },
-    "DemoPipelineDownloadsFilesystemEfsMountTarget1714C4592": {
+    "EmbeddedLinuxPipelineDownloadsFilesystemEfsMountTarget1CA5C8C01": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineDownloadsFilesystem9EA5E4D6",
+          "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineDownloadsFilesystemEfsSecurityGroup5B873263",
+              "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
               "GroupId",
             ],
           },
@@ -3757,15 +3757,15 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineDownloadsFilesystemEfsMountTarget2762EB0A1": {
+    "EmbeddedLinuxPipelineDownloadsFilesystemEfsMountTarget2BC3B1054": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineDownloadsFilesystem9EA5E4D6",
+          "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineDownloadsFilesystemEfsSecurityGroup5B873263",
+              "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
               "GroupId",
             ],
           },
@@ -3776,15 +3776,15 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineDownloadsFilesystemEfsMountTarget3C74F575D": {
+    "EmbeddedLinuxPipelineDownloadsFilesystemEfsMountTarget3C062C6FF": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineDownloadsFilesystem9EA5E4D6",
+          "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineDownloadsFilesystemEfsSecurityGroup5B873263",
+              "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
               "GroupId",
             ],
           },
@@ -3795,9 +3795,9 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineDownloadsFilesystemEfsSecurityGroup5B873263": {
+    "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38": {
       "Properties": {
-        "GroupDescription": "MyTestStack/DemoPipelineDownloadsFilesystem/EfsSecurityGroup",
+        "GroupDescription": "MyTestStack/EmbeddedLinuxPipelineDownloadsFilesystem/EfsSecurityGroup",
         "SecurityGroupEgress": [
           {
             "CidrIp": "0.0.0.0/0",
@@ -3808,7 +3808,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/DemoPipelineDownloadsFilesystem",
+            "Value": "MyTestStack/EmbeddedLinuxPipelineDownloadsFilesystem",
           },
         ],
         "VpcId": {
@@ -3817,13 +3817,13 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "DemoPipelineDownloadsFilesystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A920492BBADE97": {
+    "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A920495E2D9CF2": {
       "Properties": {
         "Description": "from MyTestStackBuildProjectSecurityGroupA374A3A9:2049",
         "FromPort": 2049,
         "GroupId": {
           "Fn::GetAtt": [
-            "DemoPipelineDownloadsFilesystemEfsSecurityGroup5B873263",
+            "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
             "GroupId",
           ],
         },
@@ -3838,24 +3838,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
-    "DemoPipelineEventsRole9A8BDCF2": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "events.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "DemoPipelineEventsRoleDefaultPolicy162769CF": {
+    "EmbeddedLinuxPipelineEventsRoleDefaultPolicy7234197B": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -3872,7 +3855,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                     },
                     ":codepipeline:eu-central-1:12341234:",
                     {
-                      "Ref": "DemoPipeline5714470A",
+                      "Ref": "EmbeddedLinuxPipeline1DDFB4FE",
                     },
                   ],
                 ],
@@ -3881,16 +3864,33 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoPipelineEventsRoleDefaultPolicy162769CF",
+        "PolicyName": "EmbeddedLinuxPipelineEventsRoleDefaultPolicy7234197B",
         "Roles": [
           {
-            "Ref": "DemoPipelineEventsRole9A8BDCF2",
+            "Ref": "EmbeddedLinuxPipelineEventsRoleF9DA96F1",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoPipelineRole3523FC71": {
+    "EmbeddedLinuxPipelineEventsRoleF9DA96F1": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EmbeddedLinuxPipelineRole1094A815": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -3907,7 +3907,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "DemoPipelineRoleDefaultPolicy1BE8AC9C": {
+    "EmbeddedLinuxPipelineRoleDefaultPolicyD23E75B9": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -3969,7 +3969,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineSourceCodePipelineActionRole4BDC8A1E",
+                  "EmbeddedLinuxPipelineSourceCodePipelineActionRoleF0FC21D6",
                   "Arn",
                 ],
               },
@@ -3979,7 +3979,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineBuildDemoBuildCodePipelineActionRoleA72EE94C",
+                  "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7",
                   "Arn",
                 ],
               },
@@ -3989,7 +3989,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineArtifactDemoArtifactCodePipelineActionRole95890F74",
+                  "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85",
                   "Arn",
                 ],
               },
@@ -3997,24 +3997,38 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoPipelineRoleDefaultPolicy1BE8AC9C",
+        "PolicyName": "EmbeddedLinuxPipelineRoleDefaultPolicyD23E75B9",
         "Roles": [
           {
-            "Ref": "DemoPipelineRole3523FC71",
+            "Ref": "EmbeddedLinuxPipelineRole1094A815",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoPipelineSStateFilesystemEfsMountTarget12B1DB013": {
+    "EmbeddedLinuxPipelineSStateFilesystem36BA2630": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "Encrypted": true,
+        "FileSystemTags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/EmbeddedLinuxPipelineSStateFilesystem",
+          },
+        ],
+      },
+      "Type": "AWS::EFS::FileSystem",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "EmbeddedLinuxPipelineSStateFilesystemEfsMountTarget15401AFF6": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineSStateFilesystemF88B93FB",
+          "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineSStateFilesystemEfsSecurityGroupC07715A9",
+              "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
               "GroupId",
             ],
           },
@@ -4025,15 +4039,15 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineSStateFilesystemEfsMountTarget2F3D98C99": {
+    "EmbeddedLinuxPipelineSStateFilesystemEfsMountTarget25BFCAE34": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineSStateFilesystemF88B93FB",
+          "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineSStateFilesystemEfsSecurityGroupC07715A9",
+              "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
               "GroupId",
             ],
           },
@@ -4044,15 +4058,15 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineSStateFilesystemEfsMountTarget3C2D2B41A": {
+    "EmbeddedLinuxPipelineSStateFilesystemEfsMountTarget347551AC1": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineSStateFilesystemF88B93FB",
+          "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineSStateFilesystemEfsSecurityGroupC07715A9",
+              "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
               "GroupId",
             ],
           },
@@ -4063,9 +4077,9 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineSStateFilesystemEfsSecurityGroupC07715A9": {
+    "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2": {
       "Properties": {
-        "GroupDescription": "MyTestStack/DemoPipelineSStateFilesystem/EfsSecurityGroup",
+        "GroupDescription": "MyTestStack/EmbeddedLinuxPipelineSStateFilesystem/EfsSecurityGroup",
         "SecurityGroupEgress": [
           {
             "CidrIp": "0.0.0.0/0",
@@ -4076,7 +4090,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/DemoPipelineSStateFilesystem",
+            "Value": "MyTestStack/EmbeddedLinuxPipelineSStateFilesystem",
           },
         ],
         "VpcId": {
@@ -4085,13 +4099,13 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "DemoPipelineSStateFilesystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A92049A1018724": {
+    "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A92049D2B7AC43": {
       "Properties": {
         "Description": "from MyTestStackBuildProjectSecurityGroupA374A3A9:2049",
         "FromPort": 2049,
         "GroupId": {
           "Fn::GetAtt": [
-            "DemoPipelineSStateFilesystemEfsSecurityGroupC07715A9",
+            "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
             "GroupId",
           ],
         },
@@ -4106,49 +4120,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
-    "DemoPipelineSStateFilesystemF88B93FB": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "Encrypted": true,
-        "FileSystemTags": [
-          {
-            "Key": "Name",
-            "Value": "MyTestStack/DemoPipelineSStateFilesystem",
-          },
-        ],
-      },
-      "Type": "AWS::EFS::FileSystem",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "DemoPipelineSourceCodePipelineActionRole4BDC8A1E": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":iam::12341234:root",
-                    ],
-                  ],
-                },
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "DemoPipelineSourceCodePipelineActionRoleDefaultPolicy47E6288E": {
+    "EmbeddedLinuxPipelineSourceCodePipelineActionRoleDefaultPolicyE4783D85": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -4225,38 +4197,66 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoPipelineSourceCodePipelineActionRoleDefaultPolicy47E6288E",
+        "PolicyName": "EmbeddedLinuxPipelineSourceCodePipelineActionRoleDefaultPolicyE4783D85",
         "Roles": [
           {
-            "Ref": "DemoPipelineSourceCodePipelineActionRole4BDC8A1E",
+            "Ref": "EmbeddedLinuxPipelineSourceCodePipelineActionRoleF0FC21D6",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoPipelineTempFilesystem05795DC7": {
+    "EmbeddedLinuxPipelineSourceCodePipelineActionRoleF0FC21D6": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::12341234:root",
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EmbeddedLinuxPipelineTempFilesystem8ECAD602": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "Encrypted": true,
         "FileSystemTags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/DemoPipelineTempFilesystem",
+            "Value": "MyTestStack/EmbeddedLinuxPipelineTempFilesystem",
           },
         ],
       },
       "Type": "AWS::EFS::FileSystem",
       "UpdateReplacePolicy": "Delete",
     },
-    "DemoPipelineTempFilesystemEfsMountTarget105627E5D": {
+    "EmbeddedLinuxPipelineTempFilesystemEfsMountTarget1C1FB920C": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineTempFilesystem05795DC7",
+          "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineTempFilesystemEfsSecurityGroupE7972A92",
+              "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
               "GroupId",
             ],
           },
@@ -4267,15 +4267,15 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineTempFilesystemEfsMountTarget207DE96E2": {
+    "EmbeddedLinuxPipelineTempFilesystemEfsMountTarget240F5557C": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineTempFilesystem05795DC7",
+          "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineTempFilesystemEfsSecurityGroupE7972A92",
+              "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
               "GroupId",
             ],
           },
@@ -4286,15 +4286,15 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineTempFilesystemEfsMountTarget32C9BA9D8": {
+    "EmbeddedLinuxPipelineTempFilesystemEfsMountTarget31EDABBCB": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineTempFilesystem05795DC7",
+          "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineTempFilesystemEfsSecurityGroupE7972A92",
+              "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
               "GroupId",
             ],
           },
@@ -4305,9 +4305,9 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineTempFilesystemEfsSecurityGroupE7972A92": {
+    "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213": {
       "Properties": {
-        "GroupDescription": "MyTestStack/DemoPipelineTempFilesystem/EfsSecurityGroup",
+        "GroupDescription": "MyTestStack/EmbeddedLinuxPipelineTempFilesystem/EfsSecurityGroup",
         "SecurityGroupEgress": [
           {
             "CidrIp": "0.0.0.0/0",
@@ -4318,7 +4318,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/DemoPipelineTempFilesystem",
+            "Value": "MyTestStack/EmbeddedLinuxPipelineTempFilesystem",
           },
         ],
         "VpcId": {
@@ -4327,13 +4327,13 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "DemoPipelineTempFilesystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A92049A29752D4": {
+    "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A9204979E58A91": {
       "Properties": {
         "Description": "from MyTestStackBuildProjectSecurityGroupA374A3A9:2049",
         "FromPort": 2049,
         "GroupId": {
           "Fn::GetAtt": [
-            "DemoPipelineTempFilesystemEfsSecurityGroupE7972A92",
+            "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
             "GroupId",
           ],
         },
@@ -4750,7 +4750,7 @@ def handler(event, context):
       },
       "Type": "AWS::CodeCommit::Repository",
     },
-    "SourceRepoSourceRepositoryMyTestStackDemoPipelineA8582E07mainEventRule9BB75337": {
+    "SourceRepoSourceRepositoryMyTestStackEmbeddedLinuxPipeline3F66E11BmainEventRule5C93E610": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -4790,7 +4790,7 @@ def handler(event, context):
                   },
                   ":codepipeline:eu-central-1:12341234:",
                   {
-                    "Ref": "DemoPipeline5714470A",
+                    "Ref": "EmbeddedLinuxPipeline1DDFB4FE",
                   },
                 ],
               ],
@@ -4798,7 +4798,7 @@ def handler(event, context):
             "Id": "Target0",
             "RoleArn": {
               "Fn::GetAtt": [
-                "DemoPipelineEventsRole9A8BDCF2",
+                "EmbeddedLinuxPipelineEventsRoleF9DA96F1",
                 "Arn",
               ],
             },
@@ -5070,7 +5070,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                     },
                     ":codepipeline:eu-central-1:12341234:",
                     {
-                      "Ref": "DemoPipeline5714470A",
+                      "Ref": "EmbeddedLinuxPipeline1DDFB4FE",
                     },
                   ],
                 ],
@@ -5169,7 +5169,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                 "",
                 [
                   {
-                    "Ref": "DemoPipelineTempFilesystem05795DC7",
+                    "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
                   },
                   ".efs.eu-central-1.amazonaws.com:/",
                 ],
@@ -5185,7 +5185,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                 "",
                 [
                   {
-                    "Ref": "DemoPipelineSStateFilesystemF88B93FB",
+                    "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
                   },
                   ".efs.eu-central-1.amazonaws.com:/",
                 ],
@@ -5201,7 +5201,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                 "",
                 [
                   {
-                    "Ref": "DemoPipelineDownloadsFilesystem9EA5E4D6",
+                    "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
                   },
                   ".efs.eu-central-1.amazonaws.com:/",
                 ],
@@ -5593,10 +5593,10 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "DemoPipeline5714470A": {
+    "EmbeddedLinuxPipeline1DDFB4FE": {
       "DependsOn": [
-        "DemoPipelineRoleDefaultPolicy1BE8AC9C",
-        "DemoPipelineRole3523FC71",
+        "EmbeddedLinuxPipelineRoleDefaultPolicyD23E75B9",
+        "EmbeddedLinuxPipelineRole1094A815",
       ],
       "Properties": {
         "ArtifactStore": {
@@ -5617,7 +5617,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
         "RestartExecutionOnUpdate": true,
         "RoleArn": {
           "Fn::GetAtt": [
-            "DemoPipelineRole3523FC71",
+            "EmbeddedLinuxPipelineRole1094A815",
             "Arn",
           ],
         },
@@ -5650,7 +5650,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                 ],
                 "RoleArn": {
                   "Fn::GetAtt": [
-                    "DemoPipelineSourceCodePipelineActionRole4BDC8A1E",
+                    "EmbeddedLinuxPipelineSourceCodePipelineActionRoleF0FC21D6",
                     "Arn",
                   ],
                 },
@@ -5686,7 +5686,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                 ],
                 "RoleArn": {
                   "Fn::GetAtt": [
-                    "DemoPipelineBuildDemoBuildCodePipelineActionRoleA72EE94C",
+                    "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7",
                     "Arn",
                   ],
                 },
@@ -5718,7 +5718,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                 "Name": "Demo-Artifact",
                 "RoleArn": {
                   "Fn::GetAtt": [
-                    "DemoPipelineArtifactDemoArtifactCodePipelineActionRole95890F74",
+                    "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85",
                     "Arn",
                   ],
                 },
@@ -5731,7 +5731,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::CodePipeline::Pipeline",
     },
-    "DemoPipelineArtifactDemoArtifactCodePipelineActionRole95890F74": {
+    "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -5759,7 +5759,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "DemoPipelineArtifactDemoArtifactCodePipelineActionRoleDefaultPolicy390E3C67": {
+    "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRoleDefaultPolicyF836ECDF": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -5843,16 +5843,16 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoPipelineArtifactDemoArtifactCodePipelineActionRoleDefaultPolicy390E3C67",
+        "PolicyName": "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRoleDefaultPolicyF836ECDF",
         "Roles": [
           {
-            "Ref": "DemoPipelineArtifactDemoArtifactCodePipelineActionRole95890F74",
+            "Ref": "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoPipelineBuildDemoBuildCodePipelineActionRoleA72EE94C": {
+    "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -5880,7 +5880,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "DemoPipelineBuildDemoBuildCodePipelineActionRoleDefaultPolicy95E8762B": {
+    "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRoleDefaultPolicyD7EE2672": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -5901,38 +5901,38 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoPipelineBuildDemoBuildCodePipelineActionRoleDefaultPolicy95E8762B",
+        "PolicyName": "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRoleDefaultPolicyD7EE2672",
         "Roles": [
           {
-            "Ref": "DemoPipelineBuildDemoBuildCodePipelineActionRoleA72EE94C",
+            "Ref": "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoPipelineDownloadsFilesystem9EA5E4D6": {
+    "EmbeddedLinuxPipelineDownloadsFilesystem1772812C": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "Encrypted": true,
         "FileSystemTags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/DemoPipelineDownloadsFilesystem",
+            "Value": "MyTestStack/EmbeddedLinuxPipelineDownloadsFilesystem",
           },
         ],
       },
       "Type": "AWS::EFS::FileSystem",
       "UpdateReplacePolicy": "Delete",
     },
-    "DemoPipelineDownloadsFilesystemEfsMountTarget1714C4592": {
+    "EmbeddedLinuxPipelineDownloadsFilesystemEfsMountTarget1CA5C8C01": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineDownloadsFilesystem9EA5E4D6",
+          "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineDownloadsFilesystemEfsSecurityGroup5B873263",
+              "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
               "GroupId",
             ],
           },
@@ -5943,15 +5943,15 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineDownloadsFilesystemEfsMountTarget2762EB0A1": {
+    "EmbeddedLinuxPipelineDownloadsFilesystemEfsMountTarget2BC3B1054": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineDownloadsFilesystem9EA5E4D6",
+          "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineDownloadsFilesystemEfsSecurityGroup5B873263",
+              "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
               "GroupId",
             ],
           },
@@ -5962,15 +5962,15 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineDownloadsFilesystemEfsMountTarget3C74F575D": {
+    "EmbeddedLinuxPipelineDownloadsFilesystemEfsMountTarget3C062C6FF": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineDownloadsFilesystem9EA5E4D6",
+          "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineDownloadsFilesystemEfsSecurityGroup5B873263",
+              "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
               "GroupId",
             ],
           },
@@ -5981,9 +5981,9 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineDownloadsFilesystemEfsSecurityGroup5B873263": {
+    "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38": {
       "Properties": {
-        "GroupDescription": "MyTestStack/DemoPipelineDownloadsFilesystem/EfsSecurityGroup",
+        "GroupDescription": "MyTestStack/EmbeddedLinuxPipelineDownloadsFilesystem/EfsSecurityGroup",
         "SecurityGroupEgress": [
           {
             "CidrIp": "0.0.0.0/0",
@@ -5994,7 +5994,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/DemoPipelineDownloadsFilesystem",
+            "Value": "MyTestStack/EmbeddedLinuxPipelineDownloadsFilesystem",
           },
         ],
         "VpcId": {
@@ -6003,13 +6003,13 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "DemoPipelineDownloadsFilesystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A920492BBADE97": {
+    "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A920495E2D9CF2": {
       "Properties": {
         "Description": "from MyTestStackBuildProjectSecurityGroupA374A3A9:2049",
         "FromPort": 2049,
         "GroupId": {
           "Fn::GetAtt": [
-            "DemoPipelineDownloadsFilesystemEfsSecurityGroup5B873263",
+            "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
             "GroupId",
           ],
         },
@@ -6024,24 +6024,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
-    "DemoPipelineEventsRole9A8BDCF2": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "events.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "DemoPipelineEventsRoleDefaultPolicy162769CF": {
+    "EmbeddedLinuxPipelineEventsRoleDefaultPolicy7234197B": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -6058,7 +6041,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                     },
                     ":codepipeline:eu-central-1:12341234:",
                     {
-                      "Ref": "DemoPipeline5714470A",
+                      "Ref": "EmbeddedLinuxPipeline1DDFB4FE",
                     },
                   ],
                 ],
@@ -6067,16 +6050,33 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoPipelineEventsRoleDefaultPolicy162769CF",
+        "PolicyName": "EmbeddedLinuxPipelineEventsRoleDefaultPolicy7234197B",
         "Roles": [
           {
-            "Ref": "DemoPipelineEventsRole9A8BDCF2",
+            "Ref": "EmbeddedLinuxPipelineEventsRoleF9DA96F1",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoPipelineRole3523FC71": {
+    "EmbeddedLinuxPipelineEventsRoleF9DA96F1": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EmbeddedLinuxPipelineRole1094A815": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -6093,7 +6093,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "DemoPipelineRoleDefaultPolicy1BE8AC9C": {
+    "EmbeddedLinuxPipelineRoleDefaultPolicyD23E75B9": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -6155,7 +6155,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineSourceCodePipelineActionRole4BDC8A1E",
+                  "EmbeddedLinuxPipelineSourceCodePipelineActionRoleF0FC21D6",
                   "Arn",
                 ],
               },
@@ -6165,7 +6165,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineBuildDemoBuildCodePipelineActionRoleA72EE94C",
+                  "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7",
                   "Arn",
                 ],
               },
@@ -6175,7 +6175,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoPipelineArtifactDemoArtifactCodePipelineActionRole95890F74",
+                  "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85",
                   "Arn",
                 ],
               },
@@ -6183,24 +6183,38 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoPipelineRoleDefaultPolicy1BE8AC9C",
+        "PolicyName": "EmbeddedLinuxPipelineRoleDefaultPolicyD23E75B9",
         "Roles": [
           {
-            "Ref": "DemoPipelineRole3523FC71",
+            "Ref": "EmbeddedLinuxPipelineRole1094A815",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoPipelineSStateFilesystemEfsMountTarget12B1DB013": {
+    "EmbeddedLinuxPipelineSStateFilesystem36BA2630": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "Encrypted": true,
+        "FileSystemTags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/EmbeddedLinuxPipelineSStateFilesystem",
+          },
+        ],
+      },
+      "Type": "AWS::EFS::FileSystem",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "EmbeddedLinuxPipelineSStateFilesystemEfsMountTarget15401AFF6": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineSStateFilesystemF88B93FB",
+          "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineSStateFilesystemEfsSecurityGroupC07715A9",
+              "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
               "GroupId",
             ],
           },
@@ -6211,15 +6225,15 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineSStateFilesystemEfsMountTarget2F3D98C99": {
+    "EmbeddedLinuxPipelineSStateFilesystemEfsMountTarget25BFCAE34": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineSStateFilesystemF88B93FB",
+          "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineSStateFilesystemEfsSecurityGroupC07715A9",
+              "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
               "GroupId",
             ],
           },
@@ -6230,15 +6244,15 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineSStateFilesystemEfsMountTarget3C2D2B41A": {
+    "EmbeddedLinuxPipelineSStateFilesystemEfsMountTarget347551AC1": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineSStateFilesystemF88B93FB",
+          "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineSStateFilesystemEfsSecurityGroupC07715A9",
+              "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
               "GroupId",
             ],
           },
@@ -6249,9 +6263,9 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineSStateFilesystemEfsSecurityGroupC07715A9": {
+    "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2": {
       "Properties": {
-        "GroupDescription": "MyTestStack/DemoPipelineSStateFilesystem/EfsSecurityGroup",
+        "GroupDescription": "MyTestStack/EmbeddedLinuxPipelineSStateFilesystem/EfsSecurityGroup",
         "SecurityGroupEgress": [
           {
             "CidrIp": "0.0.0.0/0",
@@ -6262,7 +6276,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/DemoPipelineSStateFilesystem",
+            "Value": "MyTestStack/EmbeddedLinuxPipelineSStateFilesystem",
           },
         ],
         "VpcId": {
@@ -6271,13 +6285,13 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "DemoPipelineSStateFilesystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A92049A1018724": {
+    "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A92049D2B7AC43": {
       "Properties": {
         "Description": "from MyTestStackBuildProjectSecurityGroupA374A3A9:2049",
         "FromPort": 2049,
         "GroupId": {
           "Fn::GetAtt": [
-            "DemoPipelineSStateFilesystemEfsSecurityGroupC07715A9",
+            "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
             "GroupId",
           ],
         },
@@ -6292,49 +6306,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
-    "DemoPipelineSStateFilesystemF88B93FB": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "Encrypted": true,
-        "FileSystemTags": [
-          {
-            "Key": "Name",
-            "Value": "MyTestStack/DemoPipelineSStateFilesystem",
-          },
-        ],
-      },
-      "Type": "AWS::EFS::FileSystem",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "DemoPipelineSourceCodePipelineActionRole4BDC8A1E": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":iam::12341234:root",
-                    ],
-                  ],
-                },
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "DemoPipelineSourceCodePipelineActionRoleDefaultPolicy47E6288E": {
+    "EmbeddedLinuxPipelineSourceCodePipelineActionRoleDefaultPolicyE4783D85": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -6411,38 +6383,66 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoPipelineSourceCodePipelineActionRoleDefaultPolicy47E6288E",
+        "PolicyName": "EmbeddedLinuxPipelineSourceCodePipelineActionRoleDefaultPolicyE4783D85",
         "Roles": [
           {
-            "Ref": "DemoPipelineSourceCodePipelineActionRole4BDC8A1E",
+            "Ref": "EmbeddedLinuxPipelineSourceCodePipelineActionRoleF0FC21D6",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoPipelineTempFilesystem05795DC7": {
+    "EmbeddedLinuxPipelineSourceCodePipelineActionRoleF0FC21D6": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::12341234:root",
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EmbeddedLinuxPipelineTempFilesystem8ECAD602": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "Encrypted": true,
         "FileSystemTags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/DemoPipelineTempFilesystem",
+            "Value": "MyTestStack/EmbeddedLinuxPipelineTempFilesystem",
           },
         ],
       },
       "Type": "AWS::EFS::FileSystem",
       "UpdateReplacePolicy": "Delete",
     },
-    "DemoPipelineTempFilesystemEfsMountTarget105627E5D": {
+    "EmbeddedLinuxPipelineTempFilesystemEfsMountTarget1C1FB920C": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineTempFilesystem05795DC7",
+          "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineTempFilesystemEfsSecurityGroupE7972A92",
+              "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
               "GroupId",
             ],
           },
@@ -6453,15 +6453,15 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineTempFilesystemEfsMountTarget207DE96E2": {
+    "EmbeddedLinuxPipelineTempFilesystemEfsMountTarget240F5557C": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineTempFilesystem05795DC7",
+          "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineTempFilesystemEfsSecurityGroupE7972A92",
+              "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
               "GroupId",
             ],
           },
@@ -6472,15 +6472,15 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineTempFilesystemEfsMountTarget32C9BA9D8": {
+    "EmbeddedLinuxPipelineTempFilesystemEfsMountTarget31EDABBCB": {
       "Properties": {
         "FileSystemId": {
-          "Ref": "DemoPipelineTempFilesystem05795DC7",
+          "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
         },
         "SecurityGroups": [
           {
             "Fn::GetAtt": [
-              "DemoPipelineTempFilesystemEfsSecurityGroupE7972A92",
+              "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
               "GroupId",
             ],
           },
@@ -6491,9 +6491,9 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::EFS::MountTarget",
     },
-    "DemoPipelineTempFilesystemEfsSecurityGroupE7972A92": {
+    "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213": {
       "Properties": {
-        "GroupDescription": "MyTestStack/DemoPipelineTempFilesystem/EfsSecurityGroup",
+        "GroupDescription": "MyTestStack/EmbeddedLinuxPipelineTempFilesystem/EfsSecurityGroup",
         "SecurityGroupEgress": [
           {
             "CidrIp": "0.0.0.0/0",
@@ -6504,7 +6504,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/DemoPipelineTempFilesystem",
+            "Value": "MyTestStack/EmbeddedLinuxPipelineTempFilesystem",
           },
         ],
         "VpcId": {
@@ -6513,13 +6513,13 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "DemoPipelineTempFilesystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A92049A29752D4": {
+    "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A9204979E58A91": {
       "Properties": {
         "Description": "from MyTestStackBuildProjectSecurityGroupA374A3A9:2049",
         "FromPort": 2049,
         "GroupId": {
           "Fn::GetAtt": [
-            "DemoPipelineTempFilesystemEfsSecurityGroupE7972A92",
+            "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
             "GroupId",
           ],
         },
@@ -6966,7 +6966,7 @@ def handler(event, context):
       },
       "Type": "AWS::CodeCommit::Repository",
     },
-    "SourceRepoSourceRepositoryMyTestStackDemoPipelineA8582E07mainEventRule9BB75337": {
+    "SourceRepoSourceRepositoryMyTestStackEmbeddedLinuxPipeline3F66E11BmainEventRule5C93E610": {
       "Properties": {
         "EventPattern": {
           "detail": {
@@ -7006,7 +7006,7 @@ def handler(event, context):
                   },
                   ":codepipeline:eu-central-1:12341234:",
                   {
-                    "Ref": "DemoPipeline5714470A",
+                    "Ref": "EmbeddedLinuxPipeline1DDFB4FE",
                   },
                 ],
               ],
@@ -7014,7 +7014,7 @@ def handler(event, context):
             "Id": "Target0",
             "RoleArn": {
               "Fn::GetAtt": [
-                "DemoPipelineEventsRole9A8BDCF2",
+                "EmbeddedLinuxPipelineEventsRoleF9DA96F1",
                 "Arn",
               ],
             },

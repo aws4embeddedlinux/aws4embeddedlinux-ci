@@ -1,4 +1,4 @@
-import { DemoPipelineStack } from '../lib/demo-pipeline';
+import { EmbeddedLinuxPipelineStack } from '../lib/embedded-linux-pipeline';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
 import { Vpc } from 'aws-cdk-lib/aws-ec2';
 
@@ -21,7 +21,7 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
     imageRepo = new Repository(newStack, 'Repository', {});
     vpc = new Vpc(newStack, 'Bucket', {});
 
-    stack = new DemoPipelineStack(app, 'MyTestStack', {
+    stack = new EmbeddedLinuxPipelineStack(app, 'MyTestStack', {
       env,
       imageRepo,
       vpc,
@@ -90,7 +90,7 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
     );
     NagSuppressions.addResourceSuppressionsByPath(
       stack,
-      '/MyTestStack/DemoPipeline/Role/DefaultPolicy/Resource',
+      '/MyTestStack/EmbeddedLinuxPipeline/Role/DefaultPolicy/Resource',
       [
         {
           id: 'AwsSolutions-IAM5',
@@ -101,7 +101,7 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
     );
     NagSuppressions.addResourceSuppressionsByPath(
       stack,
-      '/MyTestStack/DemoPipeline/Source/Source/CodePipelineActionRole/DefaultPolicy/Resource',
+      '/MyTestStack/EmbeddedLinuxPipeline/Source/Source/CodePipelineActionRole/DefaultPolicy/Resource',
       [
         {
           id: 'AwsSolutions-IAM5',
@@ -124,7 +124,7 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
     );
     NagSuppressions.addResourceSuppressionsByPath(
       stack,
-      '/MyTestStack/DemoPipeline/Artifact/Demo-Artifact/CodePipelineActionRole/DefaultPolicy/Resource',
+      '/MyTestStack/EmbeddedLinuxPipeline/Artifact/Demo-Artifact/CodePipelineActionRole/DefaultPolicy/Resource',
       [
         {
           id: 'AwsSolutions-IAM5',

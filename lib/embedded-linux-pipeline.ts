@@ -37,7 +37,7 @@ import { RemovalPolicy } from 'aws-cdk-lib';
 /**
  * Properties to allow customizing the build.
  */
-export interface DemoPipelineProps extends cdk.StackProps {
+export interface EmbeddedLinuxPipelineProps extends cdk.StackProps {
   /** ECR Repository where the Build Host Image resides. */
   readonly imageRepo: IRepository;
   /** Tag for the Build Host Image */
@@ -53,8 +53,8 @@ export interface DemoPipelineProps extends cdk.StackProps {
 /**
  * The stack demonstrating how to build a pipeline for meta-aws-demos
  */
-export class DemoPipelineStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props: DemoPipelineProps) {
+export class EmbeddedLinuxPipelineStack extends cdk.Stack {
+  constructor(scope: Construct, id: string, props: EmbeddedLinuxPipelineProps) {
     super(scope, id, props);
 
     /** Set up networking access and EFS FileSystems. */
@@ -284,7 +284,7 @@ def handler(event, context):
     );
 
     /** Now create the actual Pipeline */
-    const pipeline = new codepipeline.Pipeline(this, 'DemoPipeline', {
+    const pipeline = new codepipeline.Pipeline(this, 'EmbeddedLinuxPipeline', {
       artifactBucket,
       restartExecutionOnUpdate: true,
       stages: [
@@ -338,7 +338,7 @@ def handler(event, context):
     vpc: IVpc,
     securityGroup: ISecurityGroup
   ): string {
-    const fs = new efs.FileSystem(this, `DemoPipeline${name}Filesystem`, {
+    const fs = new efs.FileSystem(this, `EmbeddedLinuxPipeline${name}Filesystem`, {
       vpc,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
