@@ -7,7 +7,7 @@ import { App, Aspects, Stack } from 'aws-cdk-lib';
 import { AwsSolutionsChecks, NagSuppressions } from 'cdk-nag';
 import { ProjectKind } from '../lib';
 
-describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
+describe('Pipeline cdk-nag AwsSolutions Pack', () => {
   let stack: Stack;
   let app: App;
   let vpc: Vpc;
@@ -53,7 +53,7 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
           reason: 'Read permissions needed on bucket.',
           appliesTo: [
             {
-              regex: '/Resource::<DemoArtifactB63FBDE0.Arn>/\\*$/g',
+              regex: '/Resource::<PipelineOutput78594CB5.Arn>/\\*$/g',
             },
             {
               regex: '/Resource::arn:aws:ec2:eu-central-1::snapshot/\\*$/g',
@@ -68,7 +68,7 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
 
     NagSuppressions.addResourceSuppressionsByPath(
       stack,
-      '/MyTestStack/DemoBuildProject/Role/DefaultPolicy/Resource',
+      '/MyTestStack/EmbeddedLinuxBuildProject/Role/DefaultPolicy/Resource',
       [
         {
           id: 'AwsSolutions-IAM5',
@@ -79,7 +79,7 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
     );
     NagSuppressions.addResourceSuppressionsByPath(
       stack,
-      '/MyTestStack/DemoBuildProject/PolicyDocument/Resource',
+      '/MyTestStack/EmbeddedLinuxBuildProject/PolicyDocument/Resource',
       [
         {
           id: 'AwsSolutions-IAM5',
@@ -124,7 +124,7 @@ describe('Demo pipeline cdk-nag AwsSolutions Pack', () => {
     );
     NagSuppressions.addResourceSuppressionsByPath(
       stack,
-      '/MyTestStack/EmbeddedLinuxPipeline/Artifact/Demo-Artifact/CodePipelineActionRole/DefaultPolicy/Resource',
+      '/MyTestStack/EmbeddedLinuxPipeline/Artifact/Artifact/CodePipelineActionRole/DefaultPolicy/Resource',
       [
         {
           id: 'AwsSolutions-IAM5',

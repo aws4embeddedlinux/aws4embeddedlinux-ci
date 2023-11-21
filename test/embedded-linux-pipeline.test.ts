@@ -6,7 +6,7 @@ import { Vpc } from 'aws-cdk-lib/aws-ec2';
 import { ProjectKind } from '../lib';
 import { normalizedTemplateFromStack } from './util';
 
-describe('Demo Pipeline', () => {
+describe('Pipeline', () => {
   const env = { account: '12341234', region: 'eu-central-1' };
 
   test('Logs Have Retention', () => {

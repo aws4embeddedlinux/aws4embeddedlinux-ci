@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
+exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
 {
   "Outputs": {
     "BuildOutput": {
       "Description": "The output bucket of this pipeline.",
       "Value": {
         "Fn::GetAtt": [
-          "DemoArtifactB63FBDE0",
+          "PipelineOutput78594CB5",
           "Arn",
         ],
       },
@@ -155,86 +155,9 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoArtifactB63FBDE0": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": [
-            {
-              "ServerSideEncryptionByDefault": {
-                "KMSMasterKeyID": {
-                  "Fn::GetAtt": [
-                    "OutputBucketEncryptionKey0E569549",
-                    "Arn",
-                  ],
-                },
-                "SSEAlgorithm": "aws:kms",
-              },
-            },
-          ],
-        },
-        "LoggingConfiguration": {
-          "DestinationBucketName": {
-            "Ref": "ArtifactAccessLoggingD6FCABA3",
-          },
-        },
-        "VersioningConfiguration": {
-          "Status": "Enabled",
-        },
-      },
-      "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "DemoArtifactPolicy2E42C1C3": {
-      "Properties": {
-        "Bucket": {
-          "Ref": "DemoArtifactB63FBDE0",
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:*",
-              "Condition": {
-                "Bool": {
-                  "aws:SecureTransport": "false",
-                },
-              },
-              "Effect": "Deny",
-              "Principal": {
-                "AWS": "*",
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "DemoArtifactB63FBDE0",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "DemoArtifactB63FBDE0",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::S3::BucketPolicy",
-    },
-    "DemoBuildProjectCA7F642A": {
+    "EmbeddedLinuxBuildProject45760157": {
       "DependsOn": [
-        "DemoBuildProjectPolicyDocumentD1257A49",
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
       ],
       "Properties": {
         "Artifacts": {
@@ -256,7 +179,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Name": "IMPORT_BUCKET",
               "Type": "PLAINTEXT",
               "Value": {
-                "Ref": "DemoArtifactB63FBDE0",
+                "Ref": "PipelineOutput78594CB5",
               },
             },
             {
@@ -379,7 +302,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
         },
         "ServiceRole": {
           "Fn::GetAtt": [
-            "DemoBuildProjectRoleFEBBD0B4",
+            "EmbeddedLinuxBuildProjectRole4EBABAB2",
             "Arn",
           ],
         },
@@ -415,7 +338,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::CodeBuild::Project",
     },
-    "DemoBuildProjectPolicyDocumentD1257A49": {
+    "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -435,16 +358,33 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoBuildProjectPolicyDocumentD1257A49",
+        "PolicyName": "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
         "Roles": [
           {
-            "Ref": "DemoBuildProjectRoleFEBBD0B4",
+            "Ref": "EmbeddedLinuxBuildProjectRole4EBABAB2",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoBuildProjectRoleDefaultPolicy352E66BC": {
+    "EmbeddedLinuxBuildProjectRole4EBABAB2": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "codebuild.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -595,7 +535,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                       },
                       ":logs:eu-central-1:12341234:log-group:/aws/codebuild/",
                       {
-                        "Ref": "DemoBuildProjectCA7F642A",
+                        "Ref": "EmbeddedLinuxBuildProject45760157",
                       },
                     ],
                   ],
@@ -610,7 +550,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                       },
                       ":logs:eu-central-1:12341234:log-group:/aws/codebuild/",
                       {
-                        "Ref": "DemoBuildProjectCA7F642A",
+                        "Ref": "EmbeddedLinuxBuildProject45760157",
                       },
                       ":*",
                     ],
@@ -637,7 +577,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                     },
                     ":codebuild:eu-central-1:12341234:report-group/",
                     {
-                      "Ref": "DemoBuildProjectCA7F642A",
+                      "Ref": "EmbeddedLinuxBuildProject45760157",
                     },
                     "-*",
                   ],
@@ -661,7 +601,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "DemoArtifactB63FBDE0",
+                    "PipelineOutput78594CB5",
                     "Arn",
                   ],
                 },
@@ -671,7 +611,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "DemoArtifactB63FBDE0",
+                          "PipelineOutput78594CB5",
                           "Arn",
                         ],
                       },
@@ -730,7 +670,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "DemoArtifactB63FBDE0",
+                    "PipelineOutput78594CB5",
                     "Arn",
                   ],
                 },
@@ -740,7 +680,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "DemoArtifactB63FBDE0",
+                          "PipelineOutput78594CB5",
                           "Arn",
                         ],
                       },
@@ -896,31 +836,14 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoBuildProjectRoleDefaultPolicy352E66BC",
+        "PolicyName": "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
         "Roles": [
           {
-            "Ref": "DemoBuildProjectRoleFEBBD0B4",
+            "Ref": "EmbeddedLinuxBuildProjectRole4EBABAB2",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "DemoBuildProjectRoleFEBBD0B4": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "codebuild.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
     },
     "EmbeddedLinuxPipeline1DDFB4FE": {
       "DependsOn": [
@@ -999,7 +922,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                 },
                 "Configuration": {
                   "ProjectName": {
-                    "Ref": "DemoBuildProjectCA7F642A",
+                    "Ref": "EmbeddedLinuxBuildProject45760157",
                   },
                 },
                 "InputArtifacts": [
@@ -1007,15 +930,15 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                     "Name": "Artifact_Source_Source",
                   },
                 ],
-                "Name": "Demo-Build",
+                "Name": "Build",
                 "OutputArtifacts": [
                   {
-                    "Name": "Artifact_Build_Demo-Build",
+                    "Name": "Artifact_Build_Build",
                   },
                 ],
                 "RoleArn": {
                   "Fn::GetAtt": [
-                    "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7",
+                    "EmbeddedLinuxPipelineBuildCodePipelineActionRoleC4160EB4",
                     "Arn",
                   ],
                 },
@@ -1035,19 +958,19 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                 },
                 "Configuration": {
                   "BucketName": {
-                    "Ref": "DemoArtifactB63FBDE0",
+                    "Ref": "PipelineOutput78594CB5",
                   },
                   "Extract": "true",
                 },
                 "InputArtifacts": [
                   {
-                    "Name": "Artifact_Build_Demo-Build",
+                    "Name": "Artifact_Build_Build",
                   },
                 ],
-                "Name": "Demo-Artifact",
+                "Name": "Artifact",
                 "RoleArn": {
                   "Fn::GetAtt": [
-                    "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85",
+                    "EmbeddedLinuxPipelineArtifactCodePipelineActionRole02805750",
                     "Arn",
                   ],
                 },
@@ -1060,7 +983,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::CodePipeline::Pipeline",
     },
-    "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85": {
+    "EmbeddedLinuxPipelineArtifactCodePipelineActionRole02805750": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -1088,7 +1011,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRoleDefaultPolicyF836ECDF": {
+    "EmbeddedLinuxPipelineArtifactCodePipelineActionRoleDefaultPolicyD75CCCBC": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1106,7 +1029,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "DemoArtifactB63FBDE0",
+                    "PipelineOutput78594CB5",
                     "Arn",
                   ],
                 },
@@ -1116,7 +1039,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "DemoArtifactB63FBDE0",
+                          "PipelineOutput78594CB5",
                           "Arn",
                         ],
                       },
@@ -1187,16 +1110,16 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRoleDefaultPolicyF836ECDF",
+        "PolicyName": "EmbeddedLinuxPipelineArtifactCodePipelineActionRoleDefaultPolicyD75CCCBC",
         "Roles": [
           {
-            "Ref": "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85",
+            "Ref": "EmbeddedLinuxPipelineArtifactCodePipelineActionRole02805750",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7": {
+    "EmbeddedLinuxPipelineBuildCodePipelineActionRoleC4160EB4": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -1224,7 +1147,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRoleDefaultPolicyD7EE2672": {
+    "EmbeddedLinuxPipelineBuildCodePipelineActionRoleDefaultPolicy176F5E4B": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1237,7 +1160,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoBuildProjectCA7F642A",
+                  "EmbeddedLinuxBuildProject45760157",
                   "Arn",
                 ],
               },
@@ -1245,10 +1168,10 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRoleDefaultPolicyD7EE2672",
+        "PolicyName": "EmbeddedLinuxPipelineBuildCodePipelineActionRoleDefaultPolicy176F5E4B",
         "Roles": [
           {
-            "Ref": "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7",
+            "Ref": "EmbeddedLinuxPipelineBuildCodePipelineActionRoleC4160EB4",
           },
         ],
       },
@@ -1509,7 +1432,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7",
+                  "EmbeddedLinuxPipelineBuildCodePipelineActionRoleC4160EB4",
                   "Arn",
                 ],
               },
@@ -1519,7 +1442,7 @@ exports[`Demo Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85",
+                  "EmbeddedLinuxPipelineArtifactCodePipelineActionRole02805750",
                   "Arn",
                 ],
               },
@@ -2267,6 +2190,83 @@ def handler(event, context):
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
+    "PipelineOutput78594CB5": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "KMSMasterKeyID": {
+                  "Fn::GetAtt": [
+                    "OutputBucketEncryptionKey0E569549",
+                    "Arn",
+                  ],
+                },
+                "SSEAlgorithm": "aws:kms",
+              },
+            },
+          ],
+        },
+        "LoggingConfiguration": {
+          "DestinationBucketName": {
+            "Ref": "ArtifactAccessLoggingD6FCABA3",
+          },
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "PipelineOutputPolicyCB4CC2E6": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "PipelineOutput78594CB5",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineOutput78594CB5",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineOutput78594CB5",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
     "SourceRepoSourceRepositoryC86045A8": {
       "Properties": {
         "Code": {
@@ -2370,7 +2370,7 @@ def handler(event, context):
                   "Resource": [
                     {
                       "Fn::GetAtt": [
-                        "DemoArtifactB63FBDE0",
+                        "PipelineOutput78594CB5",
                         "Arn",
                       ],
                     },
@@ -2380,7 +2380,7 @@ def handler(event, context):
                         [
                           {
                             "Fn::GetAtt": [
-                              "DemoArtifactB63FBDE0",
+                              "PipelineOutput78594CB5",
                               "Arn",
                             ],
                           },
@@ -2470,14 +2470,14 @@ def handler(event, context):
 }
 `;
 
-exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
+exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
 {
   "Outputs": {
     "BuildOutput": {
       "Description": "The output bucket of this pipeline.",
       "Value": {
         "Fn::GetAtt": [
-          "DemoArtifactB63FBDE0",
+          "PipelineOutput78594CB5",
           "Arn",
         ],
       },
@@ -2625,86 +2625,9 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoArtifactB63FBDE0": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": [
-            {
-              "ServerSideEncryptionByDefault": {
-                "KMSMasterKeyID": {
-                  "Fn::GetAtt": [
-                    "OutputBucketEncryptionKey0E569549",
-                    "Arn",
-                  ],
-                },
-                "SSEAlgorithm": "aws:kms",
-              },
-            },
-          ],
-        },
-        "LoggingConfiguration": {
-          "DestinationBucketName": {
-            "Ref": "ArtifactAccessLoggingD6FCABA3",
-          },
-        },
-        "VersioningConfiguration": {
-          "Status": "Enabled",
-        },
-      },
-      "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "DemoArtifactPolicy2E42C1C3": {
-      "Properties": {
-        "Bucket": {
-          "Ref": "DemoArtifactB63FBDE0",
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:*",
-              "Condition": {
-                "Bool": {
-                  "aws:SecureTransport": "false",
-                },
-              },
-              "Effect": "Deny",
-              "Principal": {
-                "AWS": "*",
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "DemoArtifactB63FBDE0",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "DemoArtifactB63FBDE0",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::S3::BucketPolicy",
-    },
-    "DemoBuildProjectCA7F642A": {
+    "EmbeddedLinuxBuildProject45760157": {
       "DependsOn": [
-        "DemoBuildProjectPolicyDocumentD1257A49",
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
       ],
       "Properties": {
         "Artifacts": {
@@ -2726,7 +2649,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Name": "IMPORT_BUCKET",
               "Type": "PLAINTEXT",
               "Value": {
-                "Ref": "DemoArtifactB63FBDE0",
+                "Ref": "PipelineOutput78594CB5",
               },
             },
             {
@@ -2849,7 +2772,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
         },
         "ServiceRole": {
           "Fn::GetAtt": [
-            "DemoBuildProjectRoleFEBBD0B4",
+            "EmbeddedLinuxBuildProjectRole4EBABAB2",
             "Arn",
           ],
         },
@@ -2885,7 +2808,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::CodeBuild::Project",
     },
-    "DemoBuildProjectPolicyDocumentD1257A49": {
+    "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -2905,16 +2828,33 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoBuildProjectPolicyDocumentD1257A49",
+        "PolicyName": "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
         "Roles": [
           {
-            "Ref": "DemoBuildProjectRoleFEBBD0B4",
+            "Ref": "EmbeddedLinuxBuildProjectRole4EBABAB2",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoBuildProjectRoleDefaultPolicy352E66BC": {
+    "EmbeddedLinuxBuildProjectRole4EBABAB2": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "codebuild.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -3065,7 +3005,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                       },
                       ":logs:eu-central-1:12341234:log-group:/aws/codebuild/",
                       {
-                        "Ref": "DemoBuildProjectCA7F642A",
+                        "Ref": "EmbeddedLinuxBuildProject45760157",
                       },
                     ],
                   ],
@@ -3080,7 +3020,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                       },
                       ":logs:eu-central-1:12341234:log-group:/aws/codebuild/",
                       {
-                        "Ref": "DemoBuildProjectCA7F642A",
+                        "Ref": "EmbeddedLinuxBuildProject45760157",
                       },
                       ":*",
                     ],
@@ -3107,7 +3047,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                     },
                     ":codebuild:eu-central-1:12341234:report-group/",
                     {
-                      "Ref": "DemoBuildProjectCA7F642A",
+                      "Ref": "EmbeddedLinuxBuildProject45760157",
                     },
                     "-*",
                   ],
@@ -3131,7 +3071,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "DemoArtifactB63FBDE0",
+                    "PipelineOutput78594CB5",
                     "Arn",
                   ],
                 },
@@ -3141,7 +3081,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "DemoArtifactB63FBDE0",
+                          "PipelineOutput78594CB5",
                           "Arn",
                         ],
                       },
@@ -3200,7 +3140,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "DemoArtifactB63FBDE0",
+                    "PipelineOutput78594CB5",
                     "Arn",
                   ],
                 },
@@ -3210,7 +3150,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "DemoArtifactB63FBDE0",
+                          "PipelineOutput78594CB5",
                           "Arn",
                         ],
                       },
@@ -3366,31 +3306,14 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoBuildProjectRoleDefaultPolicy352E66BC",
+        "PolicyName": "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
         "Roles": [
           {
-            "Ref": "DemoBuildProjectRoleFEBBD0B4",
+            "Ref": "EmbeddedLinuxBuildProjectRole4EBABAB2",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "DemoBuildProjectRoleFEBBD0B4": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "codebuild.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
     },
     "EmbeddedLinuxPipeline1DDFB4FE": {
       "DependsOn": [
@@ -3469,7 +3392,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                 },
                 "Configuration": {
                   "ProjectName": {
-                    "Ref": "DemoBuildProjectCA7F642A",
+                    "Ref": "EmbeddedLinuxBuildProject45760157",
                   },
                 },
                 "InputArtifacts": [
@@ -3477,15 +3400,15 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                     "Name": "Artifact_Source_Source",
                   },
                 ],
-                "Name": "Demo-Build",
+                "Name": "Build",
                 "OutputArtifacts": [
                   {
-                    "Name": "Artifact_Build_Demo-Build",
+                    "Name": "Artifact_Build_Build",
                   },
                 ],
                 "RoleArn": {
                   "Fn::GetAtt": [
-                    "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7",
+                    "EmbeddedLinuxPipelineBuildCodePipelineActionRoleC4160EB4",
                     "Arn",
                   ],
                 },
@@ -3505,19 +3428,19 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                 },
                 "Configuration": {
                   "BucketName": {
-                    "Ref": "DemoArtifactB63FBDE0",
+                    "Ref": "PipelineOutput78594CB5",
                   },
                   "Extract": "true",
                 },
                 "InputArtifacts": [
                   {
-                    "Name": "Artifact_Build_Demo-Build",
+                    "Name": "Artifact_Build_Build",
                   },
                 ],
-                "Name": "Demo-Artifact",
+                "Name": "Artifact",
                 "RoleArn": {
                   "Fn::GetAtt": [
-                    "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85",
+                    "EmbeddedLinuxPipelineArtifactCodePipelineActionRole02805750",
                     "Arn",
                   ],
                 },
@@ -3530,7 +3453,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::CodePipeline::Pipeline",
     },
-    "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85": {
+    "EmbeddedLinuxPipelineArtifactCodePipelineActionRole02805750": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -3558,7 +3481,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRoleDefaultPolicyF836ECDF": {
+    "EmbeddedLinuxPipelineArtifactCodePipelineActionRoleDefaultPolicyD75CCCBC": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -3576,7 +3499,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "DemoArtifactB63FBDE0",
+                    "PipelineOutput78594CB5",
                     "Arn",
                   ],
                 },
@@ -3586,7 +3509,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
                     [
                       {
                         "Fn::GetAtt": [
-                          "DemoArtifactB63FBDE0",
+                          "PipelineOutput78594CB5",
                           "Arn",
                         ],
                       },
@@ -3657,16 +3580,16 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRoleDefaultPolicyF836ECDF",
+        "PolicyName": "EmbeddedLinuxPipelineArtifactCodePipelineActionRoleDefaultPolicyD75CCCBC",
         "Roles": [
           {
-            "Ref": "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85",
+            "Ref": "EmbeddedLinuxPipelineArtifactCodePipelineActionRole02805750",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7": {
+    "EmbeddedLinuxPipelineBuildCodePipelineActionRoleC4160EB4": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -3694,7 +3617,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRoleDefaultPolicyD7EE2672": {
+    "EmbeddedLinuxPipelineBuildCodePipelineActionRoleDefaultPolicy176F5E4B": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -3707,7 +3630,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoBuildProjectCA7F642A",
+                  "EmbeddedLinuxBuildProject45760157",
                   "Arn",
                 ],
               },
@@ -3715,10 +3638,10 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRoleDefaultPolicyD7EE2672",
+        "PolicyName": "EmbeddedLinuxPipelineBuildCodePipelineActionRoleDefaultPolicy176F5E4B",
         "Roles": [
           {
-            "Ref": "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7",
+            "Ref": "EmbeddedLinuxPipelineBuildCodePipelineActionRoleC4160EB4",
           },
         ],
       },
@@ -3979,7 +3902,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7",
+                  "EmbeddedLinuxPipelineBuildCodePipelineActionRoleC4160EB4",
                   "Arn",
                 ],
               },
@@ -3989,7 +3912,7 @@ exports[`Demo Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85",
+                  "EmbeddedLinuxPipelineArtifactCodePipelineActionRole02805750",
                   "Arn",
                 ],
               },
@@ -4737,6 +4660,83 @@ def handler(event, context):
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Retain",
     },
+    "PipelineOutput78594CB5": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "KMSMasterKeyID": {
+                  "Fn::GetAtt": [
+                    "OutputBucketEncryptionKey0E569549",
+                    "Arn",
+                  ],
+                },
+                "SSEAlgorithm": "aws:kms",
+              },
+            },
+          ],
+        },
+        "LoggingConfiguration": {
+          "DestinationBucketName": {
+            "Ref": "ArtifactAccessLoggingD6FCABA3",
+          },
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "PipelineOutputPolicyCB4CC2E6": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "PipelineOutput78594CB5",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineOutput78594CB5",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineOutput78594CB5",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
     "SourceRepoSourceRepositoryC86045A8": {
       "Properties": {
         "Code": {
@@ -4840,7 +4840,7 @@ def handler(event, context):
                   "Resource": [
                     {
                       "Fn::GetAtt": [
-                        "DemoArtifactB63FBDE0",
+                        "PipelineOutput78594CB5",
                         "Arn",
                       ],
                     },
@@ -4850,7 +4850,7 @@ def handler(event, context):
                         [
                           {
                             "Fn::GetAtt": [
-                              "DemoArtifactB63FBDE0",
+                              "PipelineOutput78594CB5",
                               "Arn",
                             ],
                           },
@@ -4940,7 +4940,7 @@ def handler(event, context):
 }
 `;
 
-exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
+exports[`Pipeline Snapshot Poky Pipeline 1`] = `
 {
   "Outputs": {
     "BuildOutput": {
@@ -5095,9 +5095,9 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoBuildProjectCA7F642A": {
+    "EmbeddedLinuxBuildProject45760157": {
       "DependsOn": [
-        "DemoBuildProjectPolicyDocumentD1257A49",
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
       ],
       "Properties": {
         "Artifacts": {
@@ -5221,7 +5221,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
         },
         "ServiceRole": {
           "Fn::GetAtt": [
-            "DemoBuildProjectRoleFEBBD0B4",
+            "EmbeddedLinuxBuildProjectRole4EBABAB2",
             "Arn",
           ],
         },
@@ -5257,7 +5257,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::CodeBuild::Project",
     },
-    "DemoBuildProjectPolicyDocumentD1257A49": {
+    "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -5277,16 +5277,33 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoBuildProjectPolicyDocumentD1257A49",
+        "PolicyName": "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
         "Roles": [
           {
-            "Ref": "DemoBuildProjectRoleFEBBD0B4",
+            "Ref": "EmbeddedLinuxBuildProjectRole4EBABAB2",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DemoBuildProjectRoleDefaultPolicy352E66BC": {
+    "EmbeddedLinuxBuildProjectRole4EBABAB2": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "codebuild.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -5437,7 +5454,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                       },
                       ":logs:eu-central-1:12341234:log-group:/aws/codebuild/",
                       {
-                        "Ref": "DemoBuildProjectCA7F642A",
+                        "Ref": "EmbeddedLinuxBuildProject45760157",
                       },
                     ],
                   ],
@@ -5452,7 +5469,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                       },
                       ":logs:eu-central-1:12341234:log-group:/aws/codebuild/",
                       {
-                        "Ref": "DemoBuildProjectCA7F642A",
+                        "Ref": "EmbeddedLinuxBuildProject45760157",
                       },
                       ":*",
                     ],
@@ -5479,7 +5496,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                     },
                     ":codebuild:eu-central-1:12341234:report-group/",
                     {
-                      "Ref": "DemoBuildProjectCA7F642A",
+                      "Ref": "EmbeddedLinuxBuildProject45760157",
                     },
                     "-*",
                   ],
@@ -5567,31 +5584,14 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "DemoBuildProjectRoleDefaultPolicy352E66BC",
+        "PolicyName": "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
         "Roles": [
           {
-            "Ref": "DemoBuildProjectRoleFEBBD0B4",
+            "Ref": "EmbeddedLinuxBuildProjectRole4EBABAB2",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "DemoBuildProjectRoleFEBBD0B4": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "codebuild.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
     },
     "EmbeddedLinuxPipeline1DDFB4FE": {
       "DependsOn": [
@@ -5670,7 +5670,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                 },
                 "Configuration": {
                   "ProjectName": {
-                    "Ref": "DemoBuildProjectCA7F642A",
+                    "Ref": "EmbeddedLinuxBuildProject45760157",
                   },
                 },
                 "InputArtifacts": [
@@ -5678,15 +5678,15 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                     "Name": "Artifact_Source_Source",
                   },
                 ],
-                "Name": "Demo-Build",
+                "Name": "Build",
                 "OutputArtifacts": [
                   {
-                    "Name": "Artifact_Build_Demo-Build",
+                    "Name": "Artifact_Build_Build",
                   },
                 ],
                 "RoleArn": {
                   "Fn::GetAtt": [
-                    "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7",
+                    "EmbeddedLinuxPipelineBuildCodePipelineActionRoleC4160EB4",
                     "Arn",
                   ],
                 },
@@ -5712,13 +5712,13 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
                 },
                 "InputArtifacts": [
                   {
-                    "Name": "Artifact_Build_Demo-Build",
+                    "Name": "Artifact_Build_Build",
                   },
                 ],
-                "Name": "Demo-Artifact",
+                "Name": "Artifact",
                 "RoleArn": {
                   "Fn::GetAtt": [
-                    "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85",
+                    "EmbeddedLinuxPipelineArtifactCodePipelineActionRole02805750",
                     "Arn",
                   ],
                 },
@@ -5731,7 +5731,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::CodePipeline::Pipeline",
     },
-    "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85": {
+    "EmbeddedLinuxPipelineArtifactCodePipelineActionRole02805750": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -5759,7 +5759,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRoleDefaultPolicyF836ECDF": {
+    "EmbeddedLinuxPipelineArtifactCodePipelineActionRoleDefaultPolicyD75CCCBC": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -5843,16 +5843,16 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRoleDefaultPolicyF836ECDF",
+        "PolicyName": "EmbeddedLinuxPipelineArtifactCodePipelineActionRoleDefaultPolicyD75CCCBC",
         "Roles": [
           {
-            "Ref": "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85",
+            "Ref": "EmbeddedLinuxPipelineArtifactCodePipelineActionRole02805750",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7": {
+    "EmbeddedLinuxPipelineBuildCodePipelineActionRoleC4160EB4": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -5880,7 +5880,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRoleDefaultPolicyD7EE2672": {
+    "EmbeddedLinuxPipelineBuildCodePipelineActionRoleDefaultPolicy176F5E4B": {
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -5893,7 +5893,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "DemoBuildProjectCA7F642A",
+                  "EmbeddedLinuxBuildProject45760157",
                   "Arn",
                 ],
               },
@@ -5901,10 +5901,10 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
           ],
           "Version": "2012-10-17",
         },
-        "PolicyName": "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRoleDefaultPolicyD7EE2672",
+        "PolicyName": "EmbeddedLinuxPipelineBuildCodePipelineActionRoleDefaultPolicy176F5E4B",
         "Roles": [
           {
-            "Ref": "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7",
+            "Ref": "EmbeddedLinuxPipelineBuildCodePipelineActionRoleC4160EB4",
           },
         ],
       },
@@ -6165,7 +6165,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "EmbeddedLinuxPipelineBuildDemoBuildCodePipelineActionRole96A18CF7",
+                  "EmbeddedLinuxPipelineBuildCodePipelineActionRoleC4160EB4",
                   "Arn",
                 ],
               },
@@ -6175,7 +6175,7 @@ exports[`Demo Pipeline Snapshot Poky Pipeline 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Fn::GetAtt": [
-                  "EmbeddedLinuxPipelineArtifactDemoArtifactCodePipelineActionRole2D3D5B85",
+                  "EmbeddedLinuxPipelineArtifactCodePipelineActionRole02805750",
                   "Arn",
                 ],
               },
