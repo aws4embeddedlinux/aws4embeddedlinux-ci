@@ -38,7 +38,6 @@ You can use [`npm link`](https://docs.npmjs.com/cli/v10/commands/npm-link) to de
 ### In this library repo:
 ```bash
 npm install
-npm link
 ```
 
 ### In your-project folder:
@@ -53,6 +52,8 @@ or [set a node prefix](https://docs.npmjs.com/resolving-eacces-permissions-error
 
 ## Known issues
 - Windows is currently not supported
+- When using AWS Cloud9 a micro instance type will run out of memory
+- Deletion of stacks while a CodePipeline is running this can lead to unexpected failures
 
 
 ## Security
