@@ -31,7 +31,7 @@ this container patched.</li>
 <li>Now the application pipeline can be run. This will push the contents of the Yocto deploy directory into S3.</li>
 </ol>
 <a id="md:development-setup" class="tsd-anchor"></a><h2><a href="#md:development-setup">Development Setup</a></h2><p>You can use <a href="https://docs.npmjs.com/cli/v10/commands/npm-link"><code>npm link</code></a> to develop with a local copy of this repo.</p>
-<a id="md:in-this-library-repo" class="tsd-anchor"></a><h3><a href="#md:in-this-library-repo">In this library repo:</a></h3><pre><code class="language-bash"><span class="hl-2">npm</span><span class="hl-1"> </span><span class="hl-3">install</span><br/><span class="hl-2">npm</span><span class="hl-1"> </span><span class="hl-3">link</span>
+<a id="md:in-this-library-repo" class="tsd-anchor"></a><h3><a href="#md:in-this-library-repo">In this library repo:</a></h3><pre><code class="language-bash"><span class="hl-2">npm</span><span class="hl-1"> </span><span class="hl-3">install</span>
 </code><button>Copy</button></pre>
 <a id="md:in-your-project-folder" class="tsd-anchor"></a><h3><a href="#md:in-your-project-folder">In your-project folder:</a></h3><pre><code class="language-bash"><span class="hl-2">npm</span><span class="hl-1"> </span><span class="hl-3">install</span><br/><span class="hl-2">npm</span><span class="hl-1"> </span><span class="hl-3">link</span><span class="hl-1"> </span><span class="hl-3">../aws4embeddedlinux-ci</span>
 </code><button>Copy</button></pre>
@@ -40,6 +40,8 @@ a <a href="https://docs.npmjs.com/downloading-and-installing-node-js-and-npm#usi
 or <a href="https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally">set a node prefix</a>.</p>
 <a id="md:known-issues" class="tsd-anchor"></a><h2><a href="#md:known-issues">Known issues</a></h2><ul>
 <li>Windows is currently not supported</li>
+<li>When using AWS Cloud9 a micro instance type will run out of memory</li>
+<li>Deletion of stacks while a CodePipeline is running this can lead to unexpected failures</li>
 </ul>
 <a id="md:security" class="tsd-anchor"></a><h2><a href="#md:security">Security</a></h2><p>See <a href="SECURITY.md">SECURITY</a> for more information about reporting issues with this project.</p>
 <a id="md:git-credentials-and-build-time-secrets" class="tsd-anchor"></a><h3><a href="#md:git-credentials-and-build-time-secrets">Git Credentials and Build Time Secrets</a></h3><p><a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html">AWS Secrets Manager</a> is the preferred method of adding secrets
