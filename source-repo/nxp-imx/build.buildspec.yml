@@ -20,8 +20,12 @@ phases:
       - echo Build started on `date`
       - repo init -u https://github.com/nxp-imx/imx-manifest -b imx-linux-mickledore -m imx-6.1.22-2.0.0.xml
       - repo sync
-      # EULA acceptance (EULA=y) must be added in this line or before.
-      # - EULA=y
+      # If you have not accepted NXP's EULA for these layers, the build will
+      # prompt you repeatedly until the timeout. This next line is an
+      # intentional barrier to stop the build quickly and get your attention.
+      # Please review the licensing required, modify this buildspec to accept
+      # and remove the next line to proceed.
+      - echo "User input is required." && exit 1
       - MACHINE=imx6ullevk DISTRO=fsl-imx-wayland source ./imx-setup-release.sh
       # Update our local conf to check for CVEs
       - echo 'INHERIT += "cve-check"' >> conf/local.conf
