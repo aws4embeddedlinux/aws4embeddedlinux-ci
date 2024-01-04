@@ -48,6 +48,8 @@ export interface EmbeddedLinuxPipelineProps extends cdk.StackProps {
   readonly projectKind?: ProjectKind;
   /** A name for the layer-repo that is created. Default is 'layer-repo' */
   readonly layerRepoName?: string;
+  /** Additional policy statements to add to the build project. */
+  readonly buildPolicyAdditions?: iam.PolicyStatement[];
 }
 
 /**
@@ -198,6 +200,10 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
         },
       },
     });
+
+    if (props.buildPolicyAdditions) {
+      props.buildPolicyAdditions.map(p => project.addToRolePolicy(p))
+    }
 
     if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
       outputBucket.grantReadWrite(project);
