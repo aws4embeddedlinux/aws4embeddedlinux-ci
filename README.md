@@ -73,18 +73,26 @@ source repos, etc.
 
 1. Create a _Secret_ in Secrets Manager and add your secret value.
 1. Grant access permissions to the CodeBuild pipeline project.
-   1. Find the IAM role for the CodeBuild Project in the CodeBuild console page under the "Build Details". This is also called the "Service Role".
-   1. In the IAM console page, add a new policy, replacing \<Secret ARN\> with the ARN of the secret created.
-      ```json
-      {
-          "Version": "2012-10-17",
-          "Statement": [ {
-              "Effect": "Allow",
-              "Action": "secretsmanager:GetSecretValue",
-              "Resource": "<Secret ARN>"
-          } ]
-      }
-      ```
+11. Create a [Policy Statement](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_iam.PolicyStatement.html) which allows `secretsmanager:GetSecretValue` for your secret.
+11. Add this policy statement to the `buildPolicyAdditions` props for the `EmbeddedLinuxPipelineStack`. e.g.
+```typescript
+import * as iam from "aws-cdk-lib/aws-iam";
+
+
+const pipeline = new EmbeddedLinuxPipelineStack(app, "MyPokyPipeline", {
+  imageRepo: buildImageRepo.repository,
+  imageTag: ImageKind.Ubuntu22_04,
+  vpc: vpc.vpc,
+  buildPolicyAdditions: [
+    iam.PolicyStatement.fromJson({
+      Effect: "Allow",
+      Action: "secretsmanager:GetSecretValue",
+      Resource:
+        "arn:aws:secretsmanager:us-west-2:123456789012:secret:my-secret-??????",
+    }),
+  ],
+});
+ ```
 
 The secret can then be used in the CodeBuild Project by adding it to the BuildSpec. See
 the [CodeBuild Documentation](https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html) for more details.
