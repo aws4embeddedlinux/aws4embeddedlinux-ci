@@ -38,6 +38,10 @@ Use the [examples](https://github.com/aws4embeddedlinux/aws4embeddedlinux-ci-exa
    this container patched.
 6. Now the application pipeline can be run. This will push the contents of the Yocto deploy directory into S3.
 
+## Viewing Changes
+
+The `cdk diff` command can be used to preview changes before deployment. This will allow the user to review what is being created.
+
 ## Development Setup
 You can use [`npm link`](https://docs.npmjs.com/cli/v10/commands/npm-link) to develop with a local copy of this repo.
 
