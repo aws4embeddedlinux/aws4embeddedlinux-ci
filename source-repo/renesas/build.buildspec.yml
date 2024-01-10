@@ -16,6 +16,12 @@ phases:
       - chmod 755 /sstate-cache
       - chmod 755 /downloads
       - chmod 755 build.sh
+      - |
+          if [[ -n "$PURGE_EFS" ]] ; then
+            echo "Starting EFS purge."
+            rm -rvf /downloads/*
+            rm -rvf /sstate-cache/*
+          fi
   build:
     commands:
       # BB_ENV_EXTRAWHITE is still used in Dunfell release and was renamed afterwards to BB_ENV_PASSTHROUGH_ADDITIONS

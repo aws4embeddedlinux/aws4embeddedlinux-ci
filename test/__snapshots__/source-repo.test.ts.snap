@@ -16,7 +16,7 @@ exports[`Pipeline Source Repository Snapshot 1`] = `
           "BranchName": "main",
           "S3": {
             "Bucket": "cdk-hnb659fds-assets-12341234-eu-central-1",
-            "Key": "7d314040c3b712e8f4a6fe344b865c6d51d6d3470218790947a0f5a9f7e04326.zip",
+            "Key": "03d16bf861cb657df931bd33404567ac7f02ff927d18a45f5cc7f7cc981bb7ce.zip",
           },
         },
         "RepositoryName": "charlie",
