@@ -296,6 +296,7 @@ exports[`Build Image Data Snapshot 1`] = `
             },
             {
               "Action": [
+                "s3:PutBucketPolicy",
                 "s3:GetBucket*",
                 "s3:List*",
                 "s3:DeleteObject*",
@@ -365,7 +366,7 @@ exports[`Build Image Data Snapshot 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "python3.9",
+        "Runtime": "python3.11",
         "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
@@ -399,7 +400,7 @@ exports[`Build Image Data Snapshot 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs20.x",
         "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
