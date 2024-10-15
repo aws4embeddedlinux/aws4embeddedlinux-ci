@@ -133,6 +133,17 @@ describe('Pipeline cdk-nag AwsSolutions Pack', () => {
         },
       ]
     );
+    NagSuppressions.addResourceSuppressionsByPath(
+      stack,
+      '/MyTestStack/OSImageCheckOnStart/Resource',
+      [
+        {
+          id: 'AwsSolutions-L1',
+          reason:
+            'There is no latest PYTHON version to set.',
+        },
+      ]
+    );
     // WHEN
     Aspects.of(stack).add(new AwsSolutionsChecks({ verbose: true }));
   });
