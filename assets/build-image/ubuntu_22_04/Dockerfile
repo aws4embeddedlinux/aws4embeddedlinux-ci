@@ -33,6 +33,9 @@ RUN locale-gen en_US.UTF-8
 RUN groupadd -g 1000 yoctouser
 RUN useradd -u 1000 -g 1000 -m yoctouser
 
+# this will fix: https://gitlab.com/qemu-project/qemu/-/issues/447
+RUN sysctl vm.mmap_min_addr=65536
+
 # These will be mount points for an EFS volume. This allows the cache to be reused.
 RUN mkdir /downloads && chown -R yoctouser /downloads
 RUN mkdir /sstate-cache && chown -R yoctouser /sstate-cache
