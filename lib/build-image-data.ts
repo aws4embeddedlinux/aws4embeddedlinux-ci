@@ -37,8 +37,10 @@ export class BuildImageDataStack extends cdk.Stack {
    */
   private createDeploymentBucket(bucketName: string): s3.IBucket {
     const accessLoggingBucket = new s3.Bucket(this, 'LoggingBucket', {
-      versioned: true,
+      versioned: false,
       enforceSSL: true,
+      autoDeleteObjects: true,
+      removalPolicy: RemovalPolicy.DESTROY,
     });
 
     const encryptionKey = new kms.Key(this, 'PipelineArtifactKey', {

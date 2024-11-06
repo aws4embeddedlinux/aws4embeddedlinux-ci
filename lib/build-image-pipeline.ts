@@ -99,8 +99,10 @@ export class BuildImagePipelineStack extends cdk.Stack {
     });
 
     const accessLoggingBucket = new s3.Bucket(this, 'ArtifactAccessLogging', {
-      versioned: true,
+      versioned: false,
       enforceSSL: true,
+      autoDeleteObjects: true,
+      removalPolicy: RemovalPolicy.DESTROY,
     });
     const encryptionKey = new kms.Key(this, 'PipelineArtifactKey', {
       removalPolicy: RemovalPolicy.DESTROY,
@@ -115,11 +117,14 @@ export class BuildImagePipelineStack extends cdk.Stack {
       blockPublicAccess: new s3.BlockPublicAccess(
         s3.BlockPublicAccess.BLOCK_ALL
       ),
+      autoDeleteObjects: true,
+      removalPolicy: RemovalPolicy.DESTROY,
     });
 
     const pipeline = new codepipeline.Pipeline(this, 'BuildImagePipeline', {
       artifactBucket,
       pipelineName: `${props.imageKind}BuildImagePipeline`,
+      pipelineType: codepipeline.PipelineType.V1,
       stages: [
         {
           stageName: 'Source',

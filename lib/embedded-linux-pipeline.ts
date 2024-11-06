@@ -82,8 +82,10 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
     let scriptAsset!: Asset;
 
     const accessLoggingBucket = new s3.Bucket(this, 'ArtifactAccessLogging', {
-      versioned: true,
+      versioned: false,
       enforceSSL: true,
+      autoDeleteObjects: true,
+      removalPolicy: RemovalPolicy.DESTROY,
     });
 
     if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
@@ -106,6 +108,8 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
         encryptionKey: outputBucketEncryptionKey,
         encryptionKeyArn: outputBucketEncryptionKey.keyArn,
         serverAccessLogsBucket: accessLoggingBucket,
+        autoDeleteObjects: true,
+        removalPolicy: RemovalPolicy.DESTROY,
       });
       environmentVariables = {
         IMPORT_BUCKET: {
@@ -126,6 +130,8 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
         versioned: true,
         enforceSSL: true,
         serverAccessLogsBucket: accessLoggingBucket,
+        autoDeleteObjects: true,
+        removalPolicy: RemovalPolicy.DESTROY,
       });
     }
 
@@ -142,6 +148,8 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
       blockPublicAccess: new s3.BlockPublicAccess(
         s3.BlockPublicAccess.BLOCK_ALL
       ),
+      autoDeleteObjects: true,
+      removalPolicy: RemovalPolicy.DESTROY,
     });
 
     /** Create our CodePipeline Actions. */
@@ -295,6 +303,7 @@ def handler(event, context):
     const pipeline = new codepipeline.Pipeline(this, 'EmbeddedLinuxPipeline', {
       artifactBucket,
       restartExecutionOnUpdate: true,
+      pipelineType: codepipeline.PipelineType.V1,
       stages: [
         {
           stageName: 'Source',
