@@ -9,7 +9,7 @@ describe('Pipeline Networking', () => {
 
   test('Logs Have Retention Period', () => {
     const app = new cdk.App();
-    const stack = new PipelineNetworkStack(app, props);
+    const stack = new PipelineNetworkStack(app, 'PipelineNetworkStack', props);
     const template = Template.fromStack(stack);
     template.resourceCountIs('AWS::Logs::LogGroup', 1);
     template.allResourcesProperties('AWS::Logs::LogGroup', {
@@ -19,7 +19,7 @@ describe('Pipeline Networking', () => {
 
   test('Snapshot', () => {
     const app = new cdk.App();
-    const stack = new PipelineNetworkStack(app, props);
+    const stack = new PipelineNetworkStack(app, 'PipelineNetworkStack', props);
     const template = Template.fromStack(stack);
     expect(template).toMatchSnapshot();
   });
