@@ -12,9 +12,8 @@ import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 export class PipelineNetworkStack extends cdk.Stack {
   /** The VPC for the pipeline to reside in. */
   public readonly vpc: ec2.IVpc;
-
-  constructor(scope: Construct, props?: cdk.StackProps) {
-    super(scope, 'PipelineNetwork', props);
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+    super(scope, id, props);
 
     // We will create a VPC with 3 Private and Public subnets for AWS
     // Resources that have network interfaces (e.g. Connecting and EFS
