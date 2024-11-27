@@ -37,8 +37,10 @@ export class BuildImageDataStack extends cdk.Stack {
    */
   private createDeploymentBucket(bucketName: string): s3.IBucket {
     const accessLoggingBucket = new s3.Bucket(this, 'LoggingBucket', {
-      versioned: true,
+      versioned: false,
       enforceSSL: true,
+      autoDeleteObjects: true,
+      removalPolicy: RemovalPolicy.DESTROY,
     });
 
     const encryptionKey = new kms.Key(this, 'PipelineArtifactKey', {
@@ -49,12 +51,12 @@ export class BuildImageDataStack extends cdk.Stack {
     // Create a bucket, then allow a deployment Lambda to upload to it.
     const dataBucket = new s3.Bucket(this, 'BuildImageDataBucket', {
       bucketName,
-      versioned: true,
+      versioned: false,
       encryptionKey: encryptionKey,
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      autoDeleteObjects: true,
       enforceSSL: true,
       serverAccessLogsBucket: accessLoggingBucket,
+      autoDeleteObjects: true,
+      removalPolicy: RemovalPolicy.DESTROY,
     });
 
     const cwPolicy = new iam.PolicyDocument({

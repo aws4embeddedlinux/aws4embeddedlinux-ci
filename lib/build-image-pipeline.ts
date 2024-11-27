@@ -111,8 +111,10 @@ export class BuildImagePipelineStack extends cdk.Stack {
       accessLoggingBucket = props.accessLoggingBucket;
     } else {
      accessLoggingBucket = new s3.Bucket(this, 'ArtifactAccessLogging', {
-        versioned: true,
+        versioned: false,
         enforceSSL: true,
+        autoDeleteObjects: true,
+        removalPolicy: RemovalPolicy.DESTROY,
       });
     }
 
@@ -126,7 +128,7 @@ export class BuildImagePipelineStack extends cdk.Stack {
        enableKeyRotation: true,
      });
       artifactBucket = new s3.Bucket(this, 'PipelineArtifacts', {
-        versioned: true,
+        versioned: false,
         enforceSSL: true,
         serverAccessLogsBucket: accessLoggingBucket,
         serverAccessLogsPrefix: props.serverAccessLogsPrefix,
@@ -135,12 +137,15 @@ export class BuildImagePipelineStack extends cdk.Stack {
         blockPublicAccess: new s3.BlockPublicAccess(
           s3.BlockPublicAccess.BLOCK_ALL
         ),
+        autoDeleteObjects: true,
+        removalPolicy: RemovalPolicy.DESTROY,
       });
     }
 
     const pipeline = new codepipeline.Pipeline(this, 'BuildImagePipeline', {
       artifactBucket,
       pipelineName: `${props.imageKind}BuildImagePipeline`,
+      pipelineType: codepipeline.PipelineType.V1,
       stages: [
         {
           stageName: 'Source',

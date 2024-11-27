@@ -96,8 +96,10 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
       accessLoggingBucket = props.accessLoggingBucket;
     } else {
      accessLoggingBucket = new s3.Bucket(this, 'ArtifactAccessLogging', {
-        versioned: true,
+        versioned: false,
         enforceSSL: true,
+        autoDeleteObjects: true,
+        removalPolicy: RemovalPolicy.DESTROY,
       });
     }
 
@@ -114,6 +116,7 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
           enableKeyRotation: true,
         }
       );
+
       if (props.outputBucket){
         outputBucket = props.outputBucket;
       } else {
@@ -124,6 +127,8 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
           encryptionKeyArn: outputBucketEncryptionKey.keyArn,
           serverAccessLogsBucket: accessLoggingBucket,
           serverAccessLogsPrefix: props.serverAccessLogsPrefix,
+          autoDeleteObjects: true,
+          removalPolicy: RemovalPolicy.DESTROY,
         });
       }
       environmentVariables = {
@@ -145,9 +150,11 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
         outputBucket = props.outputBucket;
       } else {
         outputBucket = new s3.Bucket(this, 'PipelineOutput', {
-          versioned: true,
+          versioned: false,
           enforceSSL: true,
           serverAccessLogsBucket: accessLoggingBucket,
+          autoDeleteObjects: true,
+          removalPolicy: RemovalPolicy.DESTROY,
         });
       }
     }
@@ -162,7 +169,7 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
        enableKeyRotation: true,
      });
       artifactBucket = new s3.Bucket(this, 'PipelineArtifacts', {
-        versioned: true,
+        versioned: false,
         enforceSSL: true,
         serverAccessLogsBucket: accessLoggingBucket,
         encryptionKey,
@@ -170,6 +177,8 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
         blockPublicAccess: new s3.BlockPublicAccess(
           s3.BlockPublicAccess.BLOCK_ALL
         ),
+        autoDeleteObjects: true,
+        removalPolicy: RemovalPolicy.DESTROY,
       });
     }
 
@@ -335,6 +344,7 @@ def handler(event, context):
     const pipeline = new codepipeline.Pipeline(this, 'EmbeddedLinuxPipeline', {
       artifactBucket,
       restartExecutionOnUpdate: true,
+      pipelineType: codepipeline.PipelineType.V1,
       stages: [
         {
           stageName: 'Source',

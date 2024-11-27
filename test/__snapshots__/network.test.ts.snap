@@ -27,7 +27,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc",
+            "Value": "PipelineNetworkStack/PipelineVpc",
           },
         ],
       },
@@ -38,7 +38,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc",
+            "Value": "PipelineNetworkStack/PipelineVpc",
           },
         ],
       },
@@ -61,7 +61,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc/PrivateSubnet1",
+            "Value": "PipelineNetworkStack/PipelineVpc/PrivateSubnet1",
           },
         ],
         "VpcId": {
@@ -97,7 +97,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
           },
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc/PrivateSubnet1",
+            "Value": "PipelineNetworkStack/PipelineVpc/PrivateSubnet1",
           },
         ],
         "VpcId": {
@@ -123,7 +123,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc/PrivateSubnet2",
+            "Value": "PipelineNetworkStack/PipelineVpc/PrivateSubnet2",
           },
         ],
         "VpcId": {
@@ -159,7 +159,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
           },
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc/PrivateSubnet2",
+            "Value": "PipelineNetworkStack/PipelineVpc/PrivateSubnet2",
           },
         ],
         "VpcId": {
@@ -196,7 +196,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc/PrivateSubnet3",
+            "Value": "PipelineNetworkStack/PipelineVpc/PrivateSubnet3",
           },
         ],
         "VpcId": {
@@ -221,7 +221,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
           },
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc/PrivateSubnet3",
+            "Value": "PipelineNetworkStack/PipelineVpc/PrivateSubnet3",
           },
         ],
         "VpcId": {
@@ -251,7 +251,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc/PublicSubnet1",
+            "Value": "PipelineNetworkStack/PipelineVpc/PublicSubnet1",
           },
         ],
       },
@@ -275,7 +275,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc/PublicSubnet1",
+            "Value": "PipelineNetworkStack/PipelineVpc/PublicSubnet1",
           },
         ],
       },
@@ -297,7 +297,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc/PublicSubnet1",
+            "Value": "PipelineNetworkStack/PipelineVpc/PublicSubnet1",
           },
         ],
         "VpcId": {
@@ -322,7 +322,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
           },
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc/PublicSubnet1",
+            "Value": "PipelineNetworkStack/PipelineVpc/PublicSubnet1",
           },
         ],
         "VpcId": {
@@ -352,7 +352,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc/PublicSubnet2",
+            "Value": "PipelineNetworkStack/PipelineVpc/PublicSubnet2",
           },
         ],
       },
@@ -376,7 +376,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc/PublicSubnet2",
+            "Value": "PipelineNetworkStack/PipelineVpc/PublicSubnet2",
           },
         ],
       },
@@ -387,7 +387,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc/PublicSubnet2",
+            "Value": "PipelineNetworkStack/PipelineVpc/PublicSubnet2",
           },
         ],
         "VpcId": {
@@ -423,7 +423,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
           },
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc/PublicSubnet2",
+            "Value": "PipelineNetworkStack/PipelineVpc/PublicSubnet2",
           },
         ],
         "VpcId": {
@@ -453,7 +453,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc/PublicSubnet3",
+            "Value": "PipelineNetworkStack/PipelineVpc/PublicSubnet3",
           },
         ],
       },
@@ -477,7 +477,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc/PublicSubnet3",
+            "Value": "PipelineNetworkStack/PipelineVpc/PublicSubnet3",
           },
         ],
       },
@@ -499,7 +499,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc/PublicSubnet3",
+            "Value": "PipelineNetworkStack/PipelineVpc/PublicSubnet3",
           },
         ],
         "VpcId": {
@@ -524,7 +524,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
           },
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/PipelineVpc/PublicSubnet3",
+            "Value": "PipelineNetworkStack/PipelineVpc/PublicSubnet3",
           },
         ],
         "VpcId": {
@@ -563,7 +563,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/VPCFlowLogs",
+            "Value": "PipelineNetworkStack/VPCFlowLogs",
           },
         ],
         "TrafficType": "ALL",
@@ -627,7 +627,7 @@ exports[`Pipeline Networking Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PipelineNetwork/VPCFlowLogs",
+            "Value": "PipelineNetworkStack/VPCFlowLogs",
           },
         ],
       },
