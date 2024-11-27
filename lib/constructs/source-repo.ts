@@ -20,6 +20,8 @@ export enum ProjectKind {
   Renesas = 'renesas',
   /** Build an IMX image using NXP layers. */
   NxpImx = 'nxp-imx',
+  /** Build no pipeline, just CodeBuild project to connect with GitHub actions. */
+  CodeBuild = 'codebuild',
 }
 
 export interface SourceRepoProps extends cdk.StackProps {

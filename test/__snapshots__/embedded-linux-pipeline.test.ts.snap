@@ -1818,7 +1818,8 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs20.x",
+        "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
     },
@@ -4288,7 +4289,8 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs20.x",
+        "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
     },
@@ -6542,7 +6544,7 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-12341234-eu-central-1",
-          "S3Key": "5fa1330271b8967d9254ba2d4a07144f8acefe8b77e6d6bba38261373a50d5f8.zip",
+          "S3Key": "4e26bf2d0a26f2097fb2b261f22bb51e3f6b4b52635777b1e54edbd8e2d58c35.zip",
         },
         "Handler": "index.handler",
         "Role": {
@@ -6551,7 +6553,8 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs20.x",
+        "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
     },

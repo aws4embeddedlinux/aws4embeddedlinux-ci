@@ -50,7 +50,17 @@ export interface EmbeddedLinuxPipelineProps extends cdk.StackProps {
   readonly layerRepoName?: string;
   /** Additional policy statements to add to the build project. */
   readonly buildPolicyAdditions?: iam.PolicyStatement[];
-}
+  /** Access logging bucket to use */
+  readonly accessLoggingBucket?: s3.Bucket;
+  /** Access logging prefix to use */
+  readonly serverAccessLogsPrefix?: string;
+  /** Artifact bucket to use */
+  readonly artifactBucket?: s3.Bucket;
+  /** Output bucket to use */
+  readonly outputBucket?: s3.Bucket | VMImportBucket;
+  /** Prefix for S3 object within bucket */
+  readonly subDirectoryName?: string;
+  }
 
 /**
  * The stack for creating a build pipeline.
@@ -80,13 +90,18 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
     let outputBucket: s3.IBucket | VMImportBucket;
     let environmentVariables = {};
     let scriptAsset!: Asset;
+    let accessLoggingBucket: s3.IBucket;
 
-    const accessLoggingBucket = new s3.Bucket(this, 'ArtifactAccessLogging', {
-      versioned: false,
-      enforceSSL: true,
-      autoDeleteObjects: true,
-      removalPolicy: RemovalPolicy.DESTROY,
-    });
+    if (props.accessLoggingBucket){
+      accessLoggingBucket = props.accessLoggingBucket;
+    } else {
+     accessLoggingBucket = new s3.Bucket(this, 'ArtifactAccessLogging', {
+        versioned: false,
+        enforceSSL: true,
+        autoDeleteObjects: true,
+        removalPolicy: RemovalPolicy.DESTROY,
+      });
+    }
 
     if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
       scriptAsset = new Asset(this, 'CreateAMIScript', {
@@ -102,15 +117,20 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
         }
       );
 
-      outputBucket = new VMImportBucket(this, 'PipelineOutput', {
-        versioned: true,
-        enforceSSL: true,
-        encryptionKey: outputBucketEncryptionKey,
-        encryptionKeyArn: outputBucketEncryptionKey.keyArn,
-        serverAccessLogsBucket: accessLoggingBucket,
-        autoDeleteObjects: true,
-        removalPolicy: RemovalPolicy.DESTROY,
-      });
+      if (props.outputBucket){
+        outputBucket = props.outputBucket;
+      } else {
+        outputBucket = new VMImportBucket(this, 'PipelineOutput', {
+          versioned: true,
+          enforceSSL: true,
+          encryptionKey: outputBucketEncryptionKey,
+          encryptionKeyArn: outputBucketEncryptionKey.keyArn,
+          serverAccessLogsBucket: accessLoggingBucket,
+          serverAccessLogsPrefix: props.serverAccessLogsPrefix,
+          autoDeleteObjects: true,
+          removalPolicy: RemovalPolicy.DESTROY,
+        });
+      }
       environmentVariables = {
         IMPORT_BUCKET: {
           type: BuildEnvironmentVariableType.PLAINTEXT,
@@ -126,31 +146,39 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
         },
       };
     } else {
-      outputBucket = new s3.Bucket(this, 'PipelineOutput', {
+      if (props.outputBucket){
+        outputBucket = props.outputBucket;
+      } else {
+        outputBucket = new s3.Bucket(this, 'PipelineOutput', {
+          versioned: true,
+          enforceSSL: true,
+          serverAccessLogsBucket: accessLoggingBucket,
+        });
+      }
+    }
+
+    let artifactBucket: s3.IBucket;
+
+    if (props.artifactBucket){
+      artifactBucket = props.artifactBucket;
+    } else {
+      const encryptionKey = new kms.Key(this, 'PipelineArtifactKey', {
+       removalPolicy: RemovalPolicy.DESTROY,
+       enableKeyRotation: true,
+     });
+      artifactBucket = new s3.Bucket(this, 'PipelineArtifacts', {
         versioned: true,
         enforceSSL: true,
         serverAccessLogsBucket: accessLoggingBucket,
+        encryptionKey,
+        encryption: s3.BucketEncryption.KMS,
+        blockPublicAccess: new s3.BlockPublicAccess(
+          s3.BlockPublicAccess.BLOCK_ALL
+        ),
         autoDeleteObjects: true,
         removalPolicy: RemovalPolicy.DESTROY,
       });
     }
-
-    const encryptionKey = new kms.Key(this, 'PipelineArtifactKey', {
-      removalPolicy: RemovalPolicy.DESTROY,
-      enableKeyRotation: true,
-    });
-    const artifactBucket = new s3.Bucket(this, 'PipelineArtifacts', {
-      versioned: true,
-      enforceSSL: true,
-      serverAccessLogsBucket: accessLoggingBucket,
-      encryptionKey,
-      encryption: s3.BucketEncryption.KMS,
-      blockPublicAccess: new s3.BlockPublicAccess(
-        s3.BlockPublicAccess.BLOCK_ALL
-      ),
-      autoDeleteObjects: true,
-      removalPolicy: RemovalPolicy.DESTROY,
-    });
 
     /** Create our CodePipeline Actions. */
     const sourceRepo = new SourceRepo(this, 'SourceRepo', {
@@ -244,11 +272,22 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
       project,
     });
 
-    const artifactAction = new codepipeline_actions.S3DeployAction({
-      actionName: 'Artifact',
-      input: buildOutput,
-      bucket: outputBucket,
-    });
+    let artifactAction: codepipeline_actions.S3DeployAction;
+
+    if (props.subDirectoryName){
+      artifactAction = new codepipeline_actions.S3DeployAction({
+        actionName: 'Artifact',
+        input: buildOutput,
+        bucket: outputBucket,
+        objectKey: props.subDirectoryName
+      });
+    } else {
+      artifactAction = new codepipeline_actions.S3DeployAction({
+        actionName: 'Artifact',
+        input: buildOutput,
+        bucket: outputBucket,
+      });
+    }
 
     /** Here we create the logic to check for presence of ECR image on the CodePipeline automatic triggering upon resource creation,
      * and stop the execution if the image does not exist.  */

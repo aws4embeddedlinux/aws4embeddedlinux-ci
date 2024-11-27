@@ -29,6 +29,13 @@ export interface BuildImagePipelineProps extends cdk.StackProps {
   readonly dataBucket: s3.IBucket;
   /** The ECR Repository to push to. */
   readonly repository: IRepository;
+  /** Access logging bucket to use */
+  readonly accessLoggingBucket?: s3.Bucket;
+  /** Access logging prefix to use */
+  readonly serverAccessLogsPrefix?: string;
+  /** Artifact bucket to use */
+  readonly artifactBucket?: s3.Bucket;
+
 }
 
 /**
@@ -98,28 +105,42 @@ export class BuildImagePipelineStack extends cdk.Stack {
       input: sourceOutput,
     });
 
-    const accessLoggingBucket = new s3.Bucket(this, 'ArtifactAccessLogging', {
-      versioned: false,
-      enforceSSL: true,
-      autoDeleteObjects: true,
-      removalPolicy: RemovalPolicy.DESTROY,
-    });
-    const encryptionKey = new kms.Key(this, 'PipelineArtifactKey', {
-      removalPolicy: RemovalPolicy.DESTROY,
-      enableKeyRotation: true,
-    });
-    const artifactBucket = new s3.Bucket(this, 'PipelineArtifacts', {
-      versioned: true,
-      enforceSSL: true,
-      serverAccessLogsBucket: accessLoggingBucket,
-      encryptionKey,
-      encryption: s3.BucketEncryption.KMS,
-      blockPublicAccess: new s3.BlockPublicAccess(
-        s3.BlockPublicAccess.BLOCK_ALL
-      ),
-      autoDeleteObjects: true,
-      removalPolicy: RemovalPolicy.DESTROY,
-    });
+    let accessLoggingBucket: s3.IBucket;
+
+    if (props.accessLoggingBucket){
+      accessLoggingBucket = props.accessLoggingBucket;
+    } else {
+     accessLoggingBucket = new s3.Bucket(this, 'ArtifactAccessLogging', {
+        versioned: false,
+        enforceSSL: true,
+        autoDeleteObjects: true,
+        removalPolicy: RemovalPolicy.DESTROY,
+      });
+    }
+
+    let artifactBucket: s3.IBucket;
+
+    if (props.artifactBucket){
+      artifactBucket = props.artifactBucket;
+    } else {
+      const encryptionKey = new kms.Key(this, 'PipelineArtifactKey', {
+       removalPolicy: RemovalPolicy.DESTROY,
+       enableKeyRotation: true,
+     });
+      artifactBucket = new s3.Bucket(this, 'PipelineArtifacts', {
+        versioned: true,
+        enforceSSL: true,
+        serverAccessLogsBucket: accessLoggingBucket,
+        serverAccessLogsPrefix: props.serverAccessLogsPrefix,
+        encryptionKey,
+        encryption: s3.BucketEncryption.KMS,
+        blockPublicAccess: new s3.BlockPublicAccess(
+          s3.BlockPublicAccess.BLOCK_ALL
+        ),
+        autoDeleteObjects: true,
+        removalPolicy: RemovalPolicy.DESTROY,
+      });
+    }
 
     const pipeline = new codepipeline.Pipeline(this, 'BuildImagePipeline', {
       artifactBucket,
