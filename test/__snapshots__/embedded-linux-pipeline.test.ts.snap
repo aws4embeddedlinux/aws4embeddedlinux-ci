@@ -21,8 +21,27 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
     },
   },
   "Resources": {
+    "ArtifactAccessLoggingAutoDeleteObjectsCustomResourceD9DFD1B2": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "ArtifactAccessLoggingPolicyDC97CE59",
+      ],
+      "Properties": {
+        "BucketName": {
+          "Ref": "ArtifactAccessLoggingD6FCABA3",
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
+    },
     "ArtifactAccessLoggingD6FCABA3": {
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AccessControl": "LogDeliveryWrite",
         "OwnershipControls": {
@@ -32,12 +51,15 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
             },
           ],
         },
-        "VersioningConfiguration": {
-          "Status": "Enabled",
-        },
+        "Tags": [
+          {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
       },
       "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
     },
     "ArtifactAccessLoggingPolicyDC97CE59": {
       "Properties": {
@@ -56,6 +78,45 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
               "Effect": "Deny",
               "Principal": {
                 "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "ArtifactAccessLoggingD6FCABA3",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "ArtifactAccessLoggingD6FCABA3",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:PutBucketPolicy",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
               },
               "Resource": [
                 {
@@ -154,6 +215,62 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": {
+      "DependsOn": [
+        "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": "cdk-hnb659fds-assets-12341234-eu-central-1",
+          "S3Key": "arbitrary-file.ext",
+        },
+        "Description": {
+          "Fn::Join": [
+            "",
+            [
+              "Lambda function for auto-deleting objects in ",
+              {
+                "Ref": "ArtifactAccessLoggingD6FCABA3",
+              },
+              " S3 bucket.",
+            ],
+          ],
+        },
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs20.x",
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Sub": "arn:\${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
     },
     "EmbeddedLinuxBuildProject45760157": {
       "DependsOn": [
@@ -866,6 +983,7 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
           },
           "Type": "S3",
         },
+        "PipelineType": "V1",
         "RestartExecutionOnUpdate": true,
         "RoleArn": {
           "Fn::GetAtt": [
@@ -2101,7 +2219,7 @@ def handler(event, context):
       "UpdateReplacePolicy": "Delete",
     },
     "PipelineArtifacts4A9B2621": {
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "BucketEncryption": {
           "ServerSideEncryptionConfiguration": [
@@ -2129,12 +2247,34 @@ def handler(event, context):
           "IgnorePublicAcls": true,
           "RestrictPublicBuckets": true,
         },
-        "VersioningConfiguration": {
-          "Status": "Enabled",
-        },
+        "Tags": [
+          {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
       },
       "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineArtifactsAutoDeleteObjectsCustomResourceFEF48A36": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "PipelineArtifactsPolicy87787A0D",
+      ],
+      "Properties": {
+        "BucketName": {
+          "Ref": "PipelineArtifacts4A9B2621",
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
     },
     "PipelineArtifactsPolicy87787A0D": {
       "Properties": {
@@ -2177,6 +2317,45 @@ def handler(event, context):
                 },
               ],
             },
+            {
+              "Action": [
+                "s3:PutBucketPolicy",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineArtifacts4A9B2621",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineArtifacts4A9B2621",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
           ],
           "Version": "2012-10-17",
         },
@@ -2192,7 +2371,7 @@ def handler(event, context):
       "UpdateReplacePolicy": "Retain",
     },
     "PipelineOutput78594CB5": {
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "BucketEncryption": {
           "ServerSideEncryptionConfiguration": [
@@ -2214,12 +2393,37 @@ def handler(event, context):
             "Ref": "ArtifactAccessLoggingD6FCABA3",
           },
         },
+        "Tags": [
+          {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
         "VersioningConfiguration": {
           "Status": "Enabled",
         },
       },
       "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineOutputAutoDeleteObjectsCustomResourceF3013510": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "PipelineOutputPolicyCB4CC2E6",
+      ],
+      "Properties": {
+        "BucketName": {
+          "Ref": "PipelineOutput78594CB5",
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
     },
     "PipelineOutputPolicyCB4CC2E6": {
       "Properties": {
@@ -2238,6 +2442,45 @@ def handler(event, context):
               "Effect": "Deny",
               "Principal": {
                 "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineOutput78594CB5",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineOutput78594CB5",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:PutBucketPolicy",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
               },
               "Resource": [
                 {
@@ -2492,8 +2735,27 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
     },
   },
   "Resources": {
+    "ArtifactAccessLoggingAutoDeleteObjectsCustomResourceD9DFD1B2": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "ArtifactAccessLoggingPolicyDC97CE59",
+      ],
+      "Properties": {
+        "BucketName": {
+          "Ref": "ArtifactAccessLoggingD6FCABA3",
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
+    },
     "ArtifactAccessLoggingD6FCABA3": {
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AccessControl": "LogDeliveryWrite",
         "OwnershipControls": {
@@ -2503,12 +2765,15 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
             },
           ],
         },
-        "VersioningConfiguration": {
-          "Status": "Enabled",
-        },
+        "Tags": [
+          {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
       },
       "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
     },
     "ArtifactAccessLoggingPolicyDC97CE59": {
       "Properties": {
@@ -2527,6 +2792,45 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
               "Effect": "Deny",
               "Principal": {
                 "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "ArtifactAccessLoggingD6FCABA3",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "ArtifactAccessLoggingD6FCABA3",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:PutBucketPolicy",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
               },
               "Resource": [
                 {
@@ -2625,6 +2929,62 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": {
+      "DependsOn": [
+        "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": "cdk-hnb659fds-assets-12341234-eu-central-1",
+          "S3Key": "arbitrary-file.ext",
+        },
+        "Description": {
+          "Fn::Join": [
+            "",
+            [
+              "Lambda function for auto-deleting objects in ",
+              {
+                "Ref": "ArtifactAccessLoggingD6FCABA3",
+              },
+              " S3 bucket.",
+            ],
+          ],
+        },
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs20.x",
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Sub": "arn:\${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
     },
     "EmbeddedLinuxBuildProject45760157": {
       "DependsOn": [
@@ -3337,6 +3697,7 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
           },
           "Type": "S3",
         },
+        "PipelineType": "V1",
         "RestartExecutionOnUpdate": true,
         "RoleArn": {
           "Fn::GetAtt": [
@@ -4572,7 +4933,7 @@ def handler(event, context):
       "UpdateReplacePolicy": "Delete",
     },
     "PipelineArtifacts4A9B2621": {
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "BucketEncryption": {
           "ServerSideEncryptionConfiguration": [
@@ -4600,12 +4961,34 @@ def handler(event, context):
           "IgnorePublicAcls": true,
           "RestrictPublicBuckets": true,
         },
-        "VersioningConfiguration": {
-          "Status": "Enabled",
-        },
+        "Tags": [
+          {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
       },
       "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineArtifactsAutoDeleteObjectsCustomResourceFEF48A36": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "PipelineArtifactsPolicy87787A0D",
+      ],
+      "Properties": {
+        "BucketName": {
+          "Ref": "PipelineArtifacts4A9B2621",
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
     },
     "PipelineArtifactsPolicy87787A0D": {
       "Properties": {
@@ -4648,6 +5031,45 @@ def handler(event, context):
                 },
               ],
             },
+            {
+              "Action": [
+                "s3:PutBucketPolicy",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineArtifacts4A9B2621",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineArtifacts4A9B2621",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
           ],
           "Version": "2012-10-17",
         },
@@ -4663,7 +5085,7 @@ def handler(event, context):
       "UpdateReplacePolicy": "Retain",
     },
     "PipelineOutput78594CB5": {
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "BucketEncryption": {
           "ServerSideEncryptionConfiguration": [
@@ -4685,12 +5107,37 @@ def handler(event, context):
             "Ref": "ArtifactAccessLoggingD6FCABA3",
           },
         },
+        "Tags": [
+          {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
         "VersioningConfiguration": {
           "Status": "Enabled",
         },
       },
       "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineOutputAutoDeleteObjectsCustomResourceF3013510": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "PipelineOutputPolicyCB4CC2E6",
+      ],
+      "Properties": {
+        "BucketName": {
+          "Ref": "PipelineOutput78594CB5",
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
     },
     "PipelineOutputPolicyCB4CC2E6": {
       "Properties": {
@@ -4709,6 +5156,45 @@ def handler(event, context):
               "Effect": "Deny",
               "Principal": {
                 "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineOutput78594CB5",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineOutput78594CB5",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:PutBucketPolicy",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
               },
               "Resource": [
                 {
@@ -4963,8 +5449,27 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
     },
   },
   "Resources": {
+    "ArtifactAccessLoggingAutoDeleteObjectsCustomResourceD9DFD1B2": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "ArtifactAccessLoggingPolicyDC97CE59",
+      ],
+      "Properties": {
+        "BucketName": {
+          "Ref": "ArtifactAccessLoggingD6FCABA3",
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
+    },
     "ArtifactAccessLoggingD6FCABA3": {
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AccessControl": "LogDeliveryWrite",
         "OwnershipControls": {
@@ -4974,12 +5479,15 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
             },
           ],
         },
-        "VersioningConfiguration": {
-          "Status": "Enabled",
-        },
+        "Tags": [
+          {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
       },
       "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
     },
     "ArtifactAccessLoggingPolicyDC97CE59": {
       "Properties": {
@@ -4998,6 +5506,45 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
               "Effect": "Deny",
               "Principal": {
                 "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "ArtifactAccessLoggingD6FCABA3",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "ArtifactAccessLoggingD6FCABA3",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:PutBucketPolicy",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
               },
               "Resource": [
                 {
@@ -5096,6 +5643,62 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": {
+      "DependsOn": [
+        "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": "cdk-hnb659fds-assets-12341234-eu-central-1",
+          "S3Key": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip",
+        },
+        "Description": {
+          "Fn::Join": [
+            "",
+            [
+              "Lambda function for auto-deleting objects in ",
+              {
+                "Ref": "ArtifactAccessLoggingD6FCABA3",
+              },
+              " S3 bucket.",
+            ],
+          ],
+        },
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs20.x",
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Sub": "arn:\${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
     },
     "EmbeddedLinuxBuildProject45760157": {
       "DependsOn": [
@@ -5616,6 +6219,7 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
           },
           "Type": "S3",
         },
+        "PipelineType": "V1",
         "RestartExecutionOnUpdate": true,
         "RoleArn": {
           "Fn::GetAtt": [
@@ -6544,7 +7148,7 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-12341234-eu-central-1",
-          "S3Key": "4e26bf2d0a26f2097fb2b261f22bb51e3f6b4b52635777b1e54edbd8e2d58c35.zip",
+          "S3Key": "2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d.zip",
         },
         "Handler": "index.handler",
         "Role": {
@@ -6804,7 +7408,7 @@ def handler(event, context):
       "UpdateReplacePolicy": "Delete",
     },
     "PipelineArtifacts4A9B2621": {
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "BucketEncryption": {
           "ServerSideEncryptionConfiguration": [
@@ -6832,12 +7436,34 @@ def handler(event, context):
           "IgnorePublicAcls": true,
           "RestrictPublicBuckets": true,
         },
-        "VersioningConfiguration": {
-          "Status": "Enabled",
-        },
+        "Tags": [
+          {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
       },
       "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineArtifactsAutoDeleteObjectsCustomResourceFEF48A36": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "PipelineArtifactsPolicy87787A0D",
+      ],
+      "Properties": {
+        "BucketName": {
+          "Ref": "PipelineArtifacts4A9B2621",
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
     },
     "PipelineArtifactsPolicy87787A0D": {
       "Properties": {
@@ -6880,6 +7506,45 @@ def handler(event, context):
                 },
               ],
             },
+            {
+              "Action": [
+                "s3:PutBucketPolicy",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineArtifacts4A9B2621",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineArtifacts4A9B2621",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
           ],
           "Version": "2012-10-17",
         },
@@ -6895,19 +7560,41 @@ def handler(event, context):
       "UpdateReplacePolicy": "Retain",
     },
     "PipelineOutput78594CB5": {
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "LoggingConfiguration": {
           "DestinationBucketName": {
             "Ref": "ArtifactAccessLoggingD6FCABA3",
           },
         },
-        "VersioningConfiguration": {
-          "Status": "Enabled",
-        },
+        "Tags": [
+          {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
       },
       "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineOutputAutoDeleteObjectsCustomResourceF3013510": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "PipelineOutputPolicyCB4CC2E6",
+      ],
+      "Properties": {
+        "BucketName": {
+          "Ref": "PipelineOutput78594CB5",
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
     },
     "PipelineOutputPolicyCB4CC2E6": {
       "Properties": {
@@ -6926,6 +7613,45 @@ def handler(event, context):
               "Effect": "Deny",
               "Principal": {
                 "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineOutput78594CB5",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineOutput78594CB5",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:PutBucketPolicy",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
               },
               "Resource": [
                 {

@@ -150,9 +150,11 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
         outputBucket = props.outputBucket;
       } else {
         outputBucket = new s3.Bucket(this, 'PipelineOutput', {
-          versioned: true,
+          versioned: false,
           enforceSSL: true,
           serverAccessLogsBucket: accessLoggingBucket,
+          autoDeleteObjects: true,
+          removalPolicy: RemovalPolicy.DESTROY,
         });
       }
     }
@@ -167,7 +169,7 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
        enableKeyRotation: true,
      });
       artifactBucket = new s3.Bucket(this, 'PipelineArtifacts', {
-        versioned: true,
+        versioned: false,
         enforceSSL: true,
         serverAccessLogsBucket: accessLoggingBucket,
         encryptionKey,

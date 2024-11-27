@@ -128,7 +128,7 @@ export class BuildImagePipelineStack extends cdk.Stack {
        enableKeyRotation: true,
      });
       artifactBucket = new s3.Bucket(this, 'PipelineArtifacts', {
-        versioned: true,
+        versioned: false,
         enforceSSL: true,
         serverAccessLogsBucket: accessLoggingBucket,
         serverAccessLogsPrefix: props.serverAccessLogsPrefix,

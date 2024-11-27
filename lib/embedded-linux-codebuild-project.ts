@@ -94,8 +94,10 @@ export class EmbeddedLinuxCodebuildProjectStack extends cdk.Stack {
       accessLoggingBucket = props.accessLoggingBucket;
     } else {
       accessLoggingBucket = new s3.Bucket(this, "ArtifactAccessLogging", {
-        versioned: true,
+        versioned: false,
         enforceSSL: true,
+        autoDeleteObjects: true,
+        removalPolicy: RemovalPolicy.DESTROY,
       });
     }
 

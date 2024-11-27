@@ -30,9 +30,9 @@ describe('Build Image Pipeline', () => {
     template.allResourcesProperties('AWS::Logs::LogGroup', {
       RetentionInDays: 3653,
     });
-    template.allResourcesProperties('AWS::S3::Bucket', {
-      VersioningConfiguration: { Status: 'Enabled' },
-    });
+    // template.allResourcesProperties('AWS::S3::Bucket', {
+    //   VersioningConfiguration: { Status: 'Enabled' },
+    // });
   });
 
   test('Snapshot', () => {

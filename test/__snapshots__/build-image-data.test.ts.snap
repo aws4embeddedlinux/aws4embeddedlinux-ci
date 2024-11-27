@@ -27,6 +27,7 @@ exports[`Build Image Data Snapshot 1`] = `
           "Ref": "BuildImageDataBucketE6A8BC04",
         },
         "Extract": true,
+        "OutputObjectKeys": true,
         "Prune": true,
         "ServiceToken": {
           "Fn::GetAtt": [
@@ -246,9 +247,6 @@ exports[`Build Image Data Snapshot 1`] = `
             "Value": "true",
           },
         ],
-        "VersioningConfiguration": {
-          "Status": "Enabled",
-        },
       },
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Delete",
@@ -386,7 +384,7 @@ exports[`Build Image Data Snapshot 1`] = `
             [
               "Lambda function for auto-deleting objects in ",
               {
-                "Ref": "BuildImageDataBucketE6A8BC04",
+                "Ref": "LoggingBucket1E5A6F3B",
               },
               " S3 bucket.",
             ],
@@ -428,7 +426,7 @@ exports[`Build Image Data Snapshot 1`] = `
       "Type": "AWS::IAM::Role",
     },
     "LoggingBucket1E5A6F3B": {
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AccessControl": "LogDeliveryWrite",
         "OwnershipControls": {
@@ -438,12 +436,34 @@ exports[`Build Image Data Snapshot 1`] = `
             },
           ],
         },
-        "VersioningConfiguration": {
-          "Status": "Enabled",
-        },
+        "Tags": [
+          {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
       },
       "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "LoggingBucketAutoDeleteObjectsCustomResource3835D361": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "LoggingBucketPolicy21938756",
+      ],
+      "Properties": {
+        "BucketName": {
+          "Ref": "LoggingBucket1E5A6F3B",
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
     },
     "LoggingBucketPolicy21938756": {
       "Properties": {
@@ -462,6 +482,45 @@ exports[`Build Image Data Snapshot 1`] = `
               "Effect": "Deny",
               "Principal": {
                 "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "LoggingBucket1E5A6F3B",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "LoggingBucket1E5A6F3B",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:PutBucketPolicy",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
               },
               "Resource": [
                 {
