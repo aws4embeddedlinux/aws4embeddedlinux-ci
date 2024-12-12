@@ -42,10 +42,10 @@ module.exports = {
     "@typescript-eslint/eslint-plugin",
     "eslint-plugin-tsdoc"
   ],
-  extends:  [
+  extends: [
     'plugin:@typescript-eslint/recommended'
   ],
-  parser:  '@typescript-eslint/parser',
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     project: "./tsconfig.json",
     tsconfigRootDir: __dirname,
@@ -54,5 +54,15 @@ module.exports = {
   },
   rules: {
     "tsdoc/syntax": "warn"
-  }
+  },
+  ignorePatterns: [
+    "npm_modules/",
+    "dist/",
+    "cdk.out/",
+    ".eslintrc.js",
+    "package.json",
+    "package-lock.json",
+    "tsconfig.json",
+    "typedoc.json"
+  ],
 };

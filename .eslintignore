@@ -1,8 +1,0 @@
-npm_modules/
-dist/
-cdk.out/
-.eslintrc.js
-package.json
-package-lock.json
-tsconfig.json
-typedoc.json
