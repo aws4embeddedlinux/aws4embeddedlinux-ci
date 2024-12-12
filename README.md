@@ -46,11 +46,13 @@ The `cdk diff` command can be used to preview changes before deployment. This wi
 You can use [`npm link`](https://docs.npmjs.com/cli/v10/commands/npm-link) to develop with a local copy of this repo.
 
 ### In this library repo:
+
 ```bash
 npm install
 ```
 
 ### In your-project folder:
+
 ```bash
 npm install
 npm link ../aws4embeddedlinux-ci
@@ -65,7 +67,6 @@ or [set a node prefix](https://docs.npmjs.com/resolving-eacces-permissions-error
 - When using AWS Cloud9 a micro instance type will run out of memory.
 - Deletion of stacks while a CodePipeline is running can lead to unexpected failures.
 
-
 ## Security
 
 See [SECURITY](SECURITY.md) for more information about reporting issues with this project.
@@ -79,9 +80,9 @@ source repos, etc.
 1. Grant access permissions to the CodeBuild pipeline project.
 11. Create a [Policy Statement](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_iam.PolicyStatement.html) which allows `secretsmanager:GetSecretValue` for your secret.
 11. Add this policy statement to the `buildPolicyAdditions` props for the `EmbeddedLinuxPipelineStack`. e.g.
+
 ```typescript
 import * as iam from "aws-cdk-lib/aws-iam";
-
 
 const pipeline = new EmbeddedLinuxPipelineStack(app, "MyPokyPipeline", {
   imageRepo: buildImageRepo.repository,
@@ -100,6 +101,7 @@ const pipeline = new EmbeddedLinuxPipelineStack(app, "MyPokyPipeline", {
 
 The secret can then be used in the CodeBuild Project by adding it to the BuildSpec. See
 the [CodeBuild Documentation](https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html) for more details.
+
 ```yaml
 env:
     secrets-manager:
