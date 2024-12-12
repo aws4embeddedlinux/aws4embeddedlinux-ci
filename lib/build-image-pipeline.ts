@@ -111,7 +111,7 @@ export class BuildImagePipelineStack extends cdk.Stack {
       accessLoggingBucket = props.accessLoggingBucket;
     } else {
      accessLoggingBucket = new s3.Bucket(this, 'ArtifactAccessLogging', {
-        versioned: false,
+        versioned: true,
         enforceSSL: true,
         autoDeleteObjects: true,
         removalPolicy: RemovalPolicy.DESTROY,
@@ -128,7 +128,7 @@ export class BuildImagePipelineStack extends cdk.Stack {
        enableKeyRotation: true,
      });
       artifactBucket = new s3.Bucket(this, 'PipelineArtifacts', {
-        versioned: false,
+        versioned: true,
         enforceSSL: true,
         serverAccessLogsBucket: accessLoggingBucket,
         serverAccessLogsPrefix: props.serverAccessLogsPrefix,

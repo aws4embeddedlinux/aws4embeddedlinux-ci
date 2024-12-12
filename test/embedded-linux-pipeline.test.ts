@@ -27,22 +27,22 @@ describe('Pipeline', () => {
     });
   });
 
-  // test('S3 Bucket Has Versioning Disabled', () => {
-  //   const app = new cdk.App();
-  //   const newStack = new cdk.Stack(app, 'RepoStack', { env });
-  //   const imageRepo = new Repository(newStack, 'Repository', {});
-  //   const vpc = new Vpc(newStack, 'Bucket', {});
+  test('S3 Bucket Has Versioning Enabled', () => {
+    const app = new cdk.App();
+    const newStack = new cdk.Stack(app, 'RepoStack', { env });
+    const imageRepo = new Repository(newStack, 'Repository', {});
+    const vpc = new Vpc(newStack, 'Bucket', {});
 
-  //   const stack = new EmbeddedLinuxPipelineStack(app, 'MyTestStack', {
-  //     env,
-  //     imageRepo,
-  //     vpc,
-  //   });
-  //   const template = Template.fromStack(stack);
-  //   template.allResourcesProperties('AWS::S3::Bucket', {
-  //     VersioningConfiguration: { Status: 'Enabled' },
-  //   });
-  // });
+    const stack = new EmbeddedLinuxPipelineStack(app, 'MyTestStack', {
+      env,
+      imageRepo,
+      vpc,
+    });
+    const template = Template.fromStack(stack);
+    template.allResourcesProperties('AWS::S3::Bucket', {
+      VersioningConfiguration: { Status: 'Enabled' },
+    });
+  });
 
   test('Snapshot Poky Pipeline', () => {
     const app = new cdk.App();
