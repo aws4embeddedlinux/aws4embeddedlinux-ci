@@ -51,7 +51,7 @@ export class BuildImageDataStack extends cdk.Stack {
     // Create a bucket, then allow a deployment Lambda to upload to it.
     const dataBucket = new s3.Bucket(this, 'BuildImageDataBucket', {
       bucketName,
-      versioned: false,
+      versioned: true,
       encryptionKey: encryptionKey,
       enforceSSL: true,
       serverAccessLogsBucket: accessLoggingBucket,
