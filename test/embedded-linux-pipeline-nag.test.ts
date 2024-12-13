@@ -139,8 +139,7 @@ describe('Pipeline cdk-nag AwsSolutions Pack', () => {
       [
         {
           id: 'AwsSolutions-L1',
-          reason:
-            'There is no latest PYTHON version to set.',
+          reason: 'There is no latest PYTHON version to set.',
         },
       ]
     );

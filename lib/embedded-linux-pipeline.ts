@@ -60,7 +60,7 @@ export interface EmbeddedLinuxPipelineProps extends cdk.StackProps {
   readonly outputBucket?: s3.Bucket | VMImportBucket;
   /** Prefix for S3 object within bucket */
   readonly subDirectoryName?: string;
-  }
+}
 
 /**
  * The stack for creating a build pipeline.
@@ -92,10 +92,10 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
     let scriptAsset!: Asset;
     let accessLoggingBucket: s3.IBucket;
 
-    if (props.accessLoggingBucket){
+    if (props.accessLoggingBucket) {
       accessLoggingBucket = props.accessLoggingBucket;
     } else {
-     accessLoggingBucket = new s3.Bucket(this, 'ArtifactAccessLogging', {
+      accessLoggingBucket = new s3.Bucket(this, 'ArtifactAccessLogging', {
         versioned: true,
         enforceSSL: true,
         autoDeleteObjects: true,
@@ -117,7 +117,7 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
         }
       );
 
-      if (props.outputBucket){
+      if (props.outputBucket) {
         outputBucket = props.outputBucket;
       } else {
         outputBucket = new VMImportBucket(this, 'PipelineOutput', {
@@ -146,7 +146,7 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
         },
       };
     } else {
-      if (props.outputBucket){
+      if (props.outputBucket) {
         outputBucket = props.outputBucket;
       } else {
         outputBucket = new s3.Bucket(this, 'PipelineOutput', {
@@ -161,13 +161,13 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
 
     let artifactBucket: s3.IBucket;
 
-    if (props.artifactBucket){
+    if (props.artifactBucket) {
       artifactBucket = props.artifactBucket;
     } else {
       const encryptionKey = new kms.Key(this, 'PipelineArtifactKey', {
-       removalPolicy: RemovalPolicy.DESTROY,
-       enableKeyRotation: true,
-     });
+        removalPolicy: RemovalPolicy.DESTROY,
+        enableKeyRotation: true,
+      });
       artifactBucket = new s3.Bucket(this, 'PipelineArtifacts', {
         versioned: true,
         enforceSSL: true,
@@ -240,7 +240,7 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
     });
 
     if (props.buildPolicyAdditions) {
-      props.buildPolicyAdditions.map(p => project.addToRolePolicy(p))
+      props.buildPolicyAdditions.map((p) => project.addToRolePolicy(p));
     }
 
     if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
@@ -255,11 +255,11 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
             `arn:aws:ec2:${this.region}::snapshot/*`,
           ],
         })
-      ),
-        //Permissions for BackUp to S3
-        project.addToRolePolicy(
-          this.addAMIS3BackupPolicy(outputBucket.bucketArn)
-        );
+      );
+      //Permissions for BackUp to S3
+      project.addToRolePolicy(
+        this.addAMIS3BackupPolicy(outputBucket.bucketArn)
+      );
       project.addToRolePolicy(this.addAMIEC2EBSBackupPolicy(this.region));
       project.addToRolePolicy(this.addAMIEBSBackupPolicy(this.region));
       project.addToRolePolicy(this.addAMIBackupPolicy());
@@ -276,12 +276,12 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
 
     let artifactAction: codepipeline_actions.S3DeployAction;
 
-    if (props.subDirectoryName){
+    if (props.subDirectoryName) {
       artifactAction = new codepipeline_actions.S3DeployAction({
         actionName: 'Artifact',
         input: buildOutput,
         bucket: outputBucket,
-        objectKey: props.subDirectoryName
+        objectKey: props.subDirectoryName,
       });
     } else {
       artifactAction = new codepipeline_actions.S3DeployAction({
@@ -396,10 +396,14 @@ def handler(event, context):
     vpc: IVpc,
     securityGroup: ISecurityGroup
   ): string {
-    const fs = new efs.FileSystem(this, `EmbeddedLinuxPipeline${name}Filesystem`, {
-      vpc,
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-    });
+    const fs = new efs.FileSystem(
+      this,
+      `EmbeddedLinuxPipeline${name}Filesystem`,
+      {
+        vpc,
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+      }
+    );
     fs.connections.allowFrom(securityGroup, Port.tcp(2049));
 
     const fsId = fs.fileSystemId;
