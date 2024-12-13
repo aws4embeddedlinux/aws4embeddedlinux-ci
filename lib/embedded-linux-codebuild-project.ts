@@ -1,12 +1,11 @@
-import * as cdk from "aws-cdk-lib";
-import { Construct } from "constructs";
-import * as events from "aws-cdk-lib/aws-events";
-import * as targets from "aws-cdk-lib/aws-events-targets";
-import * as lambda from "aws-cdk-lib/aws-lambda";
-import * as iam from "aws-cdk-lib/aws-iam";
-import * as efs from "aws-cdk-lib/aws-efs";
-import * as kms from "aws-cdk-lib/aws-kms";
-import * as s3 from "aws-cdk-lib/aws-s3";
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as events from 'aws-cdk-lib/aws-events';
+import * as targets from 'aws-cdk-lib/aws-events-targets';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as efs from 'aws-cdk-lib/aws-efs';
+import * as s3 from 'aws-cdk-lib/aws-s3';
 
 import {
   BuildSpec,
@@ -14,8 +13,8 @@ import {
   FileSystemLocation,
   LinuxBuildImage,
   Project,
-} from "aws-cdk-lib/aws-codebuild";
-import { IRepository } from "aws-cdk-lib/aws-ecr";
+} from 'aws-cdk-lib/aws-codebuild';
+import { IRepository } from 'aws-cdk-lib/aws-ecr';
 
 import {
   ISecurityGroup,
@@ -23,18 +22,16 @@ import {
   Peer,
   Port,
   SecurityGroup,
-} from "aws-cdk-lib/aws-ec2";
-import { ProjectKind } from "./constructs/source-repo";
-import { VMImportBucket } from "./vm-import-bucket";
-import { Asset } from "aws-cdk-lib/aws-s3-assets";
-import { LogGroup, RetentionDays } from "aws-cdk-lib/aws-logs";
-import { RemovalPolicy } from "aws-cdk-lib";
+} from 'aws-cdk-lib/aws-ec2';
+import { ProjectKind } from './constructs/source-repo';
+import { VMImportBucket } from './vm-import-bucket';
+import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
+import { RemovalPolicy } from 'aws-cdk-lib';
 
 /**
  * Properties to allow customizing the build.
  */
-export interface EmbeddedLinuxCodebuildProjectProps
-  extends cdk.StackProps {
+export interface EmbeddedLinuxCodebuildProjectProps extends cdk.StackProps {
   /** ECR Repository where the Build Host Image resides. */
   readonly imageRepo: IRepository;
   /** Tag for the Build Host Image */
@@ -74,27 +71,28 @@ export class EmbeddedLinuxCodebuildProjectStack extends cdk.Stack {
 
     /** Set up networking access and EFS FileSystems. */
 
-    const projectSg = new SecurityGroup(this, "BuildProjectSecurityGroup", {
+    const projectSg = new SecurityGroup(this, 'BuildProjectSecurityGroup', {
       vpc: props.vpc,
-      description: "Security Group to allow attaching EFS",
+      description: 'Security Group to allow attaching EFS',
     });
     projectSg.addIngressRule(
       Peer.ipv4(props.vpc.vpcCidrBlock),
       Port.tcp(2049),
-      "NFS Mount Port"
+      'NFS Mount Port'
     );
 
-    const sstateFS = this.addFileSystem("SState", props.vpc, projectSg);
-    const dlFS = this.addFileSystem("Downloads", props.vpc, projectSg);
-    const tmpFS = this.addFileSystem("Temp", props.vpc, projectSg);
+    const sstateFS = this.addFileSystem('SState', props.vpc, projectSg);
+    const dlFS = this.addFileSystem('Downloads', props.vpc, projectSg);
+    const tmpFS = this.addFileSystem('Temp', props.vpc, projectSg);
 
-    let accessLoggingBucket: s3.IBucket;
+    // let accessLoggingBucket: s3.IBucket;
 
     if (props.accessLoggingBucket) {
-      accessLoggingBucket = props.accessLoggingBucket;
+      // accessLoggingBucket = props.accessLoggingBucket;
     } else {
-      accessLoggingBucket = new s3.Bucket(this, "ArtifactAccessLogging", {
-        versioned: false,
+      /* accessLoggingBucket = */
+      new s3.Bucket(this, 'ArtifactAccessLogging', {
+        versioned: true,
         enforceSSL: true,
         autoDeleteObjects: true,
         removalPolicy: RemovalPolicy.DESTROY,
@@ -102,59 +100,55 @@ export class EmbeddedLinuxCodebuildProjectStack extends cdk.Stack {
     }
 
     /** Create our CodeBuild Project. */
-    const project = new Project(
-      this,
-      "EmbeddedLinuxCodebuildProject",
-      {
-        buildSpec: BuildSpec.fromObject({
-          version: "0.2",
-          phases: {
-            build: {
-              commands: ['echo "DUMMY BUILDSPEC - can not be empty"'],
-            },
+    const project = new Project(this, 'EmbeddedLinuxCodebuildProject', {
+      buildSpec: BuildSpec.fromObject({
+        version: '0.2',
+        phases: {
+          build: {
+            commands: ['echo "DUMMY BUILDSPEC - can not be empty"'],
           },
-          artifacts: {
-            files: ["**/*"],
-            "base-directory": ".",
-          },
+        },
+        artifacts: {
+          files: ['**/*'],
+          'base-directory': '.',
+        },
+      }),
+      environment: {
+        computeType: ComputeType.X2_LARGE,
+        buildImage: LinuxBuildImage.fromEcrRepository(
+          props.imageRepo,
+          props.imageTag
+        ),
+        privileged: true,
+      },
+      timeout: cdk.Duration.hours(4),
+      vpc: props.vpc,
+      securityGroups: [projectSg],
+      fileSystemLocations: [
+        FileSystemLocation.efs({
+          identifier: 'tmp_dir',
+          location: tmpFS,
+          mountPoint: '/build-output',
         }),
-        environment: {
-          computeType: ComputeType.X2_LARGE,
-          buildImage: LinuxBuildImage.fromEcrRepository(
-            props.imageRepo,
-            props.imageTag
-          ),
-          privileged: true,
+        FileSystemLocation.efs({
+          identifier: 'sstate_cache',
+          location: sstateFS,
+          mountPoint: '/sstate-cache',
+        }),
+        FileSystemLocation.efs({
+          identifier: 'dl_dir',
+          location: dlFS,
+          mountPoint: '/downloads',
+        }),
+      ],
+      logging: {
+        cloudWatch: {
+          logGroup: new LogGroup(this, 'PipelineBuildLogs', {
+            retention: RetentionDays.TEN_YEARS,
+          }),
         },
-        timeout: cdk.Duration.hours(4),
-        vpc: props.vpc,
-        securityGroups: [projectSg],
-        fileSystemLocations: [
-          FileSystemLocation.efs({
-            identifier: "tmp_dir",
-            location: tmpFS,
-            mountPoint: "/build-output",
-          }),
-          FileSystemLocation.efs({
-            identifier: "sstate_cache",
-            location: sstateFS,
-            mountPoint: "/sstate-cache",
-          }),
-          FileSystemLocation.efs({
-            identifier: "dl_dir",
-            location: dlFS,
-            mountPoint: "/downloads",
-          }),
-        ],
-        logging: {
-          cloudWatch: {
-            logGroup: new LogGroup(this, "PipelineBuildLogs", {
-              retention: RetentionDays.TEN_YEARS,
-            }),
-          },
-        },
-      }
-    );
+      },
+    });
 
     if (props.buildPolicyAdditions) {
       props.buildPolicyAdditions.map((p) => project.addToRolePolicy(p));
@@ -163,17 +157,17 @@ export class EmbeddedLinuxCodebuildProjectStack extends cdk.Stack {
     project.addToRolePolicy(this.addProjectPolicies());
 
     project.role?.addManagedPolicy(
-      iam.ManagedPolicy.fromAwsManagedPolicyName("AWSCodeBuildAdminAccess")
+      iam.ManagedPolicy.fromAwsManagedPolicyName('AWSCodeBuildAdminAccess')
     );
 
     /** Here we create the logic to check for presence of ECR image on the CodePipeline automatic triggering upon resource creation,
      * and stop the execution if the image does not exist.  */
     const fnOnPipelineCreate = new lambda.Function(
       this,
-      "OSImageCheckOnStart",
+      'OSImageCheckOnStart',
       {
         runtime: lambda.Runtime.PYTHON_3_10,
-        handler: "index.handler",
+        handler: 'index.handler',
         code: lambda.Code.fromInline(`
 import boto3
 import json
@@ -199,14 +193,14 @@ def handler(event, context):
       }
     );
 
-    const pipelineCreateRule = new events.Rule(this, "OnPipelineStartRule", {
+    const pipelineCreateRule = new events.Rule(this, 'OnPipelineStartRule', {
       eventPattern: {
-        detailType: ["CodePipeline Pipeline Execution State Change"],
-        source: ["aws.codepipeline"],
+        detailType: ['CodePipeline Pipeline Execution State Change'],
+        source: ['aws.codepipeline'],
         detail: {
-          state: ["STARTED"],
-          "execution-trigger": {
-            "trigger-type": ["CreatePipeline"],
+          state: ['STARTED'],
+          'execution-trigger': {
+            'trigger-type': ['CreatePipeline'],
           },
         },
       },
@@ -250,18 +244,18 @@ def handler(event, context):
   private addProjectPolicies(): iam.PolicyStatement {
     return new iam.PolicyStatement({
       actions: [
-        "ec2:DescribeSecurityGroups",
-        "codestar-connections:GetConnection",
-        "codestar-connections:GetConnectionToken",
-        "codeconnections:GetConnectionToken",
-        "codeconnections:GetConnection",
-        "codeconnections:UseConnection",
-        "codebuild:ListConnectedOAuthAccounts",
-        "codebuild:ListRepositories",
-        "codebuild:PersistOAuthToken",
-        "codebuild:ImportSourceCredentials",
+        'ec2:DescribeSecurityGroups',
+        'codestar-connections:GetConnection',
+        'codestar-connections:GetConnectionToken',
+        'codeconnections:GetConnectionToken',
+        'codeconnections:GetConnection',
+        'codeconnections:UseConnection',
+        'codebuild:ListConnectedOAuthAccounts',
+        'codebuild:ListRepositories',
+        'codebuild:PersistOAuthToken',
+        'codebuild:ImportSourceCredentials',
       ],
-      resources: ["*"],
+      resources: ['*'],
     });
   }
 }

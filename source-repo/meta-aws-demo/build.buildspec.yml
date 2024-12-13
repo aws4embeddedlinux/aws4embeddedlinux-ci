@@ -23,7 +23,7 @@ phases:
           fi
   build:
     commands:
-      - git clone https://github.com/aws4embeddedlinux/meta-aws-demos -b v0.0.1
+      - git clone https://github.com/aws4embeddedlinux/meta-aws-demos
       - cd meta-aws-demos
       - git submodule update --init --recursive
       - echo Build started on `date`

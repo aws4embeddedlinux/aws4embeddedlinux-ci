@@ -35,7 +35,6 @@ export interface BuildImagePipelineProps extends cdk.StackProps {
   readonly serverAccessLogsPrefix?: string;
   /** Artifact bucket to use */
   readonly artifactBucket?: s3.Bucket;
-
 }
 
 /**
@@ -107,11 +106,11 @@ export class BuildImagePipelineStack extends cdk.Stack {
 
     let accessLoggingBucket: s3.IBucket;
 
-    if (props.accessLoggingBucket){
+    if (props.accessLoggingBucket) {
       accessLoggingBucket = props.accessLoggingBucket;
     } else {
-     accessLoggingBucket = new s3.Bucket(this, 'ArtifactAccessLogging', {
-        versioned: false,
+      accessLoggingBucket = new s3.Bucket(this, 'ArtifactAccessLogging', {
+        versioned: true,
         enforceSSL: true,
         autoDeleteObjects: true,
         removalPolicy: RemovalPolicy.DESTROY,
@@ -120,15 +119,15 @@ export class BuildImagePipelineStack extends cdk.Stack {
 
     let artifactBucket: s3.IBucket;
 
-    if (props.artifactBucket){
+    if (props.artifactBucket) {
       artifactBucket = props.artifactBucket;
     } else {
       const encryptionKey = new kms.Key(this, 'PipelineArtifactKey', {
-       removalPolicy: RemovalPolicy.DESTROY,
-       enableKeyRotation: true,
-     });
+        removalPolicy: RemovalPolicy.DESTROY,
+        enableKeyRotation: true,
+      });
       artifactBucket = new s3.Bucket(this, 'PipelineArtifacts', {
-        versioned: false,
+        versioned: true,
         enforceSSL: true,
         serverAccessLogsBucket: accessLoggingBucket,
         serverAccessLogsPrefix: props.serverAccessLogsPrefix,
