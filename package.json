@@ -19,6 +19,8 @@
     "prepare": "npm run build"
   },
   "devDependencies": {
+    "@eslint/compat": "^1.2.4",
+    "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.16.0",
     "@types/jest": "^29.5.14",
     "@types/node": "20.14.8",
