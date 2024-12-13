@@ -3,6 +3,7 @@
   "version": "0.1.4",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "copy-src": "if [ -d dist/source-repo ]; then rm -rf dist/source-repo; fi && cp -r source-repo dist && cp assets/create-ec2-ami.sh dist/assets",

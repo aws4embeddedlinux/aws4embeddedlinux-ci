@@ -34,7 +34,6 @@ export default [...compat.extends(
             ...globals.browser,
             ...globals.node,
             ...globals.jest,
-            ...globals.commonjs,
         },
 
         parser: tsParser,
