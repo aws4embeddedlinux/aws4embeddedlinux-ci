@@ -140,12 +140,12 @@ exports[`Build Image Pipeline Snapshot 1`] = `
       "Type": "AWS::S3::BucketPolicy",
     },
     "BuildImageBuildLogs65D4471D": {
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
-        "RetentionInDays": 3653,
+        "RetentionInDays": 365,
       },
       "Type": "AWS::Logs::LogGroup",
-      "UpdateReplacePolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
     },
     "BuildImagePipeline01DF392E": {
       "DependsOn": [
@@ -191,7 +191,7 @@ exports[`Build Image Pipeline Snapshot 1`] = `
                   "S3Bucket": {
                     "Fn::ImportValue": "RepoStack:ExportsOutputRefBucket83908E7781C90AC0",
                   },
-                  "S3ObjectKey": "data.zip",
+                  "S3ObjectKey": "source-base-image.zip",
                 },
                 "Name": "Build-Image-Source",
                 "OutputArtifacts": [
@@ -511,7 +511,7 @@ exports[`Build Image Pipeline Snapshot 1`] = `
                       {
                         "Fn::ImportValue": "RepoStack:ExportsOutputFnGetAttBucket83908E77Arn063C8555",
                       },
-                      "/data.zip",
+                      "/source-base-image.zip",
                     ],
                   ],
                 },
@@ -677,7 +677,7 @@ exports[`Build Image Pipeline Snapshot 1`] = `
           ],
         },
         "Source": {
-          "BuildSpec": "ubuntu_22_04/buildspec.yml",
+          "BuildSpec": "buildspec.yml",
           "Type": "CODEPIPELINE",
         },
       },

@@ -1,29 +1,32 @@
-import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
-import { Code, Repository } from 'aws-cdk-lib/aws-codecommit';
+import * as cdk from "aws-cdk-lib";
+import { Construct } from "constructs";
+import { Code, Repository } from "aws-cdk-lib/aws-codecommit";
 
-import * as path from 'path';
+import * as path from "path";
 
 /**
- * The kind of project built.
+ * @deprecated - The kind of project built.
  */
 export enum ProjectKind {
   /** Build core-image-minimal from poky. */
-  Poky = 'poky',
+  Poky = "poky",
   /** Build the Qemu meta-aws Demonstration Distribution. */
-  MetaAwsDemo = 'meta-aws-demo',
+  MetaAwsDemo = "meta-aws-demo",
   /** Build an EC2 AMI */
-  PokyAmi = 'poky-ami',
+  PokyAmi = "poky-ami",
   /** Build an kas based image */
-  Kas = 'kas',
+  Kas = "kas",
   /** Build an Renesas image */
-  Renesas = 'renesas',
+  Renesas = "renesas",
   /** Build an IMX image using NXP layers. */
-  NxpImx = 'nxp-imx',
+  NxpImx = "nxp-imx",
   /** Build no pipeline, just CodeBuild project to connect with GitHub actions. */
-  CodeBuild = 'codebuild',
+  CodeBuild = "codebuild",
 }
 
+/**
+ * @deprecated - The SourceRepoProps.
+ */
 export interface SourceRepoProps extends cdk.StackProps {
   /** The name of the CodeCommit Repository created. */
   readonly repoName: string;
@@ -32,6 +35,8 @@ export interface SourceRepoProps extends cdk.StackProps {
 }
 
 /**
+ * @deprecated
+ *
  * The repository for the Source Stage of the pipeline.
  *
  * The initial contents of this repository are seeded by the assets contained
@@ -44,11 +49,11 @@ export class SourceRepo extends Construct {
   constructor(scope: Construct, id: string, props: SourceRepoProps) {
     super(scope, id);
 
-    this.repo = new Repository(this, 'SourceRepository', {
+    this.repo = new Repository(this, "SourceRepository", {
       repositoryName: props.repoName,
       code: Code.fromDirectory(
-        path.join(__dirname, '..', '..', 'source-repo', props.kind),
-        'main'
+        path.join(__dirname, "..", "..", "..", "source-repo", props.kind),
+        "main",
       ),
     });
   }

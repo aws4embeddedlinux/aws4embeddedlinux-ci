@@ -1,26 +1,34 @@
-import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
-import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
-import * as codepipeline_actions from 'aws-cdk-lib/aws-codepipeline-actions';
-import * as codebuild from 'aws-cdk-lib/aws-codebuild';
-import { IRepository } from 'aws-cdk-lib/aws-ecr';
-import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as events from 'aws-cdk-lib/aws-events';
-import { CodePipeline } from 'aws-cdk-lib/aws-events-targets';
-import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
-import * as kms from 'aws-cdk-lib/aws-kms';
-import { RemovalPolicy } from 'aws-cdk-lib';
+import * as cdk from "aws-cdk-lib";
+import { Construct } from "constructs";
+import * as codepipeline from "aws-cdk-lib/aws-codepipeline";
+import * as codepipeline_actions from "aws-cdk-lib/aws-codepipeline-actions";
+import * as codebuild from "aws-cdk-lib/aws-codebuild";
+import { IRepository } from "aws-cdk-lib/aws-ecr";
+import * as s3 from "aws-cdk-lib/aws-s3";
+import * as events from "aws-cdk-lib/aws-events";
+import { CodePipeline } from "aws-cdk-lib/aws-events-targets";
+import { LogGroup, RetentionDays } from "aws-cdk-lib/aws-logs";
+import * as kms from "aws-cdk-lib/aws-kms";
+import { RemovalPolicy } from "aws-cdk-lib";
 
 /**
+ *
  * The type of Image to build on.
+ *
+ * @deprecated Use the new {@link PipelineResourcesStack} class instead.
+ *
  */
 export enum ImageKind {
   /** Ubuntu 22.04 (LTS) */
-  Ubuntu22_04 = 'ubuntu_22_04',
+  Ubuntu22_04 = "ubuntu_22_04",
 }
 
 /**
+ *
  * Select options for the {@link BuildImagePipelineStack}.
+ *
+ * @deprecated Use the new {@link BuildBaseImageCodePipelineProps} class instead.
+ *
  */
 export interface BuildImagePipelineProps extends cdk.StackProps {
   /** The Image type to create. */
@@ -38,32 +46,37 @@ export interface BuildImagePipelineProps extends cdk.StackProps {
 }
 
 /**
+ *
  * The pipeline for building the CodeBuild Image used in other pipelines. This
  * will produce an image for an OS based on verified Yocto hosts.
  *
  * For configuration options see {@link BuildImagePipelineProps}.
+ *
+ * @deprecated Use the new {@link BuildBaseImageCodePipelineStack} class instead.
+ *
  */
 export class BuildImagePipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: BuildImagePipelineProps) {
     super(scope, id, props);
+    const sourceBase: string = "base-image";
+    const sourceFileName: string = `source-${sourceBase}.zip`;
+    const sourceBucketKey: string = `${sourceFileName}`;
 
     // Create a source action.
-    const sourceOutput = new codepipeline.Artifact('BuildImageSource');
+    const sourceOutput = new codepipeline.Artifact("BuildImageSource");
     const sourceAction = new codepipeline_actions.S3SourceAction({
-      actionName: 'Build-Image-Source',
+      actionName: "Build-Image-Source",
       bucket: props.dataBucket,
-      bucketKey: 'data.zip',
+      bucketKey: sourceBucketKey,
       output: sourceOutput,
     });
 
     // Create a build action.
     const buildImageProject = new codebuild.PipelineProject(
       this,
-      'BuildImageProject',
+      "BuildImageProject",
       {
-        buildSpec: codebuild.BuildSpec.fromSourceFilename(
-          `${props.imageKind}/buildspec.yml`
-        ),
+        buildSpec: codebuild.BuildSpec.fromSourceFilename(`buildspec.yml`),
         environment: {
           computeType: codebuild.ComputeType.LARGE,
           buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
@@ -89,17 +102,18 @@ export class BuildImagePipelineStack extends cdk.Stack {
         },
         logging: {
           cloudWatch: {
-            logGroup: new LogGroup(this, 'BuildImageBuildLogs', {
-              retention: RetentionDays.TEN_YEARS,
+            logGroup: new LogGroup(this, "BuildImageBuildLogs", {
+              retention: RetentionDays.ONE_YEAR,
+              removalPolicy: cdk.RemovalPolicy.DESTROY,
             }),
           },
         },
-      }
+      },
     );
     props.repository.grantPullPush(buildImageProject);
 
     const buildAction = new codepipeline_actions.CodeBuildAction({
-      actionName: 'Build',
+      actionName: "Build",
       project: buildImageProject,
       input: sourceOutput,
     });
@@ -109,7 +123,7 @@ export class BuildImagePipelineStack extends cdk.Stack {
     if (props.accessLoggingBucket) {
       accessLoggingBucket = props.accessLoggingBucket;
     } else {
-      accessLoggingBucket = new s3.Bucket(this, 'ArtifactAccessLogging', {
+      accessLoggingBucket = new s3.Bucket(this, "ArtifactAccessLogging", {
         versioned: true,
         enforceSSL: true,
         autoDeleteObjects: true,
@@ -122,11 +136,11 @@ export class BuildImagePipelineStack extends cdk.Stack {
     if (props.artifactBucket) {
       artifactBucket = props.artifactBucket;
     } else {
-      const encryptionKey = new kms.Key(this, 'PipelineArtifactKey', {
+      const encryptionKey = new kms.Key(this, "PipelineArtifactKey", {
         removalPolicy: RemovalPolicy.DESTROY,
         enableKeyRotation: true,
       });
-      artifactBucket = new s3.Bucket(this, 'PipelineArtifacts', {
+      artifactBucket = new s3.Bucket(this, "PipelineArtifacts", {
         versioned: true,
         enforceSSL: true,
         serverAccessLogsBucket: accessLoggingBucket,
@@ -134,24 +148,24 @@ export class BuildImagePipelineStack extends cdk.Stack {
         encryptionKey,
         encryption: s3.BucketEncryption.KMS,
         blockPublicAccess: new s3.BlockPublicAccess(
-          s3.BlockPublicAccess.BLOCK_ALL
+          s3.BlockPublicAccess.BLOCK_ALL,
         ),
         autoDeleteObjects: true,
         removalPolicy: RemovalPolicy.DESTROY,
       });
     }
 
-    const pipeline = new codepipeline.Pipeline(this, 'BuildImagePipeline', {
+    const pipeline = new codepipeline.Pipeline(this, "BuildImagePipeline", {
       artifactBucket,
       pipelineName: `${props.imageKind}BuildImagePipeline`,
       pipelineType: codepipeline.PipelineType.V1,
       stages: [
         {
-          stageName: 'Source',
+          stageName: "Source",
           actions: [sourceAction],
         },
         {
-          stageName: 'Build',
+          stageName: "Build",
           actions: [buildAction],
         },
       ],
@@ -160,11 +174,11 @@ export class BuildImagePipelineStack extends cdk.Stack {
 
     // Run this pipeline weekly to update the image OS.
     const pipelineTarget = new CodePipeline(pipeline);
-    new events.Rule(this, 'WeeklySchedule', {
+    new events.Rule(this, "WeeklySchedule", {
       schedule: events.Schedule.cron({
-        weekDay: 'Monday',
-        minute: '0',
-        hour: '6',
+        weekDay: "Monday",
+        minute: "0",
+        hour: "6",
       }),
       targets: [pipelineTarget],
     });

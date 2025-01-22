@@ -11,12 +11,12 @@ exports[`Pipeline Networking Snapshot 1`] = `
   },
   "Resources": {
     "LogGroupF5B46931": {
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
-        "RetentionInDays": 3653,
+        "RetentionInDays": 365,
       },
       "Type": "AWS::Logs::LogGroup",
-      "UpdateReplacePolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
     },
     "PipelineVpc0543904A": {
       "Properties": {

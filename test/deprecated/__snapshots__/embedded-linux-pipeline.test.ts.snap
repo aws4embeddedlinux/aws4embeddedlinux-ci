@@ -275,6 +275,120 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
+    "EFSFileSystem3D4FCE7F": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "Encrypted": true,
+        "FileSystemTags": [
+          {
+            "Key": "Name",
+            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EFSFileSystem",
+          },
+        ],
+      },
+      "Type": "AWS::EFS::FileSystem",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "EFSFileSystemEfsMountTarget178C2E276": {
+      "Properties": {
+        "FileSystemId": {
+          "Ref": "EFSFileSystem3D4FCE7F",
+        },
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "EFSFileSystemEfsSecurityGroup5486A2B1",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet1SubnetEF90658EEBA34A64",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "EFSFileSystemEfsMountTarget2F4D1BB6B": {
+      "Properties": {
+        "FileSystemId": {
+          "Ref": "EFSFileSystem3D4FCE7F",
+        },
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "EFSFileSystemEfsSecurityGroup5486A2B1",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet2Subnet0764F5E844EB0F67",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "EFSFileSystemEfsMountTarget3FFC5E69F": {
+      "Properties": {
+        "FileSystemId": {
+          "Ref": "EFSFileSystem3D4FCE7F",
+        },
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "EFSFileSystemEfsSecurityGroup5486A2B1",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet3SubnetB0BAE95180198C81",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "EFSFileSystemEfsSecurityGroup5486A2B1": {
+      "Properties": {
+        "GroupDescription": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EFSFileSystem/EfsSecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EFSFileSystem",
+          },
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucket83908E7781C90AC0",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "EFSFileSystemEfsSecurityGroupfromPokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992BuildProjectSecurityGroup1FC90CF52049C427FFB2": {
+      "Properties": {
+        "Description": "from PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992BuildProjectSecurityGroup1FC90CF5:2049",
+        "FromPort": 2049,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "EFSFileSystemEfsSecurityGroup5486A2B1",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "BuildProjectSecurityGroup28D27668",
+            "GroupId",
+          ],
+        },
+        "ToPort": 2049,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
     "EmbeddedLinuxBuildProject45760157": {
       "DependsOn": [
         "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
@@ -364,51 +478,19 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
         },
         "FileSystemLocations": [
           {
-            "Identifier": "tmp_dir",
+            "Identifier": "nfs",
             "Location": {
               "Fn::Join": [
                 "",
                 [
                   {
-                    "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
+                    "Ref": "EFSFileSystem3D4FCE7F",
                   },
                   ".efs.eu-central-1.amazonaws.com:/",
                 ],
               ],
             },
-            "MountPoint": "/build-output",
-            "Type": "EFS",
-          },
-          {
-            "Identifier": "sstate_cache",
-            "Location": {
-              "Fn::Join": [
-                "",
-                [
-                  {
-                    "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
-                  },
-                  ".efs.eu-central-1.amazonaws.com:/",
-                ],
-              ],
-            },
-            "MountPoint": "/sstate-cache",
-            "Type": "EFS",
-          },
-          {
-            "Identifier": "dl_dir",
-            "Location": {
-              "Fn::Join": [
-                "",
-                [
-                  {
-                    "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
-                  },
-                  ".efs.eu-central-1.amazonaws.com:/",
-                ],
-              ],
-            },
-            "MountPoint": "/downloads",
+            "MountPoint": "/nfs",
             "Type": "EFS",
           },
         ],
@@ -1298,120 +1380,6 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
-    "EmbeddedLinuxPipelineDownloadsFilesystem1772812C": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "Encrypted": true,
-        "FileSystemTags": [
-          {
-            "Key": "Name",
-            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EmbeddedLinuxPipelineDownloadsFilesystem",
-          },
-        ],
-      },
-      "Type": "AWS::EFS::FileSystem",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "EmbeddedLinuxPipelineDownloadsFilesystemEfsMountTarget1CA5C8C01": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet1SubnetEF90658EEBA34A64",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineDownloadsFilesystemEfsMountTarget2BC3B1054": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet2Subnet0764F5E844EB0F67",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineDownloadsFilesystemEfsMountTarget3C062C6FF": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet3SubnetB0BAE95180198C81",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38": {
-      "Properties": {
-        "GroupDescription": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EmbeddedLinuxPipelineDownloadsFilesystem/EfsSecurityGroup",
-        "SecurityGroupEgress": [
-          {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow all outbound traffic by default",
-            "IpProtocol": "-1",
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EmbeddedLinuxPipelineDownloadsFilesystem",
-          },
-        ],
-        "VpcId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucket83908E7781C90AC0",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroupfromPokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992BuildProjectSecurityGroup1FC90CF5204930D27033": {
-      "Properties": {
-        "Description": "from PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992BuildProjectSecurityGroup1FC90CF5:2049",
-        "FromPort": 2049,
-        "GroupId": {
-          "Fn::GetAtt": [
-            "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": {
-          "Fn::GetAtt": [
-            "BuildProjectSecurityGroup28D27668",
-            "GroupId",
-          ],
-        },
-        "ToPort": 2049,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
-    },
     "EmbeddedLinuxPipelineEventsRoleDefaultPolicy7234197B": {
       "Properties": {
         "PolicyDocument": {
@@ -1580,120 +1548,6 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
-    "EmbeddedLinuxPipelineSStateFilesystem36BA2630": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "Encrypted": true,
-        "FileSystemTags": [
-          {
-            "Key": "Name",
-            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EmbeddedLinuxPipelineSStateFilesystem",
-          },
-        ],
-      },
-      "Type": "AWS::EFS::FileSystem",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "EmbeddedLinuxPipelineSStateFilesystemEfsMountTarget15401AFF6": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet1SubnetEF90658EEBA34A64",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineSStateFilesystemEfsMountTarget25BFCAE34": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet2Subnet0764F5E844EB0F67",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineSStateFilesystemEfsMountTarget347551AC1": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet3SubnetB0BAE95180198C81",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2": {
-      "Properties": {
-        "GroupDescription": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EmbeddedLinuxPipelineSStateFilesystem/EfsSecurityGroup",
-        "SecurityGroupEgress": [
-          {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow all outbound traffic by default",
-            "IpProtocol": "-1",
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EmbeddedLinuxPipelineSStateFilesystem",
-          },
-        ],
-        "VpcId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucket83908E7781C90AC0",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroupfromPokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992BuildProjectSecurityGroup1FC90CF5204976011793": {
-      "Properties": {
-        "Description": "from PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992BuildProjectSecurityGroup1FC90CF5:2049",
-        "FromPort": 2049,
-        "GroupId": {
-          "Fn::GetAtt": [
-            "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": {
-          "Fn::GetAtt": [
-            "BuildProjectSecurityGroup28D27668",
-            "GroupId",
-          ],
-        },
-        "ToPort": 2049,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
-    },
     "EmbeddedLinuxPipelineSourceCodePipelineActionRoleDefaultPolicyE4783D85": {
       "Properties": {
         "PolicyDocument": {
@@ -1807,120 +1661,6 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
         },
       },
       "Type": "AWS::IAM::Role",
-    },
-    "EmbeddedLinuxPipelineTempFilesystem8ECAD602": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "Encrypted": true,
-        "FileSystemTags": [
-          {
-            "Key": "Name",
-            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EmbeddedLinuxPipelineTempFilesystem",
-          },
-        ],
-      },
-      "Type": "AWS::EFS::FileSystem",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "EmbeddedLinuxPipelineTempFilesystemEfsMountTarget1C1FB920C": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet1SubnetEF90658EEBA34A64",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineTempFilesystemEfsMountTarget240F5557C": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet2Subnet0764F5E844EB0F67",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineTempFilesystemEfsMountTarget31EDABBCB": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet3SubnetB0BAE95180198C81",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213": {
-      "Properties": {
-        "GroupDescription": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EmbeddedLinuxPipelineTempFilesystem/EfsSecurityGroup",
-        "SecurityGroupEgress": [
-          {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow all outbound traffic by default",
-            "IpProtocol": "-1",
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992/EmbeddedLinuxPipelineTempFilesystem",
-          },
-        ],
-        "VpcId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucket83908E7781C90AC0",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupfromPokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992BuildProjectSecurityGroup1FC90CF520495E3C3DB5": {
-      "Properties": {
-        "Description": "from PokyAmiPipeline2ExportsOutputFnGetAttPipelineVpc0543904ACidrBlock70DEC992BuildProjectSecurityGroup1FC90CF5:2049",
-        "FromPort": 2049,
-        "GroupId": {
-          "Fn::GetAtt": [
-            "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": {
-          "Fn::GetAtt": [
-            "BuildProjectSecurityGroup28D27668",
-            "GroupId",
-          ],
-        },
-        "ToPort": 2049,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
     },
     "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": {
       "DependsOn": [
@@ -2062,7 +1802,7 @@ def handler(event, context):
             ],
           ],
         },
-        "RetentionInDays": 3653,
+        "RetentionInDays": 365,
         "ServiceToken": {
           "Fn::GetAtt": [
             "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
@@ -2369,12 +2109,12 @@ def handler(event, context):
       "Type": "AWS::S3::BucketPolicy",
     },
     "PipelineBuildLogs0533272F": {
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
-        "RetentionInDays": 3653,
+        "RetentionInDays": 365,
       },
       "Type": "AWS::Logs::LogGroup",
-      "UpdateReplacePolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
     },
     "PipelineOutput78594CB5": {
       "DeletionPolicy": "Delete",
@@ -2995,6 +2735,120 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
+    "EFSFileSystem3D4FCE7F": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "Encrypted": true,
+        "FileSystemTags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/EFSFileSystem",
+          },
+        ],
+      },
+      "Type": "AWS::EFS::FileSystem",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "EFSFileSystemEfsMountTarget178C2E276": {
+      "Properties": {
+        "FileSystemId": {
+          "Ref": "EFSFileSystem3D4FCE7F",
+        },
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "EFSFileSystemEfsSecurityGroup5486A2B1",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet1SubnetEF90658EEBA34A64",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "EFSFileSystemEfsMountTarget2F4D1BB6B": {
+      "Properties": {
+        "FileSystemId": {
+          "Ref": "EFSFileSystem3D4FCE7F",
+        },
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "EFSFileSystemEfsSecurityGroup5486A2B1",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet2Subnet0764F5E844EB0F67",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "EFSFileSystemEfsMountTarget3FFC5E69F": {
+      "Properties": {
+        "FileSystemId": {
+          "Ref": "EFSFileSystem3D4FCE7F",
+        },
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "EFSFileSystemEfsSecurityGroup5486A2B1",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet3SubnetB0BAE95180198C81",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "EFSFileSystemEfsSecurityGroup5486A2B1": {
+      "Properties": {
+        "GroupDescription": "MyTestStack/EFSFileSystem/EfsSecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/EFSFileSystem",
+          },
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucket83908E7781C90AC0",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "EFSFileSystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A92049B46A9A5C": {
+      "Properties": {
+        "Description": "from MyTestStackBuildProjectSecurityGroupA374A3A9:2049",
+        "FromPort": 2049,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "EFSFileSystemEfsSecurityGroup5486A2B1",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "BuildProjectSecurityGroup28D27668",
+            "GroupId",
+          ],
+        },
+        "ToPort": 2049,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
     "EmbeddedLinuxBuildProject45760157": {
       "DependsOn": [
         "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
@@ -3084,51 +2938,19 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
         },
         "FileSystemLocations": [
           {
-            "Identifier": "tmp_dir",
+            "Identifier": "nfs",
             "Location": {
               "Fn::Join": [
                 "",
                 [
                   {
-                    "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
+                    "Ref": "EFSFileSystem3D4FCE7F",
                   },
                   ".efs.eu-central-1.amazonaws.com:/",
                 ],
               ],
             },
-            "MountPoint": "/build-output",
-            "Type": "EFS",
-          },
-          {
-            "Identifier": "sstate_cache",
-            "Location": {
-              "Fn::Join": [
-                "",
-                [
-                  {
-                    "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
-                  },
-                  ".efs.eu-central-1.amazonaws.com:/",
-                ],
-              ],
-            },
-            "MountPoint": "/sstate-cache",
-            "Type": "EFS",
-          },
-          {
-            "Identifier": "dl_dir",
-            "Location": {
-              "Fn::Join": [
-                "",
-                [
-                  {
-                    "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
-                  },
-                  ".efs.eu-central-1.amazonaws.com:/",
-                ],
-              ],
-            },
-            "MountPoint": "/downloads",
+            "MountPoint": "/nfs",
             "Type": "EFS",
           },
         ],
@@ -4018,120 +3840,6 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
-    "EmbeddedLinuxPipelineDownloadsFilesystem1772812C": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "Encrypted": true,
-        "FileSystemTags": [
-          {
-            "Key": "Name",
-            "Value": "MyTestStack/EmbeddedLinuxPipelineDownloadsFilesystem",
-          },
-        ],
-      },
-      "Type": "AWS::EFS::FileSystem",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "EmbeddedLinuxPipelineDownloadsFilesystemEfsMountTarget1CA5C8C01": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet1SubnetEF90658EEBA34A64",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineDownloadsFilesystemEfsMountTarget2BC3B1054": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet2Subnet0764F5E844EB0F67",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineDownloadsFilesystemEfsMountTarget3C062C6FF": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet3SubnetB0BAE95180198C81",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38": {
-      "Properties": {
-        "GroupDescription": "MyTestStack/EmbeddedLinuxPipelineDownloadsFilesystem/EfsSecurityGroup",
-        "SecurityGroupEgress": [
-          {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow all outbound traffic by default",
-            "IpProtocol": "-1",
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "MyTestStack/EmbeddedLinuxPipelineDownloadsFilesystem",
-          },
-        ],
-        "VpcId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucket83908E7781C90AC0",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A920495E2D9CF2": {
-      "Properties": {
-        "Description": "from MyTestStackBuildProjectSecurityGroupA374A3A9:2049",
-        "FromPort": 2049,
-        "GroupId": {
-          "Fn::GetAtt": [
-            "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": {
-          "Fn::GetAtt": [
-            "BuildProjectSecurityGroup28D27668",
-            "GroupId",
-          ],
-        },
-        "ToPort": 2049,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
-    },
     "EmbeddedLinuxPipelineEventsRoleDefaultPolicy7234197B": {
       "Properties": {
         "PolicyDocument": {
@@ -4300,120 +4008,6 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
-    "EmbeddedLinuxPipelineSStateFilesystem36BA2630": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "Encrypted": true,
-        "FileSystemTags": [
-          {
-            "Key": "Name",
-            "Value": "MyTestStack/EmbeddedLinuxPipelineSStateFilesystem",
-          },
-        ],
-      },
-      "Type": "AWS::EFS::FileSystem",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "EmbeddedLinuxPipelineSStateFilesystemEfsMountTarget15401AFF6": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet1SubnetEF90658EEBA34A64",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineSStateFilesystemEfsMountTarget25BFCAE34": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet2Subnet0764F5E844EB0F67",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineSStateFilesystemEfsMountTarget347551AC1": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet3SubnetB0BAE95180198C81",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2": {
-      "Properties": {
-        "GroupDescription": "MyTestStack/EmbeddedLinuxPipelineSStateFilesystem/EfsSecurityGroup",
-        "SecurityGroupEgress": [
-          {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow all outbound traffic by default",
-            "IpProtocol": "-1",
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "MyTestStack/EmbeddedLinuxPipelineSStateFilesystem",
-          },
-        ],
-        "VpcId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucket83908E7781C90AC0",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A92049D2B7AC43": {
-      "Properties": {
-        "Description": "from MyTestStackBuildProjectSecurityGroupA374A3A9:2049",
-        "FromPort": 2049,
-        "GroupId": {
-          "Fn::GetAtt": [
-            "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": {
-          "Fn::GetAtt": [
-            "BuildProjectSecurityGroup28D27668",
-            "GroupId",
-          ],
-        },
-        "ToPort": 2049,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
-    },
     "EmbeddedLinuxPipelineSourceCodePipelineActionRoleDefaultPolicyE4783D85": {
       "Properties": {
         "PolicyDocument": {
@@ -4527,120 +4121,6 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
         },
       },
       "Type": "AWS::IAM::Role",
-    },
-    "EmbeddedLinuxPipelineTempFilesystem8ECAD602": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "Encrypted": true,
-        "FileSystemTags": [
-          {
-            "Key": "Name",
-            "Value": "MyTestStack/EmbeddedLinuxPipelineTempFilesystem",
-          },
-        ],
-      },
-      "Type": "AWS::EFS::FileSystem",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "EmbeddedLinuxPipelineTempFilesystemEfsMountTarget1C1FB920C": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet1SubnetEF90658EEBA34A64",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineTempFilesystemEfsMountTarget240F5557C": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet2Subnet0764F5E844EB0F67",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineTempFilesystemEfsMountTarget31EDABBCB": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet3SubnetB0BAE95180198C81",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213": {
-      "Properties": {
-        "GroupDescription": "MyTestStack/EmbeddedLinuxPipelineTempFilesystem/EfsSecurityGroup",
-        "SecurityGroupEgress": [
-          {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow all outbound traffic by default",
-            "IpProtocol": "-1",
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "MyTestStack/EmbeddedLinuxPipelineTempFilesystem",
-          },
-        ],
-        "VpcId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucket83908E7781C90AC0",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A9204979E58A91": {
-      "Properties": {
-        "Description": "from MyTestStackBuildProjectSecurityGroupA374A3A9:2049",
-        "FromPort": 2049,
-        "GroupId": {
-          "Fn::GetAtt": [
-            "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": {
-          "Fn::GetAtt": [
-            "BuildProjectSecurityGroup28D27668",
-            "GroupId",
-          ],
-        },
-        "ToPort": 2049,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
     },
     "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": {
       "DependsOn": [
@@ -4782,7 +4262,7 @@ def handler(event, context):
             ],
           ],
         },
-        "RetentionInDays": 3653,
+        "RetentionInDays": 365,
         "ServiceToken": {
           "Fn::GetAtt": [
             "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
@@ -5089,12 +4569,12 @@ def handler(event, context):
       "Type": "AWS::S3::BucketPolicy",
     },
     "PipelineBuildLogs0533272F": {
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
-        "RetentionInDays": 3653,
+        "RetentionInDays": 365,
       },
       "Type": "AWS::Logs::LogGroup",
-      "UpdateReplacePolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
     },
     "PipelineOutput78594CB5": {
       "DeletionPolicy": "Delete",
@@ -5715,6 +5195,120 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
+    "EFSFileSystem3D4FCE7F": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "Encrypted": true,
+        "FileSystemTags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/EFSFileSystem",
+          },
+        ],
+      },
+      "Type": "AWS::EFS::FileSystem",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "EFSFileSystemEfsMountTarget178C2E276": {
+      "Properties": {
+        "FileSystemId": {
+          "Ref": "EFSFileSystem3D4FCE7F",
+        },
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "EFSFileSystemEfsSecurityGroup5486A2B1",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet1SubnetEF90658EEBA34A64",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "EFSFileSystemEfsMountTarget2F4D1BB6B": {
+      "Properties": {
+        "FileSystemId": {
+          "Ref": "EFSFileSystem3D4FCE7F",
+        },
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "EFSFileSystemEfsSecurityGroup5486A2B1",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet2Subnet0764F5E844EB0F67",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "EFSFileSystemEfsMountTarget3FFC5E69F": {
+      "Properties": {
+        "FileSystemId": {
+          "Ref": "EFSFileSystem3D4FCE7F",
+        },
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "EFSFileSystemEfsSecurityGroup5486A2B1",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet3SubnetB0BAE95180198C81",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "EFSFileSystemEfsSecurityGroup5486A2B1": {
+      "Properties": {
+        "GroupDescription": "MyTestStack/EFSFileSystem/EfsSecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/EFSFileSystem",
+          },
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucket83908E7781C90AC0",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "EFSFileSystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A92049B46A9A5C": {
+      "Properties": {
+        "Description": "from MyTestStackBuildProjectSecurityGroupA374A3A9:2049",
+        "FromPort": 2049,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "EFSFileSystemEfsSecurityGroup5486A2B1",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "BuildProjectSecurityGroup28D27668",
+            "GroupId",
+          ],
+        },
+        "ToPort": 2049,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
     "EmbeddedLinuxBuildProject45760157": {
       "DependsOn": [
         "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
@@ -5783,51 +5377,19 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
         },
         "FileSystemLocations": [
           {
-            "Identifier": "tmp_dir",
+            "Identifier": "nfs",
             "Location": {
               "Fn::Join": [
                 "",
                 [
                   {
-                    "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
+                    "Ref": "EFSFileSystem3D4FCE7F",
                   },
                   ".efs.eu-central-1.amazonaws.com:/",
                 ],
               ],
             },
-            "MountPoint": "/build-output",
-            "Type": "EFS",
-          },
-          {
-            "Identifier": "sstate_cache",
-            "Location": {
-              "Fn::Join": [
-                "",
-                [
-                  {
-                    "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
-                  },
-                  ".efs.eu-central-1.amazonaws.com:/",
-                ],
-              ],
-            },
-            "MountPoint": "/sstate-cache",
-            "Type": "EFS",
-          },
-          {
-            "Identifier": "dl_dir",
-            "Location": {
-              "Fn::Join": [
-                "",
-                [
-                  {
-                    "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
-                  },
-                  ".efs.eu-central-1.amazonaws.com:/",
-                ],
-              ],
-            },
-            "MountPoint": "/downloads",
+            "MountPoint": "/nfs",
             "Type": "EFS",
           },
         ],
@@ -6531,120 +6093,6 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
-    "EmbeddedLinuxPipelineDownloadsFilesystem1772812C": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "Encrypted": true,
-        "FileSystemTags": [
-          {
-            "Key": "Name",
-            "Value": "MyTestStack/EmbeddedLinuxPipelineDownloadsFilesystem",
-          },
-        ],
-      },
-      "Type": "AWS::EFS::FileSystem",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "EmbeddedLinuxPipelineDownloadsFilesystemEfsMountTarget1CA5C8C01": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet1SubnetEF90658EEBA34A64",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineDownloadsFilesystemEfsMountTarget2BC3B1054": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet2Subnet0764F5E844EB0F67",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineDownloadsFilesystemEfsMountTarget3C062C6FF": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineDownloadsFilesystem1772812C",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet3SubnetB0BAE95180198C81",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38": {
-      "Properties": {
-        "GroupDescription": "MyTestStack/EmbeddedLinuxPipelineDownloadsFilesystem/EfsSecurityGroup",
-        "SecurityGroupEgress": [
-          {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow all outbound traffic by default",
-            "IpProtocol": "-1",
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "MyTestStack/EmbeddedLinuxPipelineDownloadsFilesystem",
-          },
-        ],
-        "VpcId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucket83908E7781C90AC0",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A920495E2D9CF2": {
-      "Properties": {
-        "Description": "from MyTestStackBuildProjectSecurityGroupA374A3A9:2049",
-        "FromPort": 2049,
-        "GroupId": {
-          "Fn::GetAtt": [
-            "EmbeddedLinuxPipelineDownloadsFilesystemEfsSecurityGroup844F0D38",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": {
-          "Fn::GetAtt": [
-            "BuildProjectSecurityGroup28D27668",
-            "GroupId",
-          ],
-        },
-        "ToPort": 2049,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
-    },
     "EmbeddedLinuxPipelineEventsRoleDefaultPolicy7234197B": {
       "Properties": {
         "PolicyDocument": {
@@ -6813,120 +6261,6 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
-    "EmbeddedLinuxPipelineSStateFilesystem36BA2630": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "Encrypted": true,
-        "FileSystemTags": [
-          {
-            "Key": "Name",
-            "Value": "MyTestStack/EmbeddedLinuxPipelineSStateFilesystem",
-          },
-        ],
-      },
-      "Type": "AWS::EFS::FileSystem",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "EmbeddedLinuxPipelineSStateFilesystemEfsMountTarget15401AFF6": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet1SubnetEF90658EEBA34A64",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineSStateFilesystemEfsMountTarget25BFCAE34": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet2Subnet0764F5E844EB0F67",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineSStateFilesystemEfsMountTarget347551AC1": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineSStateFilesystem36BA2630",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet3SubnetB0BAE95180198C81",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2": {
-      "Properties": {
-        "GroupDescription": "MyTestStack/EmbeddedLinuxPipelineSStateFilesystem/EfsSecurityGroup",
-        "SecurityGroupEgress": [
-          {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow all outbound traffic by default",
-            "IpProtocol": "-1",
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "MyTestStack/EmbeddedLinuxPipelineSStateFilesystem",
-          },
-        ],
-        "VpcId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucket83908E7781C90AC0",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A92049D2B7AC43": {
-      "Properties": {
-        "Description": "from MyTestStackBuildProjectSecurityGroupA374A3A9:2049",
-        "FromPort": 2049,
-        "GroupId": {
-          "Fn::GetAtt": [
-            "EmbeddedLinuxPipelineSStateFilesystemEfsSecurityGroup4099B7F2",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": {
-          "Fn::GetAtt": [
-            "BuildProjectSecurityGroup28D27668",
-            "GroupId",
-          ],
-        },
-        "ToPort": 2049,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
-    },
     "EmbeddedLinuxPipelineSourceCodePipelineActionRoleDefaultPolicyE4783D85": {
       "Properties": {
         "PolicyDocument": {
@@ -7040,120 +6374,6 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
         },
       },
       "Type": "AWS::IAM::Role",
-    },
-    "EmbeddedLinuxPipelineTempFilesystem8ECAD602": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "Encrypted": true,
-        "FileSystemTags": [
-          {
-            "Key": "Name",
-            "Value": "MyTestStack/EmbeddedLinuxPipelineTempFilesystem",
-          },
-        ],
-      },
-      "Type": "AWS::EFS::FileSystem",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "EmbeddedLinuxPipelineTempFilesystemEfsMountTarget1C1FB920C": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet1SubnetEF90658EEBA34A64",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineTempFilesystemEfsMountTarget240F5557C": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet2Subnet0764F5E844EB0F67",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineTempFilesystemEfsMountTarget31EDABBCB": {
-      "Properties": {
-        "FileSystemId": {
-          "Ref": "EmbeddedLinuxPipelineTempFilesystem8ECAD602",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucketPrivateSubnet3SubnetB0BAE95180198C81",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213": {
-      "Properties": {
-        "GroupDescription": "MyTestStack/EmbeddedLinuxPipelineTempFilesystem/EfsSecurityGroup",
-        "SecurityGroupEgress": [
-          {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow all outbound traffic by default",
-            "IpProtocol": "-1",
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "MyTestStack/EmbeddedLinuxPipelineTempFilesystem",
-          },
-        ],
-        "VpcId": {
-          "Fn::ImportValue": "RepoStack:ExportsOutputRefBucket83908E7781C90AC0",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupfromMyTestStackBuildProjectSecurityGroupA374A3A9204979E58A91": {
-      "Properties": {
-        "Description": "from MyTestStackBuildProjectSecurityGroupA374A3A9:2049",
-        "FromPort": 2049,
-        "GroupId": {
-          "Fn::GetAtt": [
-            "EmbeddedLinuxPipelineTempFilesystemEfsSecurityGroupE46E3213",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": {
-          "Fn::GetAtt": [
-            "BuildProjectSecurityGroup28D27668",
-            "GroupId",
-          ],
-        },
-        "ToPort": 2049,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
     },
     "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": {
       "DependsOn": [
@@ -7295,7 +6515,7 @@ def handler(event, context):
             ],
           ],
         },
-        "RetentionInDays": 3653,
+        "RetentionInDays": 365,
         "ServiceToken": {
           "Fn::GetAtt": [
             "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
@@ -7570,12 +6790,12 @@ def handler(event, context):
       "Type": "AWS::S3::BucketPolicy",
     },
     "PipelineBuildLogs0533272F": {
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
-        "RetentionInDays": 3653,
+        "RetentionInDays": 365,
       },
       "Type": "AWS::Logs::LogGroup",
-      "UpdateReplacePolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
     },
     "PipelineOutput78594CB5": {
       "DeletionPolicy": "Delete",
@@ -7709,7 +6929,7 @@ def handler(event, context):
           "BranchName": "main",
           "S3": {
             "Bucket": "cdk-hnb659fds-assets-12341234-eu-central-1",
-            "Key": "03d16bf861cb657df931bd33404567ac7f02ff927d18a45f5cc7f7cc981bb7ce.zip",
+            "Key": "2c3284e71ba6f2c28421a26a63b3f77e74abad491196ba63ec03dfb5b8674f59.zip",
           },
         },
         "RepositoryName": "layer-repo-MyTestStack",

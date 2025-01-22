@@ -1,15 +1,15 @@
-import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
-import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
-import * as codepipeline_actions from 'aws-cdk-lib/aws-codepipeline-actions';
-import * as events from 'aws-cdk-lib/aws-events';
-import * as targets from 'aws-cdk-lib/aws-events-targets';
-import * as lambda from 'aws-cdk-lib/aws-lambda';
-import * as iam from 'aws-cdk-lib/aws-iam';
-import * as efs from 'aws-cdk-lib/aws-efs';
-import * as kms from 'aws-cdk-lib/aws-kms';
-import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as path from 'path';
+import * as cdk from "aws-cdk-lib";
+import { Construct } from "constructs";
+import * as codepipeline from "aws-cdk-lib/aws-codepipeline";
+import * as codepipeline_actions from "aws-cdk-lib/aws-codepipeline-actions";
+import * as events from "aws-cdk-lib/aws-events";
+import * as targets from "aws-cdk-lib/aws-events-targets";
+import * as lambda from "aws-cdk-lib/aws-lambda";
+import * as iam from "aws-cdk-lib/aws-iam";
+import * as efs from "aws-cdk-lib/aws-efs";
+import * as kms from "aws-cdk-lib/aws-kms";
+import * as s3 from "aws-cdk-lib/aws-s3";
+import * as path from "path";
 
 import {
   BuildEnvironmentVariableType,
@@ -18,8 +18,8 @@ import {
   FileSystemLocation,
   LinuxBuildImage,
   PipelineProject,
-} from 'aws-cdk-lib/aws-codebuild';
-import { IRepository } from 'aws-cdk-lib/aws-ecr';
+} from "aws-cdk-lib/aws-codebuild";
+import { IRepository } from "aws-cdk-lib/aws-ecr";
 
 import {
   ISecurityGroup,
@@ -27,15 +27,18 @@ import {
   Peer,
   Port,
   SecurityGroup,
-} from 'aws-cdk-lib/aws-ec2';
-import { SourceRepo, ProjectKind } from './constructs/source-repo';
-import { VMImportBucket } from './vm-import-bucket';
-import { Asset } from 'aws-cdk-lib/aws-s3-assets';
-import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
-import { RemovalPolicy } from 'aws-cdk-lib';
+} from "aws-cdk-lib/aws-ec2";
+import { SourceRepo, ProjectKind } from "./constructs/source-repo";
+import { VMImportBucket } from "../vm-import-bucket";
+import { Asset } from "aws-cdk-lib/aws-s3-assets";
+import { LogGroup, RetentionDays } from "aws-cdk-lib/aws-logs";
+import { RemovalPolicy } from "aws-cdk-lib";
 
 /**
  * Properties to allow customizing the build.
+ *
+ * @deprecated Use the new {@link EmbeddedLinuxCodePipelineProps} class instead.
+ *
  */
 export interface EmbeddedLinuxPipelineProps extends cdk.StackProps {
   /** ECR Repository where the Build Host Image resides. */
@@ -63,9 +66,13 @@ export interface EmbeddedLinuxPipelineProps extends cdk.StackProps {
 }
 
 /**
+ *
  * The stack for creating a build pipeline.
  *
  * See {@link EmbeddedLinuxPipelineProps} for configration options.
+ *
+ * @deprecated Use the new {@link EmbeddedLinuxCodePipelineStack} class instead.
+ *
  */
 export class EmbeddedLinuxPipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: EmbeddedLinuxPipelineProps) {
@@ -73,19 +80,29 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
 
     /** Set up networking access and EFS FileSystems. */
 
-    const projectSg = new SecurityGroup(this, 'BuildProjectSecurityGroup', {
+    const projectSg = new SecurityGroup(this, "BuildProjectSecurityGroup", {
       vpc: props.vpc,
-      description: 'Security Group to allow attaching EFS',
+      description: "Security Group to allow attaching EFS",
     });
     projectSg.addIngressRule(
       Peer.ipv4(props.vpc.vpcCidrBlock),
       Port.tcp(2049),
-      'NFS Mount Port'
+      "NFS Mount Port",
     );
 
-    const sstateFS = this.addFileSystem('SState', props.vpc, projectSg);
-    const dlFS = this.addFileSystem('Downloads', props.vpc, projectSg);
-    const tmpFS = this.addFileSystem('Temp', props.vpc, projectSg);
+    // const sstateFS = this.addFileSystem("SState", props.vpc, projectSg);
+    // const dlFS = this.addFileSystem("Downloads", props.vpc, projectSg);
+    // const tmpFS = this.addFileSystem("Temp", props.vpc, projectSg);
+    const efsFileSystem: efs.FileSystem = new efs.FileSystem(
+      this,
+      `EFSFileSystem`,
+      {
+        vpc: props.vpc,
+        allowAnonymousAccess: true,
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+      },
+    );
+    efsFileSystem.connections.allowFrom(projectSg, Port.tcp(2049));
 
     let outputBucket: s3.IBucket | VMImportBucket;
     let environmentVariables = {};
@@ -95,7 +112,7 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
     if (props.accessLoggingBucket) {
       accessLoggingBucket = props.accessLoggingBucket;
     } else {
-      accessLoggingBucket = new s3.Bucket(this, 'ArtifactAccessLogging', {
+      accessLoggingBucket = new s3.Bucket(this, "ArtifactAccessLogging", {
         versioned: true,
         enforceSSL: true,
         autoDeleteObjects: true,
@@ -104,27 +121,26 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
     }
 
     if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
-      scriptAsset = new Asset(this, 'CreateAMIScript', {
-        path: path.join(__dirname, '../assets/create-ec2-ami.sh'),
+      scriptAsset = new Asset(this, "CreateAMIScript", {
+        path: path.join(__dirname, "../../scripts/create-ec2-ami.sh"),
       });
 
       const outputBucketEncryptionKey = new kms.Key(
         this,
-        'OutputBucketEncryptionKey',
+        "OutputBucketEncryptionKey",
         {
           removalPolicy: RemovalPolicy.DESTROY,
           enableKeyRotation: true,
-        }
+        },
       );
 
       if (props.outputBucket) {
         outputBucket = props.outputBucket;
       } else {
-        outputBucket = new VMImportBucket(this, 'PipelineOutput', {
+        outputBucket = new VMImportBucket(this, "PipelineOutput", {
           versioned: true,
           enforceSSL: true,
           encryptionKey: outputBucketEncryptionKey,
-          encryptionKeyArn: outputBucketEncryptionKey.keyArn,
           serverAccessLogsBucket: accessLoggingBucket,
           serverAccessLogsPrefix: props.serverAccessLogsPrefix,
           autoDeleteObjects: true,
@@ -149,7 +165,7 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
       if (props.outputBucket) {
         outputBucket = props.outputBucket;
       } else {
-        outputBucket = new s3.Bucket(this, 'PipelineOutput', {
+        outputBucket = new s3.Bucket(this, "PipelineOutput", {
           versioned: true,
           enforceSSL: true,
           serverAccessLogsBucket: accessLoggingBucket,
@@ -164,18 +180,18 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
     if (props.artifactBucket) {
       artifactBucket = props.artifactBucket;
     } else {
-      const encryptionKey = new kms.Key(this, 'PipelineArtifactKey', {
+      const encryptionKey = new kms.Key(this, "PipelineArtifactKey", {
         removalPolicy: RemovalPolicy.DESTROY,
         enableKeyRotation: true,
       });
-      artifactBucket = new s3.Bucket(this, 'PipelineArtifacts', {
+      artifactBucket = new s3.Bucket(this, "PipelineArtifacts", {
         versioned: true,
         enforceSSL: true,
         serverAccessLogsBucket: accessLoggingBucket,
         encryptionKey,
         encryption: s3.BucketEncryption.KMS,
         blockPublicAccess: new s3.BlockPublicAccess(
-          s3.BlockPublicAccess.BLOCK_ALL
+          s3.BlockPublicAccess.BLOCK_ALL,
         ),
         autoDeleteObjects: true,
         removalPolicy: RemovalPolicy.DESTROY,
@@ -183,7 +199,7 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
     }
 
     /** Create our CodePipeline Actions. */
-    const sourceRepo = new SourceRepo(this, 'SourceRepo', {
+    const sourceRepo = new SourceRepo(this, "SourceRepo", {
       ...props,
       repoName: props.layerRepoName ?? `layer-repo-${this.stackName}`,
       kind: props.projectKind ?? ProjectKind.Poky,
@@ -193,19 +209,19 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
     const sourceAction = new codepipeline_actions.CodeCommitSourceAction({
       // trigger: CodeCommitTrigger.NONE,
       output: sourceOutput,
-      actionName: 'Source',
+      actionName: "Source",
       repository: sourceRepo.repo,
-      branch: 'main',
+      branch: "main",
       codeBuildCloneOutput: true,
     });
 
-    const project = new PipelineProject(this, 'EmbeddedLinuxBuildProject', {
-      buildSpec: BuildSpec.fromSourceFilename('build.buildspec.yml'),
+    const project = new PipelineProject(this, "EmbeddedLinuxBuildProject", {
+      buildSpec: BuildSpec.fromSourceFilename("build.buildspec.yml"),
       environment: {
         computeType: ComputeType.X2_LARGE,
         buildImage: LinuxBuildImage.fromEcrRepository(
           props.imageRepo,
-          props.imageTag
+          props.imageTag,
         ),
         privileged: true,
         environmentVariables,
@@ -213,27 +229,35 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
       timeout: cdk.Duration.hours(4),
       vpc: props.vpc,
       securityGroups: [projectSg],
+      // fileSystemLocations: [
+      //   FileSystemLocation.efs({
+      //     identifier: "tmp_dir",
+      //     location: tmpFS,
+      //     mountPoint: "/nfs/build-output",
+      //   }),
+      //   FileSystemLocation.efs({
+      //     identifier: "sstate_cache",
+      //     location: sstateFS,
+      //     mountPoint: "/nfs/sstate-cache",
+      //   }),
+      //   FileSystemLocation.efs({
+      //     identifier: "dl_dir",
+      //     location: dlFS,
+      //     mountPoint: "/nfs/downloads",
+      //   }),
+      // ],
       fileSystemLocations: [
         FileSystemLocation.efs({
-          identifier: 'tmp_dir',
-          location: tmpFS,
-          mountPoint: '/build-output',
-        }),
-        FileSystemLocation.efs({
-          identifier: 'sstate_cache',
-          location: sstateFS,
-          mountPoint: '/sstate-cache',
-        }),
-        FileSystemLocation.efs({
-          identifier: 'dl_dir',
-          location: dlFS,
-          mountPoint: '/downloads',
+          identifier: "nfs",
+          location: `${efsFileSystem.fileSystemId}.efs.${efsFileSystem.env.region}.amazonaws.com:/`,
+          mountPoint: "/nfs",
         }),
       ],
       logging: {
         cloudWatch: {
-          logGroup: new LogGroup(this, 'PipelineBuildLogs', {
-            retention: RetentionDays.TEN_YEARS,
+          logGroup: new LogGroup(this, "PipelineBuildLogs", {
+            retention: RetentionDays.ONE_YEAR,
+            removalPolicy: cdk.RemovalPolicy.DESTROY,
           }),
         },
       },
@@ -249,16 +273,16 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
 
       project.addToRolePolicy(
         new iam.PolicyStatement({
-          actions: ['ec2:ImportSnapshot'],
+          actions: ["ec2:ImportSnapshot"],
           resources: [
             `arn:aws:ec2:${this.region}:${this.account}:import-snapshot-task/*`,
             `arn:aws:ec2:${this.region}::snapshot/*`,
           ],
-        })
+        }),
       );
       //Permissions for BackUp to S3
       project.addToRolePolicy(
-        this.addAMIS3BackupPolicy(outputBucket.bucketArn)
+        this.addAMIS3BackupPolicy(outputBucket.bucketArn),
       );
       project.addToRolePolicy(this.addAMIEC2EBSBackupPolicy(this.region));
       project.addToRolePolicy(this.addAMIEBSBackupPolicy(this.region));
@@ -269,7 +293,7 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
     const buildOutput = new codepipeline.Artifact();
     const buildAction = new codepipeline_actions.CodeBuildAction({
       input: sourceOutput,
-      actionName: 'Build',
+      actionName: "Build",
       outputs: [buildOutput],
       project,
     });
@@ -278,14 +302,14 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
 
     if (props.subDirectoryName) {
       artifactAction = new codepipeline_actions.S3DeployAction({
-        actionName: 'Artifact',
+        actionName: "Artifact",
         input: buildOutput,
         bucket: outputBucket,
         objectKey: props.subDirectoryName,
       });
     } else {
       artifactAction = new codepipeline_actions.S3DeployAction({
-        actionName: 'Artifact',
+        actionName: "Artifact",
         input: buildOutput,
         bucket: outputBucket,
       });
@@ -295,10 +319,10 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
      * and stop the execution if the image does not exist.  */
     const fnOnPipelineCreate = new lambda.Function(
       this,
-      'OSImageCheckOnStart',
+      "OSImageCheckOnStart",
       {
         runtime: lambda.Runtime.PYTHON_3_10,
-        handler: 'index.handler',
+        handler: "index.handler",
         code: lambda.Code.fromInline(`
 import boto3
 import json
@@ -320,65 +344,65 @@ def handler(event, context):
     abandon=True,
     reason='OS image not found in ECR repository. Stopping pipeline until image is present.')
     `),
-        logRetention: RetentionDays.TEN_YEARS,
-      }
+        logRetention: RetentionDays.ONE_YEAR,
+      },
     );
 
-    const pipelineCreateRule = new events.Rule(this, 'OnPipelineStartRule', {
+    const pipelineCreateRule = new events.Rule(this, "OnPipelineStartRule", {
       eventPattern: {
-        detailType: ['CodePipeline Pipeline Execution State Change'],
-        source: ['aws.codepipeline'],
+        detailType: ["CodePipeline Pipeline Execution State Change"],
+        source: ["aws.codepipeline"],
         detail: {
-          state: ['STARTED'],
-          'execution-trigger': {
-            'trigger-type': ['CreatePipeline'],
+          state: ["STARTED"],
+          "execution-trigger": {
+            "trigger-type": ["CreatePipeline"],
           },
         },
       },
     });
     pipelineCreateRule.addTarget(
-      new targets.LambdaFunction(fnOnPipelineCreate)
+      new targets.LambdaFunction(fnOnPipelineCreate),
     );
 
     /** Now create the actual Pipeline */
-    const pipeline = new codepipeline.Pipeline(this, 'EmbeddedLinuxPipeline', {
+    const pipeline = new codepipeline.Pipeline(this, "EmbeddedLinuxPipeline", {
       artifactBucket,
       restartExecutionOnUpdate: true,
       pipelineType: codepipeline.PipelineType.V1,
       stages: [
         {
-          stageName: 'Source',
+          stageName: "Source",
           actions: [sourceAction],
         },
         {
-          stageName: 'Build',
+          stageName: "Build",
           actions: [buildAction],
         },
         {
-          stageName: 'Artifact',
+          stageName: "Artifact",
           actions: [artifactAction],
         },
       ],
     });
 
     const stopPipelinePolicy = new iam.PolicyStatement({
-      actions: ['codepipeline:StopPipelineExecution'],
+      actions: ["codepipeline:StopPipelineExecution"],
       resources: [pipeline.pipelineArn],
     });
 
     const ecrPolicy = new iam.PolicyStatement({
-      actions: ['ecr:DescribeImages'],
+      actions: ["ecr:DescribeImages"],
       resources: [props.imageRepo.repositoryArn],
     });
     fnOnPipelineCreate.role?.attachInlinePolicy(
-      new iam.Policy(this, 'CheckOSAndStop', {
+      new iam.Policy(this, "CheckOSAndStop", {
         statements: [stopPipelinePolicy, ecrPolicy],
-      })
+      }),
     );
 
-    new cdk.CfnOutput(this, 'BuildOutput', {
+    new cdk.CfnOutput(this, "BuildOutput", {
       value: outputBucket.bucketArn,
-      description: 'The output bucket of this pipeline.',
+      description: "The output bucket of this pipeline.",
     });
   }
 
@@ -394,7 +418,7 @@ def handler(event, context):
   private addFileSystem(
     name: string,
     vpc: IVpc,
-    securityGroup: ISecurityGroup
+    securityGroup: ISecurityGroup,
   ): string {
     const fs = new efs.FileSystem(
       this,
@@ -402,7 +426,7 @@ def handler(event, context):
       {
         vpc,
         removalPolicy: cdk.RemovalPolicy.DESTROY,
-      }
+      },
     );
     fs.connections.allowFrom(securityGroup, Port.tcp(2049));
 
@@ -415,26 +439,26 @@ def handler(event, context):
   private addVMExportPolicy(): iam.PolicyStatement {
     return new iam.PolicyStatement({
       actions: [
-        'ec2:CreateImage',
-        'ec2:CreateTags',
-        'ec2:DescribeImages',
-        'ec2:DescribeSnapshots',
-        'ec2:DescribeImportSnapshotTasks',
-        'ec2:DescribeTags',
-        'ec2:CancelImportTask',
+        "ec2:CreateImage",
+        "ec2:CreateTags",
+        "ec2:DescribeImages",
+        "ec2:DescribeSnapshots",
+        "ec2:DescribeImportSnapshotTasks",
+        "ec2:DescribeTags",
+        "ec2:CancelImportTask",
       ],
-      resources: ['*'],
+      resources: ["*"],
     });
   }
 
   private addAMIS3BackupPolicy(artifactBucketArn: string): iam.PolicyStatement {
     return new iam.PolicyStatement({
       actions: [
-        's3:GetObject',
-        's3:ListBucket',
-        's3:PutObject',
-        's3:PutObjectTagging',
-        's3:AbortMultipartUpload',
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:PutObject",
+        "s3:PutObjectTagging",
+        "s3:AbortMultipartUpload",
       ],
       resources: [artifactBucketArn, `${artifactBucketArn}/*`],
     });
@@ -442,11 +466,11 @@ def handler(event, context):
   private addAMIEBSBackupPolicy(region: string): iam.PolicyStatement {
     return new iam.PolicyStatement({
       actions: [
-        'ebs:CompleteSnapshot',
-        'ebs:GetSnapshotBlock',
-        'ebs:ListChangedBlocks',
-        'ebs:ListSnapshotBlocks',
-        'ebs:PutSnapshotBlock',
+        "ebs:CompleteSnapshot",
+        "ebs:GetSnapshotBlock",
+        "ebs:ListChangedBlocks",
+        "ebs:ListSnapshotBlocks",
+        "ebs:PutSnapshotBlock",
       ],
       resources: [`arn:aws:ec2:${region}::snapshot/*`],
     });
@@ -454,17 +478,17 @@ def handler(event, context):
 
   private addAMIBackupPolicy(): iam.PolicyStatement {
     return new iam.PolicyStatement({
-      actions: ['ec2:DescribeStoreImageTasks', 'ec2:GetEbsEncryptionByDefault'],
-      resources: ['*'],
+      actions: ["ec2:DescribeStoreImageTasks", "ec2:GetEbsEncryptionByDefault"],
+      resources: ["*"],
     });
   }
 
   private addAMIEC2EBSBackupPolicy(region: string): iam.PolicyStatement {
     return new iam.PolicyStatement({
       actions: [
-        'ec2:RegisterImage',
-        'ec2:DeregisterImage',
-        'ec2:CreateStoreImageTask',
+        "ec2:RegisterImage",
+        "ec2:DeregisterImage",
+        "ec2:CreateStoreImageTask",
       ],
       resources: [
         `arn:aws:ec2:${region}::image/*`,
