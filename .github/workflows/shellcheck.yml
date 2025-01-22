@@ -13,4 +13,4 @@ jobs:
       - name: Install shellcheck
         run: sudo apt-get install shellcheck
       - name: Run shellcheck
-        run: shellcheck assets/*.sh
+        run: shellcheck scripts/*.sh
