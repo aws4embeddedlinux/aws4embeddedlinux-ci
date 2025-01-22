@@ -1,0 +1,1144 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
+{
+  "Outputs": {
+    "ECRBaseImageCheckCommand": {
+      "Description": "The AWS CLI command to check if the ECR Image was pushed",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "aws ecr list-images --repository-name "",
+            {
+              "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesECRRepositoryA0DB7EB625EEF25E",
+            },
+            "" --query "imageIds[?imageTag=='MyTestStack']"",
+          ],
+        ],
+      },
+    },
+    "ECRBaseImageTag": {
+      "Description": "The ECR Image Tag where the base image will be pushed",
+      "Value": "MyTestStack",
+    },
+    "ECRRepositoryName": {
+      "Description": "The ECR Repository name where the base image will be pushed",
+      "Value": {
+        "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesECRRepositoryA0DB7EB625EEF25E",
+      },
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "CodePipelineBuildBaseImageBucketDeploymentAwsCliLayerF8B77510": {
+      "Properties": {
+        "Content": {
+          "S3Bucket": "cdk-hnb659fds-assets-111111111111-eu-central-1",
+          "S3Key": "arbitrary-file.ext",
+        },
+        "Description": "/opt/awscli/aws",
+      },
+      "Type": "AWS::Lambda::LayerVersion",
+    },
+    "CodePipelineBuildBaseImageBucketDeploymentCustomResource9FCDB7FE": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "DestinationBucketKeyPrefix": "source/base-image",
+        "DestinationBucketName": {
+          "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesSourceBucket1FA488F54AA73B60",
+        },
+        "Extract": true,
+        "OutputObjectKeys": true,
+        "Prune": true,
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+            "Arn",
+          ],
+        },
+        "SourceBucketNames": [
+          "cdk-hnb659fds-assets-111111111111-eu-central-1",
+        ],
+        "SourceObjectKeys": [
+          "arbitrary-file.ext",
+        ],
+      },
+      "Type": "Custom::CDKBucketDeployment",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "CodePipelineBuildBaseImageBucketDeploymentRoleDFF88C19": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "arn:aws:logs:eu-central-1:111111111111:log-group:/aws/lambda/EmbeddedLinuxCodePipelineBaseImage-CustomCDKBucketDeployment*",
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "sourceBucketDeploymentPolicy",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CodePipelineBuildBaseImageBucketDeploymentRoleDefaultPolicy969D32AA": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::cdk-hnb659fds-assets-111111111111-eu-central-1",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::cdk-hnb659fds-assets-111111111111-eu-central-1/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesSourceBucket1FA488F5Arn3CF62A69",
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesSourceBucket1FA488F5Arn3CF62A69",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "kms:Decrypt",
+                "kms:DescribeKey",
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CodePipelineBuildBaseImageBucketDeploymentRoleDefaultPolicy969D32AA",
+        "Roles": [
+          {
+            "Ref": "CodePipelineBuildBaseImageBucketDeploymentRoleDFF88C19",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CodePipelineBuildBaseImageBuildLogs48BFE4D7": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "LogGroupName": "MyTestStack-CodePipelineBuildBaseImageBuildLogs",
+        "RetentionInDays": 365,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "CodePipelineBuildBaseImageCodePipeline7907AE86": {
+      "DependsOn": [
+        "CodePipelineBuildBaseImageCodePipelineRoleDefaultPolicy677B7353",
+        "CodePipelineBuildBaseImageCodePipelineRole73E36B25",
+        "CodePipelineBuildBaseImageProject69590E59",
+        "CodePipelineBuildBaseImageProjectRoleDefaultPolicy6F99FFCC",
+        "CodePipelineBuildBaseImageProjectRole12B97AA7",
+      ],
+      "Properties": {
+        "ArtifactStore": {
+          "EncryptionKey": {
+            "Id": {
+              "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+            },
+            "Type": "KMS",
+          },
+          "Location": {
+            "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesArtifactBucketFF61EB98FA6EAAC1",
+          },
+          "Type": "S3",
+        },
+        "Name": "MyTestStack",
+        "PipelineType": "V1",
+        "RestartExecutionOnUpdate": true,
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "CodePipelineBuildBaseImageCodePipelineRole73E36B25",
+            "Arn",
+          ],
+        },
+        "Stages": [
+          {
+            "Actions": [
+              {
+                "ActionTypeId": {
+                  "Category": "Source",
+                  "Owner": "AWS",
+                  "Provider": "S3",
+                  "Version": "1",
+                },
+                "Configuration": {
+                  "PollForSourceChanges": false,
+                  "S3Bucket": {
+                    "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesSourceBucket1FA488F54AA73B60",
+                  },
+                  "S3ObjectKey": "source/base-image/source-base-image.zip",
+                },
+                "Name": "Source",
+                "OutputArtifacts": [
+                  {
+                    "Name": "Source",
+                  },
+                ],
+                "RoleArn": {
+                  "Fn::GetAtt": [
+                    "CodePipelineBuildBaseImageCodePipelineSourceCodePipelineActionRole0F967AB4",
+                    "Arn",
+                  ],
+                },
+                "RunOrder": 1,
+              },
+            ],
+            "Name": "Source",
+          },
+          {
+            "Actions": [
+              {
+                "ActionTypeId": {
+                  "Category": "Build",
+                  "Owner": "AWS",
+                  "Provider": "CodeBuild",
+                  "Version": "1",
+                },
+                "Configuration": {
+                  "ProjectName": {
+                    "Ref": "CodePipelineBuildBaseImageProject69590E59",
+                  },
+                },
+                "InputArtifacts": [
+                  {
+                    "Name": "Source",
+                  },
+                ],
+                "Name": "Build",
+                "RoleArn": {
+                  "Fn::GetAtt": [
+                    "CodePipelineBuildBaseImageCodePipelineBuildCodePipelineActionRoleA6CA6F27",
+                    "Arn",
+                  ],
+                },
+                "RunOrder": 1,
+              },
+            ],
+            "Name": "Build",
+          },
+        ],
+      },
+      "Type": "AWS::CodePipeline::Pipeline",
+    },
+    "CodePipelineBuildBaseImageCodePipelineBuildCodePipelineActionRoleA6CA6F27": {
+      "DependsOn": [
+        "CodePipelineBuildBaseImageProject69590E59",
+        "CodePipelineBuildBaseImageProjectRoleDefaultPolicy6F99FFCC",
+        "CodePipelineBuildBaseImageProjectRole12B97AA7",
+      ],
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::111111111111:root",
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CodePipelineBuildBaseImageCodePipelineBuildCodePipelineActionRoleDefaultPolicyDDAF06D1": {
+      "DependsOn": [
+        "CodePipelineBuildBaseImageProject69590E59",
+        "CodePipelineBuildBaseImageProjectRoleDefaultPolicy6F99FFCC",
+        "CodePipelineBuildBaseImageProjectRole12B97AA7",
+      ],
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "codebuild:BatchGetBuilds",
+                "codebuild:StartBuild",
+                "codebuild:StopBuild",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CodePipelineBuildBaseImageProject69590E59",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CodePipelineBuildBaseImageCodePipelineBuildCodePipelineActionRoleDefaultPolicyDDAF06D1",
+        "Roles": [
+          {
+            "Ref": "CodePipelineBuildBaseImageCodePipelineBuildCodePipelineActionRoleA6CA6F27",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CodePipelineBuildBaseImageCodePipelineEventsRoleD9A83D03": {
+      "DependsOn": [
+        "CodePipelineBuildBaseImageProject69590E59",
+        "CodePipelineBuildBaseImageProjectRoleDefaultPolicy6F99FFCC",
+        "CodePipelineBuildBaseImageProjectRole12B97AA7",
+      ],
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CodePipelineBuildBaseImageCodePipelineEventsRoleDefaultPolicyFCB5C7C5": {
+      "DependsOn": [
+        "CodePipelineBuildBaseImageProject69590E59",
+        "CodePipelineBuildBaseImageProjectRoleDefaultPolicy6F99FFCC",
+        "CodePipelineBuildBaseImageProjectRole12B97AA7",
+      ],
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "codepipeline:StartPipelineExecution",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":codepipeline:eu-central-1:111111111111:",
+                    {
+                      "Ref": "CodePipelineBuildBaseImageCodePipeline7907AE86",
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CodePipelineBuildBaseImageCodePipelineEventsRoleDefaultPolicyFCB5C7C5",
+        "Roles": [
+          {
+            "Ref": "CodePipelineBuildBaseImageCodePipelineEventsRoleD9A83D03",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CodePipelineBuildBaseImageCodePipelineMyTestStackCodePipelineBuildBaseImageCodePipelineFF25ACC6SourceEventRulesourcebaseimagesourcebaseimagezip4051FAE5": {
+      "DependsOn": [
+        "CodePipelineBuildBaseImageProject69590E59",
+        "CodePipelineBuildBaseImageProjectRoleDefaultPolicy6F99FFCC",
+        "CodePipelineBuildBaseImageProjectRole12B97AA7",
+      ],
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
+              "CompleteMultipartUpload",
+              "CopyObject",
+              "PutObject",
+            ],
+            "requestParameters": {
+              "bucketName": [
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesSourceBucket1FA488F54AA73B60",
+                },
+              ],
+              "key": [
+                "source/base-image/source-base-image.zip",
+              ],
+            },
+            "resources": {
+              "ARN": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesSourceBucket1FA488F5Arn3CF62A69",
+                      },
+                      "/source/base-image/source-base-image.zip",
+                    ],
+                  ],
+                },
+              ],
+            },
+          },
+          "detail-type": [
+            "AWS API Call via CloudTrail",
+          ],
+          "source": [
+            "aws.s3",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition",
+                  },
+                  ":codepipeline:eu-central-1:111111111111:",
+                  {
+                    "Ref": "CodePipelineBuildBaseImageCodePipeline7907AE86",
+                  },
+                ],
+              ],
+            },
+            "Id": "Target0",
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "CodePipelineBuildBaseImageCodePipelineEventsRoleD9A83D03",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "CodePipelineBuildBaseImageCodePipelineRole73E36B25": {
+      "DependsOn": [
+        "CodePipelineBuildBaseImageProject69590E59",
+        "CodePipelineBuildBaseImageProjectRoleDefaultPolicy6F99FFCC",
+        "CodePipelineBuildBaseImageProjectRole12B97AA7",
+      ],
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "codepipeline.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CodePipelineBuildBaseImageCodePipelineRoleDefaultPolicy677B7353": {
+      "DependsOn": [
+        "CodePipelineBuildBaseImageProject69590E59",
+        "CodePipelineBuildBaseImageProjectRoleDefaultPolicy6F99FFCC",
+        "CodePipelineBuildBaseImageProjectRole12B97AA7",
+      ],
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "kms:Decrypt",
+                "kms:DescribeKey",
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CodePipelineBuildBaseImageCodePipelineSourceCodePipelineActionRole0F967AB4",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CodePipelineBuildBaseImageCodePipelineBuildCodePipelineActionRoleA6CA6F27",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CodePipelineBuildBaseImageCodePipelineRoleDefaultPolicy677B7353",
+        "Roles": [
+          {
+            "Ref": "CodePipelineBuildBaseImageCodePipelineRole73E36B25",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CodePipelineBuildBaseImageCodePipelineSourceCodePipelineActionRole0F967AB4": {
+      "DependsOn": [
+        "CodePipelineBuildBaseImageProject69590E59",
+        "CodePipelineBuildBaseImageProjectRoleDefaultPolicy6F99FFCC",
+        "CodePipelineBuildBaseImageProjectRole12B97AA7",
+      ],
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::111111111111:root",
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CodePipelineBuildBaseImageCodePipelineSourceCodePipelineActionRoleDefaultPolicyC48B6A73": {
+      "DependsOn": [
+        "CodePipelineBuildBaseImageProject69590E59",
+        "CodePipelineBuildBaseImageProjectRoleDefaultPolicy6F99FFCC",
+        "CodePipelineBuildBaseImageProjectRole12B97AA7",
+      ],
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesSourceBucket1FA488F5Arn3CF62A69",
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesSourceBucket1FA488F5Arn3CF62A69",
+                      },
+                      "/source/base-image/source-base-image.zip",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "kms:Decrypt",
+                "kms:DescribeKey",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+              },
+            },
+            {
+              "Action": [
+                "s3:DeleteObject*",
+                "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:Decrypt",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CodePipelineBuildBaseImageCodePipelineSourceCodePipelineActionRoleDefaultPolicyC48B6A73",
+        "Roles": [
+          {
+            "Ref": "CodePipelineBuildBaseImageCodePipelineSourceCodePipelineActionRole0F967AB4",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CodePipelineBuildBaseImageProject69590E59": {
+      "DependsOn": [
+        "CodePipelineBuildBaseImageBucketDeploymentAwsCliLayerF8B77510",
+        "CodePipelineBuildBaseImageBucketDeploymentCustomResource9FCDB7FE",
+      ],
+      "Properties": {
+        "Artifacts": {
+          "Type": "CODEPIPELINE",
+        },
+        "Cache": {
+          "Type": "NO_CACHE",
+        },
+        "EncryptionKey": {
+          "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+        },
+        "Environment": {
+          "ComputeType": "BUILD_GENERAL1_LARGE",
+          "EnvironmentVariables": [
+            {
+              "Name": "ECR_REPOSITORY_URI",
+              "Type": "PLAINTEXT",
+              "Value": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::Select": [
+                        4,
+                        {
+                          "Fn::Split": [
+                            ":",
+                            {
+                              "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesECRRepositoryA0DB7EB6Arn5EC8487E",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ".dkr.ecr.",
+                    {
+                      "Fn::Select": [
+                        3,
+                        {
+                          "Fn::Split": [
+                            ":",
+                            {
+                              "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesECRRepositoryA0DB7EB6Arn5EC8487E",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    ".",
+                    {
+                      "Ref": "AWS::URLSuffix",
+                    },
+                    "/",
+                    {
+                      "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesECRRepositoryA0DB7EB625EEF25E",
+                    },
+                  ],
+                ],
+              },
+            },
+            {
+              "Name": "AWS_ACCOUNT_ID",
+              "Type": "PLAINTEXT",
+              "Value": "111111111111",
+            },
+            {
+              "Name": "AWS_DEFAULT_REGION",
+              "Type": "PLAINTEXT",
+              "Value": "eu-central-1",
+            },
+            {
+              "Name": "IMAGE_TAG",
+              "Type": "PLAINTEXT",
+              "Value": "MyTestStack",
+            },
+          ],
+          "Image": "aws/codebuild/standard:7.0",
+          "ImagePullCredentialsType": "CODEBUILD",
+          "PrivilegedMode": true,
+          "Type": "LINUX_CONTAINER",
+        },
+        "LogsConfig": {
+          "CloudWatchLogs": {
+            "GroupName": {
+              "Ref": "CodePipelineBuildBaseImageBuildLogs48BFE4D7",
+            },
+            "Status": "ENABLED",
+          },
+        },
+        "Name": "MyTestStack",
+        "ServiceRole": {
+          "Fn::GetAtt": [
+            "CodePipelineBuildBaseImageProjectRole12B97AA7",
+            "Arn",
+          ],
+        },
+        "Source": {
+          "BuildSpec": "buildspec.yml",
+          "Type": "CODEPIPELINE",
+        },
+      },
+      "Type": "AWS::CodeBuild::Project",
+    },
+    "CodePipelineBuildBaseImageProjectRole12B97AA7": {
+      "DependsOn": [
+        "CodePipelineBuildBaseImageBucketDeploymentAwsCliLayerF8B77510",
+        "CodePipelineBuildBaseImageBucketDeploymentCustomResource9FCDB7FE",
+      ],
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "codebuild.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CodePipelineBuildBaseImageProjectRoleDefaultPolicy6F99FFCC": {
+      "DependsOn": [
+        "CodePipelineBuildBaseImageBucketDeploymentAwsCliLayerF8B77510",
+        "CodePipelineBuildBaseImageBucketDeploymentCustomResource9FCDB7FE",
+      ],
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "CodePipelineBuildBaseImageBuildLogs48BFE4D7",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":logs:eu-central-1:111111111111:log-group:/aws/codebuild/",
+                      {
+                        "Ref": "CodePipelineBuildBaseImageProject69590E59",
+                      },
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":logs:eu-central-1:111111111111:log-group:/aws/codebuild/",
+                      {
+                        "Ref": "CodePipelineBuildBaseImageProject69590E59",
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "codebuild:CreateReportGroup",
+                "codebuild:CreateReport",
+                "codebuild:UpdateReport",
+                "codebuild:BatchPutTestCases",
+                "codebuild:BatchPutCodeCoverages",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":codebuild:eu-central-1:111111111111:report-group/",
+                    {
+                      "Ref": "CodePipelineBuildBaseImageProject69590E59",
+                    },
+                    "-*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "kms:Decrypt",
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+              },
+            },
+            {
+              "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "ecr:CompleteLayerUpload",
+                "ecr:UploadLayerPart",
+                "ecr:InitiateLayerUpload",
+                "ecr:PutImage",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesECRRepositoryA0DB7EB6Arn5EC8487E",
+              },
+            },
+            {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "kms:Decrypt",
+                "kms:DescribeKey",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CodePipelineBuildBaseImageProjectRoleDefaultPolicy6F99FFCC",
+        "Roles": [
+          {
+            "Ref": "CodePipelineBuildBaseImageProjectRole12B97AA7",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CodePipelineBuildBaseImageWeeklyRefreshSchedule8D68D946": {
+      "Properties": {
+        "ScheduleExpression": "cron(0 6 ? * Monday *)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition",
+                  },
+                  ":codepipeline:eu-central-1:111111111111:",
+                  {
+                    "Ref": "CodePipelineBuildBaseImageCodePipeline7907AE86",
+                  },
+                ],
+              ],
+            },
+            "Id": "Target0",
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "CodePipelineBuildBaseImageCodePipelineEventsRoleD9A83D03",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536": {
+      "DependsOn": [
+        "CodePipelineBuildBaseImageBucketDeploymentRoleDefaultPolicy969D32AA",
+        "CodePipelineBuildBaseImageBucketDeploymentRoleDFF88C19",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": "cdk-hnb659fds-assets-111111111111-eu-central-1",
+          "S3Key": "arbitrary-file.ext",
+        },
+        "Environment": {
+          "Variables": {
+            "AWS_CA_BUNDLE": "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem",
+          },
+        },
+        "Handler": "index.handler",
+        "Layers": [
+          {
+            "Ref": "CodePipelineBuildBaseImageBucketDeploymentAwsCliLayerF8B77510",
+          },
+        ],
+        "Role": {
+          "Fn::GetAtt": [
+            "CodePipelineBuildBaseImageBucketDeploymentRoleDFF88C19",
+            "Arn",
+          ],
+        },
+        "Runtime": "python3.11",
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
