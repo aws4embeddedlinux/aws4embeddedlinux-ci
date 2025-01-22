@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: MIT-0
+
 set -eo pipefail
 [ "$DEBUG" == 'true' ] && set -x
 
@@ -31,7 +32,6 @@ BUILDNAME=$(jq -r '.BUILDNAME' "$TESTDATA_JSON")
 TARGET_ARCH=$(jq -r '.TARGET_ARCH' "$TESTDATA_JSON")
 IMAGE_NAME=$(jq -r '.IMAGE_NAME' "$TESTDATA_JSON")
 IMAGE_ROOTFS_SIZE=$(jq -r '.IMAGE_ROOTFS_SIZE' "$TESTDATA_JSON")
-
 
 echo DISTRO="$DISTRO"
 echo DISTRO_CODENAME="$DISTRO_CODENAME"
