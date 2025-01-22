@@ -3,7 +3,6 @@
   "version": "0.1.4",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
-  "type": "module",
   "scripts": {
     "build": "tsc",
     "copy-src": "if [ -d dist/source-repo ]; then rm -rf dist/source-repo; fi && cp -r source-repo dist && cp assets/create-ec2-ami.sh dist/assets",
@@ -27,7 +26,7 @@
     "@types/node": "20.14.8",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
-    "aws-cdk-lib": "^2.173.0",
+    "aws-cdk-lib": "^2.176.0",
     "cdk-nag": "^2.34.23",
     "constructs": "^10.4.2",
     "eslint": "^9.16.0",
@@ -44,7 +43,7 @@
     "typescript-eslint": "^8.18.0"
   },
   "peerDependencies": {
-    "aws-cdk-lib": "^2.173.0",
+    "aws-cdk-lib": "^2.176.0",
     "constructs": "^10.4.2"
   },
   "resolutions": {
