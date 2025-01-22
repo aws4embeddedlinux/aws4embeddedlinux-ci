@@ -104,14 +104,18 @@ export class PipelineResourcesStack extends cdk.Stack {
     });
 
     // Create a bucket, then allow a deployment Lambda to upload to it.
-    this.accessLoggingBucket = new s3.Bucket(this, "PipelineResourcesAccessLoggingBucket", {
-      bucketName: accessLoggingBucketName,
-      versioned: true,
-      enforceSSL: true,
-      autoDeleteObjects: true,
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      encryptionKey: this.encryptionKey,
-    });
+    this.accessLoggingBucket = new s3.Bucket(
+      this,
+      "PipelineResourcesAccessLoggingBucket",
+      {
+        bucketName: accessLoggingBucketName,
+        versioned: true,
+        enforceSSL: true,
+        autoDeleteObjects: true,
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+        encryptionKey: this.encryptionKey,
+      },
+    );
 
     this.sourceBucket = new s3.Bucket(this, "PipelineResourcesSourceBucket", {
       bucketName: sourceBucketName,
@@ -124,16 +128,20 @@ export class PipelineResourcesStack extends cdk.Stack {
       serverAccessLogsPrefix: "source-bucket",
     });
 
-    this.artifactBucket = new s3.Bucket(this, "PipelineResourcesArtifactBucket", {
-      bucketName: artifactBucketName,
-      versioned: true,
-      enforceSSL: true,
-      autoDeleteObjects: true,
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      encryptionKey: this.encryptionKey,
-      serverAccessLogsBucket: this.accessLoggingBucket,
-      serverAccessLogsPrefix: "artifact-bucket",
-    });
+    this.artifactBucket = new s3.Bucket(
+      this,
+      "PipelineResourcesArtifactBucket",
+      {
+        bucketName: artifactBucketName,
+        versioned: true,
+        enforceSSL: true,
+        autoDeleteObjects: true,
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+        encryptionKey: this.encryptionKey,
+        serverAccessLogsBucket: this.accessLoggingBucket,
+        serverAccessLogsPrefix: "artifact-bucket",
+      },
+    );
 
     this.outputBucket = new s3.Bucket(this, "PipelineResourcesOutputBucket", {
       bucketName: outputBucketName,
@@ -146,16 +154,20 @@ export class PipelineResourcesStack extends cdk.Stack {
       serverAccessLogsPrefix: "output-bucket",
     });
 
-    this.outputVMImportBucket = new VMImportBucket(this, "PipelineResourcesOutputVMImportBucket", {
-      bucketName: outputVMImportBucketName,
-      versioned: true,
-      enforceSSL: true,
-      autoDeleteObjects: true,
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      encryptionKey: this.encryptionKey,
-      serverAccessLogsBucket: this.accessLoggingBucket,
-      serverAccessLogsPrefix: "output-vm-import-bucket",
-    });
+    this.outputVMImportBucket = new VMImportBucket(
+      this,
+      "PipelineResourcesOutputVMImportBucket",
+      {
+        bucketName: outputVMImportBucketName,
+        versioned: true,
+        enforceSSL: true,
+        autoDeleteObjects: true,
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+        encryptionKey: this.encryptionKey,
+        serverAccessLogsBucket: this.accessLoggingBucket,
+        serverAccessLogsPrefix: "output-vm-import-bucket",
+      },
+    );
 
     new cdk.CfnOutput(this, "OutputPipelineResourcesAccessLoggingBucket", {
       exportName: "accessLoggingBucket",
