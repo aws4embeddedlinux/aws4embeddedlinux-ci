@@ -13,7 +13,7 @@ In order to use this library, you must set up the [CDK](https://docs.aws.amazon.
 installing the CDK tool and bootstrapping the account you wish to deploy to. Additionally, you must have [Node](https://nodejs.org/en/) installed.
 
 > [!NOTE]
-> This library is tested against Node Versions 16, 18, and 20. If these versions are not available for your system, we recommend
+> This library is tested against Node Versions 22. If these version is not available for your system, we recommend
 > using [NVM](https://github.com/nvm-sh/nvm) to install a compatible version
 
 ## Quickstart
