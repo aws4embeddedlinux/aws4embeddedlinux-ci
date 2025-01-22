@@ -11,21 +11,28 @@ phases:
   pre_build:
     run-as: root
     commands:
-      - chown -R yoctouser /sstate-cache
-      - chown -R yoctouser /downloads
-      - chmod 755 /sstate-cache
-      - chmod 755 /downloads
+      - echo "Pre build started - [$(date '+%F %H:%M:%S')]"
+      - mkdir -p /nfs/sstate-cache && chown -R yoctouser /nfs/sstate-cache
+      - mkdir -p /nfs/downloads && chown -R yoctouser /nfs/downloads
+      - mkdir -p /nfs/build-output && chown -R yoctouser /nfs/build-output
+      - chmod -R 755 /nfs/sstate-cache
+      - chmod -R 755 /nfs/downloads
+      - chmod -R 755 /nfs/build-output
       - |
           if [[ -n "$PURGE_EFS" ]] ; then
             echo "Starting EFS purge."
-            rm -rvf /downloads/*
-            rm -rvf /sstate-cache/*
+            rm -rvf /nfs/downloads/*
+            rm -rvf /nfs/sstate-cache/*
+            rm -rvf /nfs/build-output/*
           fi
+      - echo "Pre build completed - [$(date '+%F %H:%M:%S')]"
   build:
     commands:
-      - echo Build started on `date`
+      - echo "Build started - [$(date '+%F %H:%M:%S')]"
+      - if [ -d .git ]; then rm -rf .git; fi
+      - git init $CODEBUILD_SRC_DIR && git add --all && git commit -m 'initial'
       - repo init -u $CODEBUILD_SRC_DIR -b main -m manifest.xml
-      - repo sync
+      - repo sync -c --no-tags -j$(nproc --all)
       - . poky/oe-init-build-env $TMP_DIR
       - bitbake-layers add-layer $CODEBUILD_SRC_DIR/meta-openembedded/meta-oe
       - bitbake-layers add-layer $CODEBUILD_SRC_DIR/meta-openembedded/meta-python
@@ -43,26 +50,28 @@ phases:
       - echo 'include cve-extra-exclusions.inc' >> $TMP_DIR/conf/local.conf
       # build the image
       - bitbake core-image-minimal
-      - echo Build completed on `date`
+      - echo "Build completed - [$(date '+%F %H:%M:%S')]"
   post_build:
     commands:
-      - echo AMI Upload started on `date`
+      - echo "Post build statred - [$(date '+%F %H:%M:%S')]"
+      - echo AMI Upload started
       # This is required because the CDK asset uploader does not seem to carry permissions though.
       - aws s3 cp ${SCRIPT_URL} $CODEBUILD_SRC_DIR/create-ec2-ami.sh
       - chmod +x $CODEBUILD_SRC_DIR/create-ec2-ami.sh
-      - cat $CODEBUILD_SRC_DIR/create-ec2-ami.sh
       # this list all testdata.json and *.vhd files
       - find $TMP_DIR/tmp/deploy/images/aws-ec2-arm64/  -name *.testdata.json
       - find $TMP_DIR/tmp/deploy/images/aws-ec2-arm64/  -name *.vhd
       - $CODEBUILD_SRC_DIR/create-ec2-ami.sh $IMPORT_BUCKET 16 core-image-minimal aws-ec2-arm64 $TMP_DIR/tmp $ROLE_NAME .rootfs
       # Prune old files in our EFS Mounts, that are not accessed by this or any build within 30 days
-      - find /sstate-cache -atime +30 -type f -delete
+      - find /nfs/sstate-cache -atime +30 -type f -delete
       # only delete empty dirs
-      - find /sstate-cache -atime +30 -type d -empty -delete
+      - find /nfs/sstate-cache -atime +30 -type d -empty -delete
       # Prune old files in our EFS Mounts, that are not accessed by this or any build within 30 days
-      - find /downloads -atime +30 -type f -delete
+      - find /nfs/downloads -atime +30 -type f -delete
       # only delete empty dirs
-      - find /downloads -atime +30 -type d -empty -delete
+      - find /nfs/downloads -atime +30 -type d -empty -delete
+      - echo "Post build completed - [$(date '+%F %H:%M:%S')]"
+      
 artifacts:
   discard-paths: true
   files:
