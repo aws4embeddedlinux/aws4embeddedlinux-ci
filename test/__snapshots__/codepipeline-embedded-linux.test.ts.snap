@@ -9,6 +9,21 @@ exports[`EmbeddedLinuxCodePipelineStack Snapshot 1`] = `
         "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesOutputBucketA2144F25070A0F1C",
       },
     },
+    "BuildSource": {
+      "Description": "The source bucket key of this pipeline.",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "s3://",
+            {
+              "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesSourceBucket1FA488F54AA73B60",
+            },
+            "/source/poky/source-poky.zip",
+          ],
+        ],
+      },
+    },
   },
   "Parameters": {
     "BootstrapVersion": {

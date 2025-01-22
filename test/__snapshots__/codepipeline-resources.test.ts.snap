@@ -4,7 +4,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
 {
   "Outputs": {
     "OutputPipelineResourcesAccessLoggingBucket": {
-      "Description": "The access loggin bucket.",
+      "Description": "The access logging bucket.",
       "Export": {
         "Name": "accessLoggingBucket",
       },
@@ -40,7 +40,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
       },
     },
     "OutputPipelineResourcesSourceBucket": {
-      "Description": "The source loggin bucket.",
+      "Description": "The source bucket.",
       "Export": {
         "Name": "sourceBucket",
       },
