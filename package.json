@@ -1,23 +1,22 @@
 {
   "name": "aws4embeddedlinux-cdk-lib",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
-  "type": "module",
   "scripts": {
     "build": "tsc",
-    "copy-src": "if [ -d dist/source-repo ]; then rm -rf dist/source-repo; fi && cp -r source-repo dist && cp assets/create-ec2-ami.sh dist/assets",
-    "zip-data": "if [ -f dist/assets/build-image/data.zip ]; then rm -rf dist/assets/build-image; fi && mkdir -p dist/assets/build-image ; cd assets/build-image && zip -q -o ../../dist/assets/build-image/data.zip -r *",
-    "clean": "tsc --build --clean && rm -rf dist && rm -rf cdk.out",
-    "prebuild": "npm run zip-data && npm run copy-src",
     "watch": "tsc -w",
-    "test": "jest",
-    "update-snapshot": "jest -u",
     "cdk": "cdk",
+    "clean": "tsc --build --clean && rm -rf dist && rm -rf source-zip && rm -rf cdk.out",
     "doc": "typedoc --sort source-order --readme README.md",
     "format": "eslint '**/*.{js,ts,json}' --quiet --fix",
     "check": "eslint '**/*.{js,ts,json}'",
-    "prepare": "npm run build"
+    "build-assets": "./scripts/build-assets.sh",
+    "prebuild": "npm run build-assets",
+    "test": "npm run prebuild && jest",
+    "update-snapshot": "npm run prebuild && jest -u",
+    "prepare": "npm run build",
+    "prepare-commit": "npm run clean && npm run format && npm run build && npm run check && npm run test"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.4",
@@ -27,7 +26,7 @@
     "@types/node": "20.14.8",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
-    "aws-cdk-lib": "^2.173.0",
+    "aws-cdk-lib": "^2.173.1",
     "cdk-nag": "^2.34.23",
     "constructs": "^10.4.2",
     "eslint": "^9.16.0",
@@ -44,7 +43,7 @@
     "typescript-eslint": "^8.18.0"
   },
   "peerDependencies": {
-    "aws-cdk-lib": "^2.173.0",
+    "aws-cdk-lib": "^2.173.1",
     "constructs": "^10.4.2"
   },
   "resolutions": {
