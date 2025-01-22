@@ -4,7 +4,8 @@ import globals from "globals";
 import tsParser from "@typescript-eslint/parser";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import js from "@eslint/js";
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
 import { FlatCompat } from "@eslint/eslintrc";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -14,66 +15,74 @@ import { includeIgnoreFile } from "@eslint/compat";
 const gitignorePath = path.resolve(__dirname, ".gitignore");
 
 const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
+  baseDirectory: __dirname,
+  recommendedConfig: eslint.configs.recommended,
+  allConfig: eslint.configs.all,
 });
 
-export default [...compat.extends(
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended",
-), {
+export default [
+  {
     plugins: {
-        "@typescript-eslint": typescriptEslintEslintPlugin,
-        tsdoc,
+      "@typescript-eslint": typescriptEslintEslintPlugin,
+      tsdoc,
     },
 
     languageOptions: {
-        globals: {
-            ...globals.browser,
-            ...globals.node,
-            ...globals.jest,
-        },
+      globals: {
+        ...globals.node,
+        ...globals.jest,
+      },
 
-        parser: tsParser,
-        ecmaVersion: "latest",
+      parser: tsParser,
+      ecmaVersion: "latest",
+      sourceType: "module",
+
+      parserOptions: {
         sourceType: "module",
-
-        parserOptions: {
-            sourceType: 'module',
-            project: './tsconfig.json',
-        },
+        project: "./tsconfig.json",
+      },
     },
 
     rules: {
-        "tsdoc/syntax": "warn",
+      "tsdoc/syntax": "warn",
 
-        "max-len": ["error", {
-            code: 150,
-            ignoreUrls: true,
-            ignoreStrings: true,
-            ignoreTemplateLiterals: true,
-            ignoreComments: true,
-            ignoreRegExpLiterals: true,
-        }],
+      "max-len": [
+        "error",
+        {
+          code: 150,
+          ignoreUrls: true,
+          ignoreStrings: true,
+          ignoreTemplateLiterals: true,
+          ignoreComments: true,
+          ignoreRegExpLiterals: true,
+        },
+      ],
 
-        "prettier/prettier": ["error", {
-            singleQuote: true,
-            trailingComma: "es5",
-        }],
+      "prettier/prettier": [
+        "error",
+        {
+          singleQuote: true,
+          trailingComma: "es5",
+        },
+      ],
     },
-
     ignores: [
-        "jest.config.js",
-        "package.json",
-        "package-lock.json",
-        "tsconfig.json",
-        "typedoc.json",
+      "jest.config.js",
+      "package.json",
+      "package-lock.json",
+      "tsconfig.json",
+      "typedoc.json",
     ],
-},
-includeIgnoreFile(gitignorePath),
-{
+    ...eslint.configs.recommended,
+  },
+  includeIgnoreFile(gitignorePath),
+  {
     // your overrides
-},
+  },
+  ...compat.extends(
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ),
+  ...tseslint.configs.recommended,
 ];
