@@ -1049,6 +1049,10 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
     },
     "EmbeddedLinuxPipeline1DDFB4FE": {
       "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
         "EmbeddedLinuxPipelineRoleDefaultPolicyD23E75B9",
         "EmbeddedLinuxPipelineRole1094A815",
       ],
@@ -1187,6 +1191,12 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       "Type": "AWS::CodePipeline::Pipeline",
     },
     "EmbeddedLinuxPipelineArtifactCodePipelineActionRole02805750": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -1215,6 +1225,12 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       "Type": "AWS::IAM::Role",
     },
     "EmbeddedLinuxPipelineArtifactCodePipelineActionRoleDefaultPolicyD75CCCBC": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1323,6 +1339,12 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       "Type": "AWS::IAM::Policy",
     },
     "EmbeddedLinuxPipelineBuildCodePipelineActionRoleC4160EB4": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -1351,6 +1373,12 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       "Type": "AWS::IAM::Role",
     },
     "EmbeddedLinuxPipelineBuildCodePipelineActionRoleDefaultPolicy176F5E4B": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1381,6 +1409,12 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       "Type": "AWS::IAM::Policy",
     },
     "EmbeddedLinuxPipelineEventsRoleDefaultPolicy7234197B": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1416,6 +1450,12 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       "Type": "AWS::IAM::Policy",
     },
     "EmbeddedLinuxPipelineEventsRoleF9DA96F1": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -1433,6 +1473,12 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       "Type": "AWS::IAM::Role",
     },
     "EmbeddedLinuxPipelineRole1094A815": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -1450,6 +1496,12 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       "Type": "AWS::IAM::Role",
     },
     "EmbeddedLinuxPipelineRoleDefaultPolicyD23E75B9": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1549,6 +1601,12 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       "Type": "AWS::IAM::Policy",
     },
     "EmbeddedLinuxPipelineSourceCodePipelineActionRoleDefaultPolicyE4783D85": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1635,6 +1693,12 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
       "Type": "AWS::IAM::Policy",
     },
     "EmbeddedLinuxPipelineSourceCodePipelineActionRoleF0FC21D6": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -3509,6 +3573,10 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
     },
     "EmbeddedLinuxPipeline1DDFB4FE": {
       "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
         "EmbeddedLinuxPipelineRoleDefaultPolicyD23E75B9",
         "EmbeddedLinuxPipelineRole1094A815",
       ],
@@ -3647,6 +3715,12 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
       "Type": "AWS::CodePipeline::Pipeline",
     },
     "EmbeddedLinuxPipelineArtifactCodePipelineActionRole02805750": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -3675,6 +3749,12 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
       "Type": "AWS::IAM::Role",
     },
     "EmbeddedLinuxPipelineArtifactCodePipelineActionRoleDefaultPolicyD75CCCBC": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -3783,6 +3863,12 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
       "Type": "AWS::IAM::Policy",
     },
     "EmbeddedLinuxPipelineBuildCodePipelineActionRoleC4160EB4": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -3811,6 +3897,12 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
       "Type": "AWS::IAM::Role",
     },
     "EmbeddedLinuxPipelineBuildCodePipelineActionRoleDefaultPolicy176F5E4B": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -3841,6 +3933,12 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
       "Type": "AWS::IAM::Policy",
     },
     "EmbeddedLinuxPipelineEventsRoleDefaultPolicy7234197B": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -3876,6 +3974,12 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
       "Type": "AWS::IAM::Policy",
     },
     "EmbeddedLinuxPipelineEventsRoleF9DA96F1": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -3893,6 +3997,12 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
       "Type": "AWS::IAM::Role",
     },
     "EmbeddedLinuxPipelineRole1094A815": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -3910,6 +4020,12 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
       "Type": "AWS::IAM::Role",
     },
     "EmbeddedLinuxPipelineRoleDefaultPolicyD23E75B9": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -4009,6 +4125,12 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
       "Type": "AWS::IAM::Policy",
     },
     "EmbeddedLinuxPipelineSourceCodePipelineActionRoleDefaultPolicyE4783D85": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -4095,6 +4217,12 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
       "Type": "AWS::IAM::Policy",
     },
     "EmbeddedLinuxPipelineSourceCodePipelineActionRoleF0FC21D6": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -5777,6 +5905,10 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
     },
     "EmbeddedLinuxPipeline1DDFB4FE": {
       "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
         "EmbeddedLinuxPipelineRoleDefaultPolicyD23E75B9",
         "EmbeddedLinuxPipelineRole1094A815",
       ],
@@ -5915,6 +6047,12 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
       "Type": "AWS::CodePipeline::Pipeline",
     },
     "EmbeddedLinuxPipelineArtifactCodePipelineActionRole02805750": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -5943,6 +6081,12 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
       "Type": "AWS::IAM::Role",
     },
     "EmbeddedLinuxPipelineArtifactCodePipelineActionRoleDefaultPolicyD75CCCBC": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -6036,6 +6180,12 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
       "Type": "AWS::IAM::Policy",
     },
     "EmbeddedLinuxPipelineBuildCodePipelineActionRoleC4160EB4": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -6064,6 +6214,12 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
       "Type": "AWS::IAM::Role",
     },
     "EmbeddedLinuxPipelineBuildCodePipelineActionRoleDefaultPolicy176F5E4B": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -6094,6 +6250,12 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
       "Type": "AWS::IAM::Policy",
     },
     "EmbeddedLinuxPipelineEventsRoleDefaultPolicy7234197B": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -6129,6 +6291,12 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
       "Type": "AWS::IAM::Policy",
     },
     "EmbeddedLinuxPipelineEventsRoleF9DA96F1": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -6146,6 +6314,12 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
       "Type": "AWS::IAM::Role",
     },
     "EmbeddedLinuxPipelineRole1094A815": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -6163,6 +6337,12 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
       "Type": "AWS::IAM::Role",
     },
     "EmbeddedLinuxPipelineRoleDefaultPolicyD23E75B9": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -6262,6 +6442,12 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
       "Type": "AWS::IAM::Policy",
     },
     "EmbeddedLinuxPipelineSourceCodePipelineActionRoleDefaultPolicyE4783D85": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -6348,6 +6534,12 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
       "Type": "AWS::IAM::Policy",
     },
     "EmbeddedLinuxPipelineSourceCodePipelineActionRoleF0FC21D6": {
+      "DependsOn": [
+        "EmbeddedLinuxBuildProjectPolicyDocumentBD98C4E9",
+        "EmbeddedLinuxBuildProject45760157",
+        "EmbeddedLinuxBuildProjectRoleDefaultPolicy59C0930B",
+        "EmbeddedLinuxBuildProjectRole4EBABAB2",
+      ],
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
