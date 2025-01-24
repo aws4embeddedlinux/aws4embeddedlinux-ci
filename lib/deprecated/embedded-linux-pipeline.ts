@@ -384,6 +384,7 @@ def handler(event, context):
         },
       ],
     });
+    pipeline.node.addDependency(project);
 
     const stopPipelinePolicy = new iam.PolicyStatement({
       actions: ["codepipeline:StopPipelineExecution"],
