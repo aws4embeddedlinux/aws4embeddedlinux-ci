@@ -11,7 +11,7 @@
     "doc": "typedoc --sort source-order --readme README.md",
     "format": "eslint '**/*.{js,ts,json}' --quiet --fix",
     "check": "eslint '**/*.{js,ts,json}'",
-    "build-assets": "./scripts/build-assets.sh",
+    "build-assets": "./utils/build-assets.sh",
     "prebuild": "npm run build-assets",
     "test": "npm run prebuild && jest",
     "update-snapshot": "npm run prebuild && jest -u",
