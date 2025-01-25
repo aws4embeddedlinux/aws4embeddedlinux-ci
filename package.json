@@ -17,7 +17,7 @@
     "test": "yarn run prebuild && jest",
     "update-snapshot": "yarn run prebuild && jest -u",
     "prepare": "yarn run build",
-    "prepare-commit": "yarn run clean && yarn run format && yarn run build && yarn run check && yarn run test"
+    "prepare-commit": "yarn run clean && yarn run format && yarn run build && yarn run check && yarn run test "
   },
   "dependencies": {
     "aws-cdk-lib": "2.176.0",

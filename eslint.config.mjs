@@ -76,13 +76,10 @@ export default [
     ...eslint.configs.recommended,
   },
   includeIgnoreFile(gitignorePath),
-  {
-    // your overrides
-  },
   ...compat.extends(
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
   ),
   ...tseslint.configs.recommended,
 ];
