@@ -769,7 +769,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
           "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
         },
         "Environment": {
-          "ComputeType": "BUILD_GENERAL1_LARGE",
+          "ComputeType": "BUILD_GENERAL1_MEDIUM",
           "EnvironmentVariables": [
             {
               "Name": "ECR_REPOSITORY_URI",

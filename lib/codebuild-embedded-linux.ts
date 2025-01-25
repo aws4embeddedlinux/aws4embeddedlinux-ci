@@ -86,7 +86,7 @@ export class EmbeddedLinuxCodeBuildProjectStack extends cdk.Stack {
           },
         }),
         environment: {
-          computeType: codebuild.ComputeType.X2_LARGE,
+          computeType: codebuild.ComputeType.X_LARGE,
           buildImage: codebuild.LinuxBuildImage.fromEcrRepository(
             props.ecrRepository,
             props.ecrRepositoryImageTag,

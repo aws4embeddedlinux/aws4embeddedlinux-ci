@@ -112,7 +112,7 @@ export class EmbeddedLinuxCodePipelineBaseImageStack extends cdk.Stack {
         projectName: `${this.ecrRepositoryImageTag}`,
         buildSpec: codebuild.BuildSpec.fromSourceFilename(`buildspec.yml`),
         environment: {
-          computeType: codebuild.ComputeType.LARGE,
+          computeType: codebuild.ComputeType.MEDIUM,
           buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
           privileged: true,
         },

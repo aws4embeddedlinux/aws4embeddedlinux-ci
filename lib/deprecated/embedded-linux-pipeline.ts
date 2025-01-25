@@ -218,7 +218,7 @@ export class EmbeddedLinuxPipelineStack extends cdk.Stack {
     const project = new PipelineProject(this, "EmbeddedLinuxBuildProject", {
       buildSpec: BuildSpec.fromSourceFilename("build.buildspec.yml"),
       environment: {
-        computeType: ComputeType.X2_LARGE,
+        computeType: ComputeType.X_LARGE,
         buildImage: LinuxBuildImage.fromEcrRepository(
           props.imageRepo,
           props.imageTag,

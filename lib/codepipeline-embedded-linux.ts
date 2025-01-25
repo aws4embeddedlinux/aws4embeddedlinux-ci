@@ -176,7 +176,7 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
           "build.buildspec.yml",
         ),
         environment: {
-          computeType: codebuild.ComputeType.X2_LARGE,
+          computeType: codebuild.ComputeType.X_LARGE,
           buildImage: codebuild.LinuxBuildImage.fromEcrRepository(
             props.ecrRepository,
             props.ecrRepositoryImageTag,

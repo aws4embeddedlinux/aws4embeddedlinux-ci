@@ -593,7 +593,7 @@ exports[`Build Image Pipeline Snapshot 1`] = `
           ],
         },
         "Environment": {
-          "ComputeType": "BUILD_GENERAL1_LARGE",
+          "ComputeType": "BUILD_GENERAL1_MEDIUM",
           "EnvironmentVariables": [
             {
               "Name": "ECR_REPOSITORY_URI",

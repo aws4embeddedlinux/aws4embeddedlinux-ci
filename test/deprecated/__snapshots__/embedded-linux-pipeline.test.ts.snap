@@ -407,7 +407,7 @@ exports[`Pipeline Poky AMI Pipeline - check role name trim 1`] = `
           ],
         },
         "Environment": {
-          "ComputeType": "BUILD_GENERAL1_2XLARGE",
+          "ComputeType": "BUILD_GENERAL1_XLARGE",
           "EnvironmentVariables": [
             {
               "Name": "IMPORT_BUCKET",
@@ -2931,7 +2931,7 @@ exports[`Pipeline Snapshot Poky AMI Pipeline 1`] = `
           ],
         },
         "Environment": {
-          "ComputeType": "BUILD_GENERAL1_2XLARGE",
+          "ComputeType": "BUILD_GENERAL1_XLARGE",
           "EnvironmentVariables": [
             {
               "Name": "IMPORT_BUCKET",
@@ -5455,7 +5455,7 @@ exports[`Pipeline Snapshot Poky Pipeline 1`] = `
           ],
         },
         "Environment": {
-          "ComputeType": "BUILD_GENERAL1_2XLARGE",
+          "ComputeType": "BUILD_GENERAL1_XLARGE",
           "Image": {
             "Fn::Join": [
               "",

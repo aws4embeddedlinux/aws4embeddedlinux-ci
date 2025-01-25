@@ -1069,7 +1069,7 @@ def handler(event, context):
           "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
         },
         "Environment": {
-          "ComputeType": "BUILD_GENERAL1_2XLARGE",
+          "ComputeType": "BUILD_GENERAL1_XLARGE",
           "EnvironmentVariables": [
             {
               "Name": "AWS_ACCOUNT_ID",
