@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
+  "license": "MIT",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
@@ -12,11 +13,15 @@
     "format": "eslint '**/*.{js,ts,json}' --quiet --fix",
     "check": "eslint '**/*.{js,ts,json}'",
     "build-assets": "./utils/build-assets.sh",
-    "prebuild": "npm run build-assets",
-    "test": "npm run prebuild && jest",
-    "update-snapshot": "npm run prebuild && jest -u",
-    "prepare": "npm run build",
-    "prepare-commit": "npm run clean && npm run format && npm run build && npm run check && npm run test"
+    "prebuild": "yarn run build-assets",
+    "test": "yarn run prebuild && jest",
+    "update-snapshot": "yarn run prebuild && jest -u",
+    "prepare": "yarn run build",
+    "prepare-commit": "yarn run clean && yarn run format && yarn run build && yarn run check && yarn run test"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.176.0",
+    "constructs": "^10.4.2"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.4",
@@ -26,9 +31,8 @@
     "@types/node": "20.14.8",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
-    "aws-cdk-lib": "^2.173.1",
-    "cdk-nag": "^2.34.23",
-    "constructs": "^10.4.2",
+    "aws-cdk": "2.176.0",
+    "cdk-nag": "^2.35.0",
     "eslint": "^9.16.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
@@ -41,10 +45,6 @@
     "typedoc": "^0.27.4",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.18.0"
-  },
-  "peerDependencies": {
-    "aws-cdk-lib": "^2.173.1",
-    "constructs": "^10.4.2"
   },
   "resolutions": {
     "glob": "^9.3.5"

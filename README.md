@@ -40,13 +40,26 @@ cd my-project
 cdk init app --language typescript
 ```
 
-Then you will need to install the `aws4embeddedlinux-ci` cdk library:
+Then you will need to install the CDK library including the `aws4embeddedlinux-ci` library:
 
 ```bash
-npm install aws4embeddedlinux/aws4embeddedlinux-ci
+yarn install
+yarn add github:aws4embeddedlinux/aws4embeddedlinux-ci
 ```
 
 Once added, you can start creatin your application using the library. 
+
+For example, you can start by importing classes using:
+
+```ts
+import {
+  EmbeddedLinuxCodePipelineBaseImageStack,
+  EmbeddedLinuxCodePipelineStack,
+  EmbeddedLinuxCodeBuildProjectStack,
+  PipelineResourcesStack,
+  ProjectKind,
+} from "aws4embeddedlinux-cdk-lib";
+```
 
 Refer to the [API Documentation](https://aws4embeddedlinux.github.io/aws4embeddedlinux-ci) and the [sample](github.com/aws4embeddedlinux/aws4embeddedlinux-ci-examples) for more details.
 
@@ -83,32 +96,42 @@ You can use [`npm link`](https://docs.npmjs.com/cli/v10/commands/npm-link) to de
 ### In this library repo:
 
 ```bash
-npm install
-npm run build
-npm link
+yarn install
+yarn run build
+yarn link
 ```
 
 ### In your project folder:
 
 ```bash
-npm install
-npm link ../aws4embeddedlinux-ci
+yarn install
+yarn link "aws4embeddedlinux-cdk-lib"
 ```
 
 This will link through the system `node_modules` install. 
+
+> _Note:_
+>
+> You should not install / reference the `aws4embeddedlinux/aws4embeddedlinux-ci` library in your `package.json` when using this approach.
+>
 
 Then you can import the packages / classes using:
 
 ```ts
 import {
-  EmbeddedLinuxPipelineStack,
-  EmbeddedLinuxCodebuildProjectStack,
-  BuildImageSourceStack,
-  BuildImagePipelineStack,
-  BuildImageRepoStack,
-  PipelineNetworkStack,
-} from "<relative path>/aws4embeddedlinux-ci/lib";
+  EmbeddedLinuxCodePipelineBaseImageStack,
+  EmbeddedLinuxCodePipelineStack,
+  EmbeddedLinuxCodeBuildProjectStack,
+  PipelineResourcesStack,
+  ProjectKind,
+} from "aws4embeddedlinux-cdk-lib";
 ```
+
+> _Note:_
+>
+> After changing the code for the `aws4embeddedlinux/aws4embeddedlinux-ci` library, you will need to run `yarn run build` for changes to be available in your current project.
+>
+
 
 > _Note:_
 >
