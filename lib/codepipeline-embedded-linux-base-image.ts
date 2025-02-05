@@ -110,7 +110,7 @@ export class EmbeddedLinuxCodePipelineBaseImageStack extends cdk.Stack {
       },
     );
 
-    // Create a source action.
+    /** Create our CodeCodePipeline Actions. */
     const sourceActionOutputArtifact = new codepipeline.Artifact("Source");
     const sourceAction = new codepipeline_actions.S3SourceAction({
       actionName: "Source",
@@ -120,7 +120,7 @@ export class EmbeddedLinuxCodePipelineBaseImageStack extends cdk.Stack {
       bucketKey: `${sourceRepoPath}/${sourceRepoAsset.s3ObjectKey}`,
     });
 
-    // Create a build action.
+    /** Create our CodeCodePipeline Project. */
     const project = new codebuild.PipelineProject(
       this,
       "CodePipelineBuildBaseImageProject",
