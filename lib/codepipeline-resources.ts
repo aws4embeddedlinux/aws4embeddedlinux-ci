@@ -18,9 +18,9 @@ export interface PipelineResourcesProps extends cdk.StackProps {
   /** The artifact bucket name - if not provided then the name will be '{prefix}-{account}-{region}-artifact'*/
   readonly artifactBucketName?: string;
   /** The source bucket name - if not provided then the name will be '{prefix}-{account}-{region}-source'*/
-  readonly sourceBucketName?: string;
+  readonly sourceRepositoryBucketName?: string;
   /** The source bucket name - if not provided then the name will be '{prefix}-{account}-{region}-output'*/
-  readonly outputBucketName?: string;
+  readonly pipelineOutputBucketName?: string;
   /** The source bucket name - if not provided then the name will be '{prefix}-{account}-{region}-output-vm-import'*/
   readonly outputVMImportBucketName?: string;
   /** Access logging bucket name - if not provided then the name will be '{prefix}-{account}-{region}-logs'*/
@@ -36,13 +36,13 @@ export class PipelineResourcesStack extends cdk.Stack {
   /** The respository to put the build host container in. */
   public readonly ecrRepository: ecr.IRepository;
   /** The source bucket*/
-  public readonly sourceBucket: s3.IBucket;
+  public readonly sourceRepositoryBucket: s3.IBucket;
   /** the artifact bucket*/
   public readonly artifactBucket: s3.Bucket;
   /** The access logging bucket to use*/
   public readonly accessLoggingBucket?: s3.Bucket;
   /** The output bucket*/
-  public readonly outputBucket: s3.Bucket;
+  public readonly pipelineOutputBucket: s3.Bucket;
   /** The output vm import bucket*/
   public readonly outputVMImportBucket: VMImportBucket;
   /** The encryption key use across*/
@@ -57,17 +57,17 @@ export class PipelineResourcesStack extends cdk.Stack {
     const artifactBucketName = props.artifactBucketName
       ? props.artifactBucketName
       : `${props.resource_prefix}-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}-artifact`.toLowerCase();
-    const sourceBucketName = props.sourceBucketName
-      ? props.sourceBucketName
+    const sourceRepositoryBucketName = props.sourceRepositoryBucketName
+      ? props.sourceRepositoryBucketName
       : `${props.resource_prefix}-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}-source`.toLowerCase();
-    const outputBucketName = props.outputBucketName
-      ? props.outputBucketName
+    const pipelineOutputBucketName = props.pipelineOutputBucketName
+      ? props.pipelineOutputBucketName
       : `${props.resource_prefix}-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}-output`.toLowerCase();
     const outputVMImportBucketName = props.outputVMImportBucketName
       ? props.outputVMImportBucketName
       : `${props.resource_prefix}-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}-output-vm`.toLowerCase();
-    const accessLoggingBucketName = props.sourceBucketName
-      ? props.sourceBucketName
+    const accessLoggingBucketName = props.sourceRepositoryBucketName
+      ? props.sourceRepositoryBucketName
       : `${props.resource_prefix}-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}-access-logs`.toLowerCase();
 
     // We will create a VPC with 3 Private and Public subnets for AWS
@@ -117,8 +117,8 @@ export class PipelineResourcesStack extends cdk.Stack {
       },
     );
 
-    this.sourceBucket = new s3.Bucket(this, "PipelineResourcesSourceBucket", {
-      bucketName: sourceBucketName,
+    this.sourceRepositoryBucket = new s3.Bucket(this, "PipelineResourcesSourceBucket", {
+      bucketName: sourceRepositoryBucketName,
       versioned: true,
       enforceSSL: true,
       autoDeleteObjects: true,
@@ -143,8 +143,8 @@ export class PipelineResourcesStack extends cdk.Stack {
       },
     );
 
-    this.outputBucket = new s3.Bucket(this, "PipelineResourcesOutputBucket", {
-      bucketName: outputBucketName,
+    this.pipelineOutputBucket = new s3.Bucket(this, "PipelineResourcesOutputBucket", {
+      bucketName: pipelineOutputBucketName,
       versioned: true,
       enforceSSL: true,
       autoDeleteObjects: true,
@@ -177,7 +177,7 @@ export class PipelineResourcesStack extends cdk.Stack {
 
     new cdk.CfnOutput(this, "OutputPipelineResourcesSourceBucket", {
       exportName: "sourceBucket",
-      value: this.sourceBucket.bucketName,
+      value: this.sourceRepositoryBucket.bucketName,
       description: "The source bucket.",
     });
 
@@ -189,7 +189,7 @@ export class PipelineResourcesStack extends cdk.Stack {
 
     new cdk.CfnOutput(this, "OutputPipelineResourcesOutputBucket", {
       exportName: "outputBucket",
-      value: this.outputBucket.bucketName,
+      value: this.pipelineOutputBucket.bucketName,
       description: "The output bucket.",
     });
 
