@@ -27,9 +27,9 @@ export function isBucketVersioned(bucket: s3.Bucket | s3.IBucket) {
 }
 
 /**
- * The kind of project built.
+ * The type of project built.
  */
-export enum ProjectKind {
+export enum ProjectType {
   /** Build core-image-minimal from poky. */
   Poky = "poky",
   /** Build the Qemu meta-aws Demonstration Distribution. */
@@ -44,4 +44,6 @@ export enum ProjectKind {
   NxpImx = "nxp-imx",
   /** Build no pipeline, just CodeBuild project to connect with GitHub actions. */
   CodeBuild = "codebuild",
+  /** Build an image using a custom buildspec and asstes. */
+  Custom = "custom",
 }
