@@ -6,7 +6,6 @@ import * as kms from "aws-cdk-lib/aws-kms";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as logs from "aws-cdk-lib/aws-logs";
 
-import { VMImportBucket } from "./vm-import-bucket";
 /**
  * Select options for the {@link PipelineResourcesStack}.
  */
@@ -21,8 +20,6 @@ export interface PipelineResourcesProps extends cdk.StackProps {
   readonly sourceRepositoryBucketName?: string;
   /** The source bucket name - if not provided then the name will be '{prefix}-{account}-{region}-output'*/
   readonly pipelineOutputBucketName?: string;
-  /** The source bucket name - if not provided then the name will be '{prefix}-{account}-{region}-output-vm-import'*/
-  readonly outputVMImportBucketName?: string;
   /** Access logging bucket name - if not provided then the name will be '{prefix}-{account}-{region}-logs'*/
   readonly accessLoggingBucketName?: string;
 }
@@ -43,8 +40,6 @@ export class PipelineResourcesStack extends cdk.Stack {
   public readonly accessLoggingBucket?: s3.Bucket;
   /** The output bucket*/
   public readonly pipelineOutputBucket: s3.Bucket;
-  /** The output vm import bucket*/
-  public readonly outputVMImportBucket: VMImportBucket;
   /** The encryption key use across*/
   public readonly encryptionKey: kms.Key;
 
@@ -63,9 +58,6 @@ export class PipelineResourcesStack extends cdk.Stack {
     const pipelineOutputBucketName = props.pipelineOutputBucketName
       ? props.pipelineOutputBucketName
       : `${props.resource_prefix}-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}-output`.toLowerCase();
-    const outputVMImportBucketName = props.outputVMImportBucketName
-      ? props.outputVMImportBucketName
-      : `${props.resource_prefix}-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}-output-vm`.toLowerCase();
     const accessLoggingBucketName = props.sourceRepositoryBucketName
       ? props.sourceRepositoryBucketName
       : `${props.resource_prefix}-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}-access-logs`.toLowerCase();
@@ -154,21 +146,6 @@ export class PipelineResourcesStack extends cdk.Stack {
       serverAccessLogsPrefix: "output-bucket",
     });
 
-    this.outputVMImportBucket = new VMImportBucket(
-      this,
-      "PipelineResourcesOutputVMImportBucket",
-      {
-        bucketName: outputVMImportBucketName,
-        versioned: true,
-        enforceSSL: true,
-        autoDeleteObjects: true,
-        removalPolicy: cdk.RemovalPolicy.DESTROY,
-        encryptionKey: this.encryptionKey,
-        serverAccessLogsBucket: this.accessLoggingBucket,
-        serverAccessLogsPrefix: "output-vm-import-bucket",
-      },
-    );
-
     new cdk.CfnOutput(this, "OutputPipelineResourcesAccessLoggingBucket", {
       exportName: "accessLoggingBucket",
       value: this.accessLoggingBucket.bucketName,
@@ -191,12 +168,6 @@ export class PipelineResourcesStack extends cdk.Stack {
       exportName: "outputBucket",
       value: this.pipelineOutputBucket.bucketName,
       description: "The output bucket.",
-    });
-
-    new cdk.CfnOutput(this, "OutputPipelineResourcesOutputVMImportBuckett", {
-      exportName: "outputVMImportBucket",
-      value: this.outputVMImportBucket.bucketName,
-      description: "The output VM import bucket.",
     });
   }
 }
