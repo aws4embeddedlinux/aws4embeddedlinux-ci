@@ -56,12 +56,14 @@ phases:
       - echo "Post build statred - [$(date '+%F %H:%M:%S')]"
       - echo AMI Upload started
       # This is required because the CDK asset uploader does not seem to carry permissions though.
-      - aws s3 cp ${SCRIPT_URL} $CODEBUILD_SRC_DIR/create-ec2-ami.sh
+      # - aws s3 cp ${SCRIPT_URL} $CODEBUILD_SRC_DIR/create-ec2-ami.sh
+      # - chmod +x $CODEBUILD_SRC_DIR/create-ec2-ami.sh
       - chmod +x $CODEBUILD_SRC_DIR/create-ec2-ami.sh
       # this list all testdata.json and *.vhd files
       - find $TMP_DIR/tmp/deploy/images/aws-ec2-arm64/  -name *.testdata.json
       - find $TMP_DIR/tmp/deploy/images/aws-ec2-arm64/  -name *.vhd
-      - $CODEBUILD_SRC_DIR/create-ec2-ami.sh $IMPORT_BUCKET 16 core-image-minimal aws-ec2-arm64 $TMP_DIR/tmp $ROLE_NAME .rootfs
+      # - $CODEBUILD_SRC_DIR/create-ec2-ami.sh $PIPELINE_OUTPUT_BUCKET 16 core-image-minimal aws-ec2-arm64 $TMP_DIR/tmp $VM_IMPORT_ROLE .rootfs
+      - ./create-ec2-ami.sh $PIPELINE_OUTPUT_BUCKET 16 core-image-minimal aws-ec2-arm64 $TMP_DIR/tmp $VM_IMPORT_ROLE .rootfs
       # Prune old files in our EFS Mounts, that are not accessed by this or any build within 30 days
       - find /nfs/sstate-cache -atime +30 -type f -delete
       # only delete empty dirs

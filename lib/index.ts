@@ -34,7 +34,7 @@ export enum ProjectType {
   /** Build core-image-minimal from poky. */
   Poky = "poky",
   /** Build the Qemu meta-aws Demonstration Distribution. */
-  MetaAwsDemo = "meta-aws-demo",
+  QEmu = "qemu",
   /** Build an EC2 AMI */
   PokyAmi = "poky-ami",
   /** Build an kas based image */
