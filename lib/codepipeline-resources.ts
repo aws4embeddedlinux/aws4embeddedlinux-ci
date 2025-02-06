@@ -15,13 +15,13 @@ export interface PipelineResourcesProps extends cdk.StackProps {
   /** The ecr repository name - if not provided then the name will be '{prefix}-{account}-{region}-repo'*/
   readonly ecrRepositoryName?: string;
   /** The artifact bucket name - if not provided then the name will be '{prefix}-{account}-{region}-artifact'*/
-  readonly artifactBucketName?: string;
+  readonly pipelineArtifactBucketName?: string;
   /** The source bucket name - if not provided then the name will be '{prefix}-{account}-{region}-source'*/
-  readonly sourceRepositoryBucketName?: string;
-  /** The source bucket name - if not provided then the name will be '{prefix}-{account}-{region}-output'*/
+  readonly pipelineSourceBucketName?: string;
+  /** The output bucket name - if not provided then the name will be '{prefix}-{account}-{region}-output'*/
   readonly pipelineOutputBucketName?: string;
-  /** Access logging bucket name - if not provided then the name will be '{prefix}-{account}-{region}-logs'*/
-  readonly accessLoggingBucketName?: string;
+  /** Cloudwatch logging bucket name - if not provided then the name will be '{prefix}-{account}-{region}-logs'*/
+  readonly loggingBucketName?: string;
 }
 
 /**
@@ -32,14 +32,14 @@ export class PipelineResourcesStack extends cdk.Stack {
   public readonly vpc: ec2.IVpc;
   /** The respository to put the build host container in. */
   public readonly ecrRepository: ecr.IRepository;
+  /** The artifact bucket*/
+  readonly pipelineArtifactBucket: s3.Bucket;
   /** The source bucket*/
-  public readonly sourceRepositoryBucket: s3.IBucket;
-  /** the artifact bucket*/
-  public readonly artifactBucket: s3.Bucket;
-  /** The access logging bucket to use*/
-  public readonly accessLoggingBucket?: s3.Bucket;
+  readonly pipelineSourceBucket: s3.Bucket;
   /** The output bucket*/
-  public readonly pipelineOutputBucket: s3.Bucket;
+  readonly pipelineOutputBucket: s3.Bucket;
+  /** The Cloudwatch logging bucket*/
+  public readonly accessLoggingBucket?: s3.Bucket;
   /** The encryption key use across*/
   public readonly encryptionKey: kms.Key;
 
@@ -49,17 +49,17 @@ export class PipelineResourcesStack extends cdk.Stack {
     const ecrRepositoryName = props.ecrRepositoryName
       ? props.ecrRepositoryName
       : `${props.resource_prefix}-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}-repo`.toLowerCase();
-    const artifactBucketName = props.artifactBucketName
-      ? props.artifactBucketName
+    const pipelineArtifactBucketName = props.pipelineArtifactBucketName
+      ? props.pipelineArtifactBucketName
       : `${props.resource_prefix}-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}-artifact`.toLowerCase();
-    const sourceRepositoryBucketName = props.sourceRepositoryBucketName
-      ? props.sourceRepositoryBucketName
+    const pipelineSourceBucketName = props.pipelineSourceBucketName
+      ? props.pipelineSourceBucketName
       : `${props.resource_prefix}-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}-source`.toLowerCase();
     const pipelineOutputBucketName = props.pipelineOutputBucketName
       ? props.pipelineOutputBucketName
       : `${props.resource_prefix}-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}-output`.toLowerCase();
-    const accessLoggingBucketName = props.sourceRepositoryBucketName
-      ? props.sourceRepositoryBucketName
+    const loggingBucketName = props.loggingBucketName
+      ? props.loggingBucketName
       : `${props.resource_prefix}-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}-access-logs`.toLowerCase();
 
     // We will create a VPC with 3 Private and Public subnets for AWS
@@ -98,9 +98,9 @@ export class PipelineResourcesStack extends cdk.Stack {
     // Create a bucket, then allow a deployment Lambda to upload to it.
     this.accessLoggingBucket = new s3.Bucket(
       this,
-      "PipelineResourcesAccessLoggingBucket",
+      "PipelineResourcesLoggingBucket",
       {
-        bucketName: accessLoggingBucketName,
+        bucketName: loggingBucketName,
         versioned: true,
         enforceSSL: true,
         autoDeleteObjects: true,
@@ -109,22 +109,26 @@ export class PipelineResourcesStack extends cdk.Stack {
       },
     );
 
-    this.sourceRepositoryBucket = new s3.Bucket(this, "PipelineResourcesSourceBucket", {
-      bucketName: sourceRepositoryBucketName,
-      versioned: true,
-      enforceSSL: true,
-      autoDeleteObjects: true,
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      encryptionKey: this.encryptionKey,
-      serverAccessLogsBucket: this.accessLoggingBucket,
-      serverAccessLogsPrefix: "source-bucket",
-    });
+    this.pipelineSourceBucket = new s3.Bucket(
+      this,
+      "PipelineResourcesSourceBucket",
+      {
+        bucketName: pipelineSourceBucketName,
+        versioned: true,
+        enforceSSL: true,
+        autoDeleteObjects: true,
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+        encryptionKey: this.encryptionKey,
+        serverAccessLogsBucket: this.accessLoggingBucket,
+        serverAccessLogsPrefix: "source-bucket",
+      },
+    );
 
-    this.artifactBucket = new s3.Bucket(
+    this.pipelineArtifactBucket = new s3.Bucket(
       this,
       "PipelineResourcesArtifactBucket",
       {
-        bucketName: artifactBucketName,
+        bucketName: pipelineArtifactBucketName,
         versioned: true,
         enforceSSL: true,
         autoDeleteObjects: true,
@@ -135,37 +139,37 @@ export class PipelineResourcesStack extends cdk.Stack {
       },
     );
 
-    this.pipelineOutputBucket = new s3.Bucket(this, "PipelineResourcesOutputBucket", {
-      bucketName: pipelineOutputBucketName,
-      versioned: true,
-      enforceSSL: true,
-      autoDeleteObjects: true,
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      encryptionKey: this.encryptionKey,
-      serverAccessLogsBucket: this.accessLoggingBucket,
-      serverAccessLogsPrefix: "output-bucket",
-    });
+    this.pipelineOutputBucket = new s3.Bucket(
+      this,
+      "PipelineResourcesOutputBucket",
+      {
+        bucketName: pipelineOutputBucketName,
+        versioned: true,
+        enforceSSL: true,
+        autoDeleteObjects: true,
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+        encryptionKey: this.encryptionKey,
+        serverAccessLogsBucket: this.accessLoggingBucket,
+        serverAccessLogsPrefix: "output-bucket",
+      },
+    );
 
-    new cdk.CfnOutput(this, "OutputPipelineResourcesAccessLoggingBucket", {
-      exportName: "accessLoggingBucket",
+    new cdk.CfnOutput(this, "LoggingBucket", {
       value: this.accessLoggingBucket.bucketName,
       description: "The access logging bucket.",
     });
 
-    new cdk.CfnOutput(this, "OutputPipelineResourcesSourceBucket", {
-      exportName: "sourceBucket",
-      value: this.sourceRepositoryBucket.bucketName,
+    new cdk.CfnOutput(this, "SourceBucket", {
+      value: this.pipelineSourceBucket.bucketName,
       description: "The source bucket.",
     });
 
-    new cdk.CfnOutput(this, "OutputPipelineResourcesArtifactBucket", {
-      exportName: "artifactBucket",
-      value: this.artifactBucket.bucketName,
+    new cdk.CfnOutput(this, "ArtifactBucket", {
+      value: this.pipelineArtifactBucket.bucketName,
       description: "The artifact bucket.",
     });
 
-    new cdk.CfnOutput(this, "OutputPipelineResourcesOutputBucket", {
-      exportName: "outputBucket",
+    new cdk.CfnOutput(this, "OutputBucket", {
       value: this.pipelineOutputBucket.bucketName,
       description: "The output bucket.",
     });
