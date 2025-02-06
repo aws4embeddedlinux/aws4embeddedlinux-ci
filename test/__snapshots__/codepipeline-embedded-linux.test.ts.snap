@@ -3,14 +3,38 @@
 exports[`EmbeddedLinuxCodePipelineStack Snapshot 1`] = `
 {
   "Outputs": {
-    "BuildOutput": {
-      "Description": "The output bucket of this pipeline.",
+    "ArtifactURI": {
+      "Description": "The artifact bucket of this pipeline.",
       "Value": {
-        "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesOutputBucketA2144F25070A0F1C",
+        "Fn::Join": [
+          "",
+          [
+            "s3://",
+            {
+              "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesArtifactBucketFF61EB98FA6EAAC1",
+            },
+            "/poky/arbitrary-file.ext",
+          ],
+        ],
       },
     },
-    "BuildSource": {
-      "Description": "The source bucket key of this pipeline.",
+    "OutputURI": {
+      "Description": "The output bucket of this pipeline.",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "s3://",
+            {
+              "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesOutputBucketA2144F25070A0F1C",
+            },
+            "/poky",
+          ],
+        ],
+      },
+    },
+    "SourceURI": {
+      "Description": "The source bucket uri for this pipeline.",
       "Value": {
         "Fn::Join": [
           "",
@@ -19,7 +43,7 @@ exports[`EmbeddedLinuxCodePipelineStack Snapshot 1`] = `
             {
               "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesSourceBucket1FA488F54AA73B60",
             },
-            "/source/poky/source-poky.zip",
+            "/poky/arbitrary-file.ext",
           ],
         ],
       },
@@ -111,7 +135,7 @@ exports[`EmbeddedLinuxCodePipelineStack Snapshot 1`] = `
                   "S3Bucket": {
                     "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesSourceBucket1FA488F54AA73B60",
                   },
-                  "S3ObjectKey": "source/poky/source-poky.zip",
+                  "S3ObjectKey": "poky/arbitrary-file.ext",
                 },
                 "Name": "Source",
                 "OutputArtifacts": [
@@ -177,10 +201,10 @@ exports[`EmbeddedLinuxCodePipelineStack Snapshot 1`] = `
                 },
                 "Configuration": {
                   "BucketName": {
-                    "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesOutputBucketA2144F25070A0F1C",
+                    "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesArtifactBucketFF61EB98FA6EAAC1",
                   },
                   "Extract": "true",
-                  "ObjectKey": "pipeline-poky",
+                  "ObjectKey": "poky/arbitrary-file.ext",
                 },
                 "InputArtifacts": [
                   {
@@ -260,14 +284,14 @@ exports[`EmbeddedLinuxCodePipelineStack Snapshot 1`] = `
               "Effect": "Allow",
               "Resource": [
                 {
-                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesOutputBucketA2144F25ArnBAEF4928",
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
                 },
                 {
                   "Fn::Join": [
                     "",
                     [
                       {
-                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesOutputBucketA2144F25ArnBAEF4928",
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
                       },
                       "/*",
                     ],
@@ -346,11 +370,11 @@ exports[`EmbeddedLinuxCodePipelineStack Snapshot 1`] = `
     "EmbeddedLinuxCodePipelineBucketDeploymentCustomResourceBA39990C": {
       "DeletionPolicy": "Delete",
       "Properties": {
-        "DestinationBucketKeyPrefix": "source/poky",
+        "DestinationBucketKeyPrefix": "poky",
         "DestinationBucketName": {
           "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesSourceBucket1FA488F54AA73B60",
         },
-        "Extract": true,
+        "Extract": false,
         "OutputObjectKeys": true,
         "Prune": true,
         "ServiceToken": {
@@ -394,12 +418,12 @@ exports[`EmbeddedLinuxCodePipelineStack Snapshot 1`] = `
                     "logs:PutLogEvents",
                   ],
                   "Effect": "Allow",
-                  "Resource": "arn:aws:logs:eu-central-1:111111111111:log-group:/aws/lambda/EmbeddedLinuxCodePipeline-CustomCDKBucketDeployment-poky*",
+                  "Resource": "arn:aws:logs:eu-central-1:111111111111:log-group:/aws/lambda/EmbeddedLinuxCodePipelineBaseImage-CustomCDKBucketDeployment*",
                 },
               ],
               "Version": "2012-10-17",
             },
-            "PolicyName": "sourceBucketDeploymentPolicy",
+            "PolicyName": "pipelineSourceBucketDeploymentPolicy",
           },
         ],
       },
@@ -816,7 +840,7 @@ exports[`EmbeddedLinuxCodePipelineStack Snapshot 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
-    "EmbeddedLinuxCodePipelineMyTestStackEmbeddedLinuxCodePipelineE5C7D172SourceEventRulesourcepokysourcepokyzip2B36EB88": {
+    "EmbeddedLinuxCodePipelineMyTestStackEmbeddedLinuxCodePipelineE5C7D172SourceEventRulepoky2c3284e71ba6f2c28421a26a63b3f77e74abad491196ba63ec03dfb5b8674f59zipE030E80D": {
       "DependsOn": [
         "EmbeddedLinuxCodePipelineProjectPolicyDocument1FA633EB",
         "EmbeddedLinuxCodePipelineProjectF55E3B36",
@@ -838,7 +862,7 @@ exports[`EmbeddedLinuxCodePipelineStack Snapshot 1`] = `
                 },
               ],
               "key": [
-                "source/poky/source-poky.zip",
+                "poky/arbitrary-file.ext",
               ],
             },
             "resources": {
@@ -850,7 +874,7 @@ exports[`EmbeddedLinuxCodePipelineStack Snapshot 1`] = `
                       {
                         "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesSourceBucket1FA488F5Arn3CF62A69",
                       },
-                      "/source/poky/source-poky.zip",
+                      "/poky/arbitrary-file.ext",
                     ],
                   ],
                 },
@@ -905,30 +929,30 @@ exports[`EmbeddedLinuxCodePipelineStack Snapshot 1`] = `
               "",
               [
                 "
-import boto3
-import json
+    import boto3
+    import json
 
-ecr_client = boto3.client('ecr')
-codepipeline_client = boto3.client('codepipeline')
+    ecr_client = boto3.client('ecr')
+    codepipeline_client = boto3.client('codepipeline')
 
-def handler(event, context):
-  print("Received event: " + json.dumps(event, indent=2))
-  response = ecr_client.describe_images(repositoryName='",
+    def handler(event, context):
+      print("Received event: " + json.dumps(event, indent=2))
+      response = ecr_client.describe_images(repositoryName='",
                 {
                   "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesECRRepositoryA0DB7EB625EEF25E",
                 },
                 "', filter={'tagStatus': 'TAGGED'})
-  for i in response['imageDetails']:
-    if 'MyBaseImageStack' in i['ecrRepositoryImageTags']:
-      break
-  else:
-    print('OS image not found. Stopping execution.')
-    response = codepipeline_client.stop_pipeline_execution(
-    pipelineName=event['detail']['pipeline'],
-    pipelineExecutionId=event['detail']['execution-id'],
-    abandon=True,
-    reason='OS image not found in ECR repository. Stopping pipeline until image is present.')
-    ",
+      for i in response['imageDetails']:
+        if 'MyBaseImageStack' in i['ecrRepositoryImageTags']:
+          break
+      else:
+        print('OS image not found. Stopping execution.')
+        response = codepipeline_client.stop_pipeline_execution(
+        pipelineName=event['detail']['pipeline'],
+        pipelineExecutionId=event['detail']['execution-id'],
+        abandon=True,
+        reason='OS image not found in ECR repository. Stopping pipeline until image is present.')
+        ",
               ],
             ],
           },
@@ -1080,6 +1104,25 @@ def handler(event, context):
               "Name": "AWS_DEFAULT_REGION",
               "Type": "PLAINTEXT",
               "Value": "eu-central-1",
+            },
+            {
+              "Name": "PIPELINE_OUTPUT_BUCKET",
+              "Type": "PLAINTEXT",
+              "Value": {
+                "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesOutputBucketA2144F25070A0F1C",
+              },
+            },
+            {
+              "Name": "PIPELINE_OUTPUT_BUCKET_PREFIX",
+              "Type": "PLAINTEXT",
+              "Value": "poky",
+            },
+            {
+              "Name": "VM_IMPORT_ROLE",
+              "Type": "PLAINTEXT",
+              "Value": {
+                "Ref": "EmbeddedLinuxCodePipelineVMImportRole68B53DB4",
+              },
             },
           ],
           "Image": {
@@ -1468,14 +1511,14 @@ def handler(event, context):
               "Effect": "Allow",
               "Resource": [
                 {
-                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesOutputBucketA2144F25ArnBAEF4928",
                 },
                 {
                   "Fn::Join": [
                     "",
                     [
                       {
-                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesOutputBucketA2144F25ArnBAEF4928",
                       },
                       "/*",
                     ],
@@ -1495,6 +1538,115 @@ def handler(event, context):
               "Resource": {
                 "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
               },
+            },
+            {
+              "Action": [
+                "ec2:CreateImage",
+                "ec2:CreateTags",
+                "ec2:DescribeImages",
+                "ec2:DescribeSnapshots",
+                "ec2:DescribeImportSnapshotTasks",
+                "ec2:DescribeTags",
+                "ec2:CancelImportTask",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": "ec2:ImportSnapshot",
+              "Effect": "Allow",
+              "Resource": [
+                "arn:aws:ec2:eu-central-1:111111111111:import-snapshot-task/*",
+                "arn:aws:ec2:eu-central-1::snapshot/*",
+              ],
+            },
+            {
+              "Action": [
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:PutObject",
+                "s3:PutObjectTagging",
+                "s3:AbortMultipartUpload",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesOutputBucketA2144F25ArnBAEF4928",
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesOutputBucketA2144F25ArnBAEF4928",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "ec2:RegisterImage",
+                "ec2:DeregisterImage",
+                "ec2:CreateStoreImageTask",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                "arn:aws:ec2:eu-central-1::image/*",
+                "arn:aws:ec2:eu-central-1::snapshot/snap-*",
+              ],
+            },
+            {
+              "Action": [
+                "ebs:CompleteSnapshot",
+                "ebs:GetSnapshotBlock",
+                "ebs:ListChangedBlocks",
+                "ebs:ListSnapshotBlocks",
+                "ebs:PutSnapshotBlock",
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:ec2:eu-central-1::snapshot/*",
+            },
+            {
+              "Action": [
+                "ec2:DescribeStoreImageTasks",
+                "ec2:GetEbsEncryptionByDefault",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
             },
           ],
           "Version": "2012-10-17",
@@ -1710,7 +1862,7 @@ def handler(event, context):
                       {
                         "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesSourceBucket1FA488F5Arn3CF62A69",
                       },
-                      "/source/poky/source-poky.zip",
+                      "/poky/arbitrary-file.ext",
                     ],
                   ],
                 },
@@ -1777,6 +1929,100 @@ def handler(event, context):
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "EmbeddedLinuxCodePipelineVMImportRole68B53DB4": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringEquals": {
+                  "sts:ExternalId": "vmimport",
+                },
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "vmie.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "s3:GetBucketLocation",
+                    "s3:GetObject",
+                    "s3:ListBucket",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": [
+                    {
+                      "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesOutputBucketA2144F25ArnBAEF4928",
+                    },
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          {
+                            "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesOutputBucketA2144F25ArnBAEF4928",
+                          },
+                          "/*",
+                        ],
+                      ],
+                    },
+                  ],
+                },
+                {
+                  "Action": [
+                    "ec2:CreateTags",
+                    "ec2:DescribeTags",
+                  ],
+                  "Condition": {
+                    "StringEquals": {
+                      "ec2:ResourceTag/CreatedBy": [
+                        "MyTestStack",
+                      ],
+                    },
+                  },
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                {
+                  "Action": "ec2:CopySnapshot",
+                  "Effect": "Allow",
+                  "Resource": "arn:aws:ec2:eu-central-1::snapshot/*",
+                },
+                {
+                  "Action": "ec2:DescribeSnapshots",
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                {
+                  "Action": [
+                    "kms:CreateGrant",
+                    "kms:Decrypt",
+                    "kms:DescribeKey",
+                    "kms:GenerateDataKeyWithoutPlaintext",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "vmImportPolicy",
+          },
+        ],
+        "RoleName": "MyTestStack-vm-mport",
+      },
+      "Type": "AWS::IAM::Role",
     },
     "EmbeddedLinuxCodePipelineWeeklyRefreshSchedule47F3A27D": {
       "Properties": {

@@ -28,6 +28,21 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
         "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesECRRepositoryA0DB7EB625EEF25E",
       },
     },
+    "SourceURI": {
+      "Description": "The source-repo bucket uri for this pipeline.",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "s3://",
+            {
+              "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesSourceBucket1FA488F54AA73B60",
+            },
+            "/base-image/arbitrary-file.ext",
+          ],
+        ],
+      },
+    },
   },
   "Parameters": {
     "BootstrapVersion": {
@@ -50,11 +65,11 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
     "CodePipelineBuildBaseImageBucketDeploymentCustomResource9FCDB7FE": {
       "DeletionPolicy": "Delete",
       "Properties": {
-        "DestinationBucketKeyPrefix": "source/base-image",
+        "DestinationBucketKeyPrefix": "base-image",
         "DestinationBucketName": {
           "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesSourceBucket1FA488F54AA73B60",
         },
-        "Extract": true,
+        "Extract": false,
         "OutputObjectKeys": true,
         "Prune": true,
         "ServiceToken": {
@@ -103,7 +118,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
               ],
               "Version": "2012-10-17",
             },
-            "PolicyName": "sourceBucketDeploymentPolicy",
+            "PolicyName": "pipelineSourceBucketDeploymentPolicy",
           },
         ],
       },
@@ -257,7 +272,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
                   "S3Bucket": {
                     "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesSourceBucket1FA488F54AA73B60",
                   },
-                  "S3ObjectKey": "source/base-image/source-base-image.zip",
+                  "S3ObjectKey": "base-image/arbitrary-file.ext",
                 },
                 "Name": "Source",
                 "OutputArtifacts": [
@@ -441,7 +456,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CodePipelineBuildBaseImageCodePipelineMyTestStackCodePipelineBuildBaseImageCodePipelineFF25ACC6SourceEventRulesourcebaseimagesourcebaseimagezip4051FAE5": {
+    "CodePipelineBuildBaseImageCodePipelineMyTestStackCodePipelineBuildBaseImageCodePipelineFF25ACC6SourceEventRulebaseimage463ab4e34f1fc19129697c4ba70a2910697e6f4dc82b08fdabb32f2eed60a01fzip4059CF7E": {
       "DependsOn": [
         "CodePipelineBuildBaseImageProject69590E59",
         "CodePipelineBuildBaseImageProjectRoleDefaultPolicy6F99FFCC",
@@ -462,7 +477,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
                 },
               ],
               "key": [
-                "source/base-image/source-base-image.zip",
+                "base-image/arbitrary-file.ext",
               ],
             },
             "resources": {
@@ -474,7 +489,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
                       {
                         "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesSourceBucket1FA488F5Arn3CF62A69",
                       },
-                      "/source/base-image/source-base-image.zip",
+                      "/base-image/arbitrary-file.ext",
                     ],
                   ],
                 },
@@ -685,7 +700,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
                       {
                         "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesSourceBucket1FA488F5Arn3CF62A69",
                       },
-                      "/source/base-image/source-base-image.zip",
+                      "/base-image/arbitrary-file.ext",
                     ],
                   ],
                 },

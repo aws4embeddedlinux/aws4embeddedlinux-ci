@@ -2,7 +2,7 @@ import * as path from "path";
 
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { BucketDeployment, Source, DeployTimeSubstitutedFile } from "aws-cdk-lib/aws-s3-deployment";
+import { BucketDeployment, Source } from "aws-cdk-lib/aws-s3-deployment";
 import { Asset } from "aws-cdk-lib/aws-s3-assets";
 import * as codepipeline from "aws-cdk-lib/aws-codepipeline";
 import * as codepipeline_actions from "aws-cdk-lib/aws-codepipeline-actions";
@@ -20,12 +20,14 @@ import * as kms from "aws-cdk-lib/aws-kms";
  */
 export interface EmbeddedLinuxCodePipelineBaseImageProps
   extends cdk.StackProps {
-  /** The source bucket */
-  readonly sourceRepositoryBucket: s3.IBucket;
+  /** The pipeline source bucket */
+  readonly pipelineSourceBucket: s3.IBucket;
+  /** The pipeline source prefix */
+  pipelineSourcePrefix?: string;
+  /** Artifact bucket to use */
+  readonly pipelineArtifactBucket: s3.Bucket;
   /** The ECR Repository to push to. */
   readonly ecrRepository: ecr.IRepository;
-  /** Artifact bucket to use */
-  readonly artifactBucket: s3.Bucket;
   /** The encryption key use across*/
   readonly encryptionKey: kms.Key;
 }
@@ -51,12 +53,15 @@ export class EmbeddedLinuxCodePipelineBaseImageStack extends cdk.Stack {
 
     this.ecrRepository = props.ecrRepository;
     this.ecrRepositoryImageTag = `${id}`;
+    
+    const projectType: string = "base-image";
 
-    const sourceRepoBase: string = "base-image";
-    const sourceRepoPath: string = `source-repo/${sourceRepoBase}`;
+    if (!props.pipelineSourcePrefix) {
+      props.pipelineSourcePrefix = `${projectType}`;
+    }
 
     // create the policy & role for the source bucket deployment
-    const sourceRepositoryBucketDeploymentPolicy = new iam.PolicyDocument({
+    const pipelineSourceBucketDeploymentPolicy = new iam.PolicyDocument({
       statements: [
         new iam.PolicyStatement({
           actions: [
@@ -70,30 +75,23 @@ export class EmbeddedLinuxCodePipelineBaseImageStack extends cdk.Stack {
         }),
       ],
     });
-    const sourceRepositoryBucketDeploymentRole = new iam.Role(
+    const pipelineSourceBucketDeploymentRole = new iam.Role(
       this,
       "CodePipelineBuildBaseImageBucketDeploymentRole",
       {
         assumedBy: new iam.ServicePrincipal("lambda.amazonaws.com"),
-        inlinePolicies: { sourceRepositoryBucketDeploymentPolicy },
+        inlinePolicies: { pipelineSourceBucketDeploymentPolicy },
       },
     );
 
     // archive and upload the source-repo folder into CDK owned bucket
-    let sourceRepoAsset: Asset = new Asset(this, "CodePipelineBuildBaseImageBucketDeploymentAsset", {
-      path: path.join(__dirname, "..", sourceRepoPath),
-      bundling: {
-        image: cdk.DockerImage.fromBuild(path.join(__dirname, "..", "docker", "alpine-zip")),
-        command: [
-          'sh', '-c', [
-            `cd /asset-input`,
-            `chmod a+w /asset-output`,
-            `zip -q -o /asset-output/source-${sourceRepoBase}.zip -r *`,
-          ].join(' && '),
-        ],
-        outputType: cdk.BundlingOutput.SINGLE_FILE, // Bundling output will be zipped even though it produces a single archive file.
+    const sourceRepoAsset: Asset = new Asset(
+      this,
+      "CodePipelineBuildBaseImageBucketDeploymentAsset",
+      {
+        path: path.join(__dirname, "..", "source-repo", projectType),
       },
-    });
+    );
 
     // deploy the uploaded archive to the target bucket
     const bucketDeployment = new BucketDeployment(
@@ -103,10 +101,10 @@ export class EmbeddedLinuxCodePipelineBaseImageStack extends cdk.Stack {
         sources: [
           Source.bucket(sourceRepoAsset.bucket, sourceRepoAsset.s3ObjectKey),
         ],
-        destinationBucket: props.sourceRepositoryBucket,
-        role: sourceRepositoryBucketDeploymentRole,
+        destinationBucket: props.pipelineSourceBucket,
+        role: pipelineSourceBucketDeploymentRole,
         extract: false,
-        destinationKeyPrefix: sourceRepoPath,
+        destinationKeyPrefix: props.pipelineSourcePrefix,
       },
     );
 
@@ -116,8 +114,8 @@ export class EmbeddedLinuxCodePipelineBaseImageStack extends cdk.Stack {
       actionName: "Source",
       trigger: codepipeline_actions.S3Trigger.EVENTS,
       output: sourceActionOutputArtifact,
-      bucket: props.sourceRepositoryBucket,
-      bucketKey: `${sourceRepoPath}/${sourceRepoAsset.s3ObjectKey}`,
+      bucket: props.pipelineSourceBucket,
+      bucketKey: `${props.pipelineSourcePrefix}/${sourceRepoAsset.s3ObjectKey}`,
     });
 
     /** Create our CodeCodePipeline Project. */
@@ -179,7 +177,7 @@ export class EmbeddedLinuxCodePipelineBaseImageStack extends cdk.Stack {
       this,
       "CodePipelineBuildBaseImageCodePipeline",
       {
-        artifactBucket: props.artifactBucket,
+        artifactBucket: props.pipelineArtifactBucket,
         pipelineName: `${this.ecrRepositoryImageTag}`,
         pipelineType: codepipeline.PipelineType.V1,
         stages: [
@@ -223,9 +221,8 @@ export class EmbeddedLinuxCodePipelineBaseImageStack extends cdk.Stack {
       description: "The AWS CLI command to check if the ECR Image was pushed",
     });
 
-    // Add stack output for the source-repo bucket uri for this pipeline
-    new cdk.CfnOutput(this, "BuildSource", {
-      value: `s3://${props.sourceRepositoryBucket.bucketName}/${sourceRepoPath}/${sourceRepoAsset.s3ObjectKey}`,
+    new cdk.CfnOutput(this, "SourceURI", {
+      value: `s3://${props.pipelineSourceBucket.bucketName}/${props.pipelineSourcePrefix}/${sourceRepoAsset.s3ObjectKey}`,
       description: "The source-repo bucket uri for this pipeline.",
     });
   }

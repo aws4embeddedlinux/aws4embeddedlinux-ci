@@ -6,26 +6,37 @@ import { DEFAULT_ENV } from "./util";
 import { PipelineResourcesStack } from "../lib";
 
 function addNagSuppressions(stack: cdk.Stack) {
-  NagSuppressions.addResourceSuppressionsByPath(
-    stack,
-    `/${stack.stackName}/VMImportRole/Resource`,
-    [
-      {
-        id: "AwsSolutions-IAM5",
-        reason: "Read permissions needed on bucket.",
-        appliesTo: [
-          {
-            regex:
-              "/Resource::<PipelineResourcesOutputVMImportBucket410130C7.Arn>/\\*$/g",
-          },
-          {
-            regex: `/Resource::arn:aws:ec2:${DEFAULT_ENV.region}::snapshot/\\*$/g`,
-          },
-          { regex: "/Resource::\\*$/g" },
-        ],
-      },
-    ],
-  );
+  // NagSuppressions.addResourceSuppressionsByPath(
+  //   stack,
+  //   `/${stack.stackName}/VMImportRole/Resource`,
+  //   [
+  //     {
+  //       id: "AwsSolutions-IAM5",
+  //       reason: "Read permissions needed on bucket.",
+  //       appliesTo: [
+  //         {
+  //           regex:
+  //             "/Resource::<PipelineResourcesOutputVMImportBucket410130C7.Arn>/\\*$/g",
+  //         }
+  //       ],
+  //     },
+  //   ],
+  // );
+  // NagSuppressions.addResourceSuppressionsByPath(
+  //   stack,
+  //   `/${stack.stackName}/EmbeddedLinuxCodePipelineVMImportRole/Resource`,
+  //   [
+  //     {
+  //       id: "AwsSolutions-IAM5",
+  //       reason: "Wildcard permissions needed on snapshot.",
+  //       appliesTo: [
+  //         {
+  //           regex: `/Resource::arn:aws:ec2:${DEFAULT_ENV.region}::snapshot/\\*$/g`,
+  //         }
+  //       ],
+  //     },
+  //   ],
+  // );
 }
 
 describe("PipelineResourcesStack cdk-nag AwsSolutions Pack", () => {

@@ -3,7 +3,7 @@ import * as assertions from "aws-cdk-lib/assertions";
 import {
   PipelineResourcesProps,
   PipelineResourcesStack,
-  ProjectKind,
+  ProjectType,
 } from "../lib";
 import {
   EmbeddedLinuxCodePipelineBaseImageProps,
@@ -43,11 +43,12 @@ describe("EmbeddedLinuxCodePipelineStack", () => {
     const embeddedLinuxCodePipelineBaseImageProps: EmbeddedLinuxCodePipelineBaseImageProps =
       {
         env: DEFAULT_ENV,
-        sourceBucket: pipelineResourcesStack.sourceBucket,
+        pipelineSourceBucket: pipelineResourcesStack.pipelineSourceBucket,
+        pipelineArtifactBucket: pipelineResourcesStack.pipelineArtifactBucket,
         ecrRepository: pipelineResourcesStack.ecrRepository,
-        artifactBucket: pipelineResourcesStack.artifactBucket,
         encryptionKey: pipelineResourcesStack.encryptionKey,
       };
+
     embeddedLinuxCodePipelineBaseImageStack =
       new EmbeddedLinuxCodePipelineBaseImageStack(
         app,
@@ -60,12 +61,12 @@ describe("EmbeddedLinuxCodePipelineStack", () => {
       ecrRepository: embeddedLinuxCodePipelineBaseImageStack.ecrRepository,
       ecrRepositoryImageTag:
         embeddedLinuxCodePipelineBaseImageStack.ecrRepositoryImageTag,
-      sourceBucket: pipelineResourcesStack.sourceBucket,
-      artifactBucket: pipelineResourcesStack.artifactBucket,
-      outputBucket: pipelineResourcesStack.outputBucket,
-      projectKind: ProjectKind.Poky,
+      pipelineSourceBucket: pipelineResourcesStack.pipelineSourceBucket,
+      pipelineArtifactBucket: pipelineResourcesStack.pipelineArtifactBucket,
+      pipelineOutputBucket: pipelineResourcesStack.pipelineOutputBucket,
+      projectType: ProjectType.Poky,
       vpc: pipelineResourcesStack.vpc,
-      artifactOutputObjectKey: "pipeline-poky",
+      pipelineArtifactPrefix: `${ProjectType.Poky}`,
       encryptionKey: pipelineResourcesStack.encryptionKey,
     };
 

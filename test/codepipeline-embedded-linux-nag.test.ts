@@ -7,9 +7,8 @@ import * as kms from "aws-cdk-lib/aws-kms";
 import { Annotations, Match } from "aws-cdk-lib/assertions";
 import { AwsSolutionsChecks, NagSuppressions } from "cdk-nag";
 import { EmbeddedLinuxCodePipelineStack } from "../lib/codepipeline-embedded-linux";
-import { ProjectKind } from "../lib";
+import { ProjectType } from "../lib";
 import { DEFAULT_ENV } from "./util";
-import { VMImportBucket } from "../lib/vm-import-bucket";
 
 function addNagSuppressions(stack: cdk.Stack) {
   NagSuppressions.addStackSuppressions(stack, [
@@ -131,6 +130,30 @@ function addNagSuppressions(stack: cdk.Stack) {
       },
     ],
   );
+  NagSuppressions.addResourceSuppressionsByPath(
+    stack,
+    `/${stack.stackName}/EmbeddedLinuxCodePipelineVMImportRole/Resource`,
+    [
+      {
+        id: "AwsSolutions-IAM5",
+        reason: "Wildcard permissions needed on snapshots, bucket content.",
+        appliesTo: [
+          {
+            regex: `/Resource::arn:aws:ec2:${DEFAULT_ENV.region}::snapshot/\\*$/g`,
+          },
+          {
+            regex: `/Resource::<OutputBucket7114EB27.Arn>/\\*$/g`,
+          },
+          {
+            regex: `/Resource::BaseStack:ExportsOutputFnGetAttOutputBucket7114EB27Arn67D5716D/\\*$/g`,
+          },
+          {
+            regex: `/Resource::\\*$/g`,
+          }
+        ],
+      },
+    ],
+  );
 }
 
 describe("EmbeddedLinuxCodePipelineStack cdk-nag AwsSolutions Pack", () => {
@@ -146,31 +169,30 @@ describe("EmbeddedLinuxCodePipelineStack cdk-nag AwsSolutions Pack", () => {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       enableKeyRotation: true,
     });
-    const sourceBucket = new s3.Bucket(baseStack, "SourceBucket", {
-      versioned: true,
-    });
-    const artifactBucket = new s3.Bucket(baseStack, "ArtifactBucket", {});
-    // const outputBucket = new s3.Bucket(baseStack, 'OutputtBucket', {});
-    const outputBucketVMImportBucket = new VMImportBucket(
+    const pipelineSourceBucket = new s3.Bucket(
       baseStack,
-      "OutputtBucketVMImportBucket",
+      "pipelineSourceBucket",
       {
-        encryptionKey: encryptionKey,
+        versioned: true,
       },
     );
+    const pipelineArtifactBucket = new s3.Bucket(baseStack, "ArtifactBucket", {});
+    const pipelineOutputBucket = new s3.Bucket(baseStack, "OutputBucket", {
+      encryptionKey: encryptionKey,
+    });
     const ecrRepository = new ecr.Repository(baseStack, "EcrRepository", {});
     const vpc = new ec2.Vpc(baseStack, "Vpc", {});
 
     stack = new EmbeddedLinuxCodePipelineStack(app, "MyTestStack", {
       env: DEFAULT_ENV,
-      sourceBucket: sourceBucket,
+      pipelineSourceBucket: pipelineSourceBucket,
+      pipelineArtifactBucket: pipelineArtifactBucket,
+      pipelineOutputBucket: pipelineOutputBucket,
       ecrRepository: ecrRepository,
       ecrRepositoryImageTag: "ubuntu_22_04",
-      artifactBucket: artifactBucket,
-      outputBucket: outputBucketVMImportBucket,
-      projectKind: ProjectKind.PokyAmi,
+      projectType: ProjectType.PokyAmi,
       vpc: vpc,
-      artifactOutputObjectKey: `${ProjectKind.PokyAmi}`,
+      pipelineArtifactPrefix: `${ProjectType.PokyAmi}`,
       encryptionKey: encryptionKey,
     });
 

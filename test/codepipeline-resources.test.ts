@@ -24,8 +24,7 @@ describe("PipelineResourcesStack", () => {
     `artifact`,
     `source`,
     `output`,
-    `output-vm`,
-    `access-logs`,
+    `logs`,
   ];
   it.each(bucketSuffixes)(`Has S3 Bucket`, (bucketSuffix) => {
     const bucketName =

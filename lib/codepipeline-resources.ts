@@ -60,7 +60,7 @@ export class PipelineResourcesStack extends cdk.Stack {
       : `${props.resource_prefix}-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}-output`.toLowerCase();
     const loggingBucketName = props.loggingBucketName
       ? props.loggingBucketName
-      : `${props.resource_prefix}-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}-access-logs`.toLowerCase();
+      : `${props.resource_prefix}-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}-logs`.toLowerCase();
 
     // We will create a VPC with 3 Private and Public subnets for AWS
     // Resources that have network interfaces (e.g. Connecting and EFS

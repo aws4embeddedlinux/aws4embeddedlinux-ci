@@ -17,31 +17,38 @@ import * as ecr from "aws-cdk-lib/aws-ecr";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as logs from "aws-cdk-lib/aws-logs";
 import * as kms from "aws-cdk-lib/aws-kms";
-import { VMImportBucket } from "./vm-import-bucket";
-import { ProjectKind } from ".";
+import { ProjectType } from ".";
 
 /**
  * Properties to allow customizing the build.
  */
 export interface EmbeddedLinuxCodePipelineProps extends cdk.StackProps {
-  /** The source bucket */
-  readonly sourceBucket: s3.IBucket;
+  /** The pipeline source bucket */
+  readonly pipelineSourceBucket: s3.IBucket;
+  /** The pipeline source prefix */
+  pipelineSourcePrefix?: string;
+  /** The pipeline artifact bucket to use */
+  readonly pipelineArtifactBucket: s3.Bucket;
+  /** The pipeline artifact bucket prefix to use */
+  pipelineArtifactPrefix?: string;
+  /** The pipeline output bucket to use */
+  readonly pipelineOutputBucket: s3.Bucket;
+  /** The pipeline output bucket prefix to use */
+  pipelineOutputPrefix?: string;
   /** ECR Repository where the Build Host Image resides. */
   readonly ecrRepository: ecr.IRepository;
   /** Tag for the Build Host Image */
   readonly ecrRepositoryImageTag: string;
-  /** Artifact bucket to use */
-  readonly artifactBucket: s3.Bucket;
-  /** Output bucket to use */
-  readonly outputBucket: s3.Bucket | VMImportBucket;
   /** The type of project being built.  */
-  readonly projectKind: ProjectKind;
+  readonly projectType: ProjectType;
   /** VPC where the networking setup resides. */
   readonly vpc: ec2.IVpc;
-  /** Prefix for S3 object within bucket */
-  readonly artifactOutputObjectKey?: string;
   /** Additional policy statements to add to the build project. */
   readonly buildPolicyAdditions?: iam.PolicyStatement[];
+  /** Additional build environment variables to the build project. */
+  readonly environmentVariables?: {
+    string: codebuild.BuildEnvironmentVariable;
+  };
   /** The encryption key use across*/
   readonly encryptionKey: kms.Key;
 }
@@ -59,16 +66,15 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
   ) {
     super(scope, id, props);
 
-    if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
-      if (!(props.outputBucket instanceof VMImportBucket)) {
-        throw "The 'outputBucket' property provided in [EmbeddedLinuxCodePipelineProps] is not of type [VMImportBucket] when using prokect kind [PokyAmi]";
-      }
+    if (!props.pipelineSourcePrefix) {
+      props.pipelineSourcePrefix = `${props.projectType}`;
     }
-
-    const sourceBase: string = `${props.projectKind}`;
-    const sourceFileName: string = `source-${sourceBase}.zip`;
-    const sourceLocalPath: string = `source-zip/${sourceBase}`;
-    const sourceDestinationKeyPrefix: string = `source/${sourceBase}`;
+    if (!props.pipelineArtifactPrefix) {
+      props.pipelineArtifactPrefix = `${props.projectType}`;
+    }
+    if (!props.pipelineOutputPrefix) {
+      props.pipelineOutputPrefix = `${props.projectType}`;
+    }
 
     /** Set up networking access and EFS FileSystems. */
     const projectSg = new ec2.SecurityGroup(
@@ -96,7 +102,7 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
     efsFileSystem.connections.allowFrom(projectSg, ec2.Port.tcp(2049));
 
     // create the policy & role for the source bucket deployment
-    const sourceBucketDeploymentPolicy = new iam.PolicyDocument({
+    const pipelineSourceBucketDeploymentPolicy = new iam.PolicyDocument({
       statements: [
         new iam.PolicyStatement({
           actions: [
@@ -105,68 +111,58 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
             "logs:PutLogEvents",
           ],
           resources: [
-            `arn:aws:logs:${cdk.Stack.of(this).region}:${cdk.Stack.of(this).account}:log-group:/aws/lambda/EmbeddedLinuxCodePipeline-CustomCDKBucketDeployment-${props.projectKind}*`,
+            `arn:aws:logs:${cdk.Stack.of(this).region}:${cdk.Stack.of(this).account}:log-group:/aws/lambda/EmbeddedLinuxCodePipelineBaseImage-CustomCDKBucketDeployment*`,
           ],
         }),
       ],
     });
-    const sourceBucketDeploymentRole = new iam.Role(
+    const pipelineSourceBucketDeploymentRole = new iam.Role(
       this,
       "EmbeddedLinuxCodePipelineBucketDeploymentRole",
       {
         assumedBy: new iam.ServicePrincipal("lambda.amazonaws.com"),
-        inlinePolicies: { sourceBucketDeploymentPolicy },
+        inlinePolicies: { pipelineSourceBucketDeploymentPolicy },
       },
     );
 
-    // deploy the source to the bucket
+    // archive and upload the source-repo folder into CDK owned bucket
+    const sourceRepoAsset: Asset = new Asset(
+      this,
+      "EmbeddedLinuxCodePipelineBucketDeploymentAsset",
+      {
+        path: path.join(__dirname, "..", "source-repo", props.projectType),
+      },
+    );
+
+    // deploy the sourceRepo to the bucket
     const bucketDeployment = new BucketDeployment(
       this,
       "EmbeddedLinuxCodePipelineBucketDeployment",
       {
-        // Note: Run `npm run zip-data` before deploying this stack!
-        sources: [Source.asset(path.join(__dirname, "..", sourceLocalPath))],
-        destinationBucket: props.sourceBucket,
-        role: sourceBucketDeploymentRole,
-        extract: true,
-        destinationKeyPrefix: sourceDestinationKeyPrefix,
+        sources: [
+          Source.bucket(sourceRepoAsset.bucket, sourceRepoAsset.s3ObjectKey),
+        ],
+        destinationBucket: props.pipelineSourceBucket,
+        role: pipelineSourceBucketDeploymentRole,
+        extract: false,
+        destinationKeyPrefix: props.pipelineSourcePrefix,
       },
     );
 
-    let environmentVariables = {};
-    let scriptAsset!: Asset;
-
-    if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
-      scriptAsset = new Asset(this, "CreateAMIScript", {
-        path: path.join(__dirname, "../scripts/create-ec2-ami.sh"),
-      });
-
-      environmentVariables = {
-        IMPORT_BUCKET: {
-          type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
-          value: props.outputBucket.bucketName,
-        },
-        ROLE_NAME: {
-          type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
-          value: (props.outputBucket as VMImportBucket).roleName,
-        },
-        SCRIPT_URL: {
-          type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
-          value: scriptAsset.s3ObjectUrl,
-        },
-      };
-    }
-
     /** Create our CodeCodePipeline Actions. */
-    const sourceOutput = new codepipeline.Artifact("Source");
+    const sourceActionOutputArtifact = new codepipeline.Artifact("Source");
     const sourceAction = new codepipeline_actions.S3SourceAction({
       actionName: "Source",
       trigger: codepipeline_actions.S3Trigger.EVENTS,
-      output: sourceOutput,
-      bucket: props.sourceBucket,
-      bucketKey: `${sourceDestinationKeyPrefix}/${sourceFileName}`,
+      output: sourceActionOutputArtifact,
+      bucket: props.pipelineSourceBucket,
+      bucketKey: `${props.pipelineSourcePrefix}/${sourceRepoAsset.s3ObjectKey}`,
     });
 
+    // adding the proper roles and policies in case the pipeline will export the image as an AMI
+    const vmImportRole = this.createVMImportRole(id, props);
+
+    /** Create our CodeCodePipeline Project. */
     const project = new codebuild.PipelineProject(
       this,
       "EmbeddedLinuxCodePipelineProject",
@@ -183,7 +179,7 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
           ),
           privileged: true,
           environmentVariables: {
-            ...environmentVariables,
+            ...props.environmentVariables,
             AWS_ACCOUNT_ID: {
               type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
               value: cdk.Stack.of(this).account,
@@ -191,6 +187,18 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
             AWS_DEFAULT_REGION: {
               type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
               value: cdk.Stack.of(this).region,
+            },
+            PIPELINE_OUTPUT_BUCKET: {
+              type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
+              value: props.pipelineOutputBucket.bucketName,
+            },
+            PIPELINE_OUTPUT_BUCKET_PREFIX: {
+              type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
+              value: props.pipelineOutputPrefix,
+            },
+            VM_IMPORT_ROLE: {
+              type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
+              value: vmImportRole.roleName,
             },
           },
         },
@@ -226,57 +234,25 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
       props.buildPolicyAdditions.map((p) => project.addToRolePolicy(p));
     }
 
-    if (props.projectKind && props.projectKind == ProjectKind.PokyAmi) {
-      props.outputBucket.grantReadWrite(project);
-      project.addToRolePolicy(this.addVMExportPolicy());
+    // adding the proper roles and policies in case the pipeline will export the image as an AMI
+    props.pipelineOutputBucket.grantReadWrite(project);
+    this.addAMIExportPolicy(project, props);
 
-      project.addToRolePolicy(
-        new iam.PolicyStatement({
-          actions: ["ec2:ImportSnapshot"],
-          resources: [
-            `arn:aws:ec2:${cdk.Stack.of(this).region}:${cdk.Stack.of(this).account}:import-snapshot-task/*`,
-            `arn:aws:ec2:${cdk.Stack.of(this).region}::snapshot/*`,
-          ],
-        }),
-      );
-      //Permissions for BackUp to S3
-      project.addToRolePolicy(
-        this.addAMIS3BackupPolicy(props.outputBucket.bucketArn),
-      );
-      project.addToRolePolicy(
-        this.addAMIEC2EBSBackupPolicy(cdk.Stack.of(this).region),
-      );
-      project.addToRolePolicy(
-        this.addAMIEBSBackupPolicy(cdk.Stack.of(this).region),
-      );
-      project.addToRolePolicy(this.addAMIBackupPolicy());
-      scriptAsset.grantRead(project);
-    }
-
-    const buildOutput = new codepipeline.Artifact();
+    const buildActionOutputArtifact = new codepipeline.Artifact();
     const buildAction = new codepipeline_actions.CodeBuildAction({
-      input: sourceOutput,
+      input: sourceActionOutputArtifact,
       actionName: "Build",
-      outputs: [buildOutput],
+      outputs: [buildActionOutputArtifact],
       project,
     });
 
-    let artifactAction: codepipeline_actions.S3DeployAction;
-
-    if (props.artifactOutputObjectKey) {
-      artifactAction = new codepipeline_actions.S3DeployAction({
+    const artifactAction: codepipeline_actions.S3DeployAction =
+      new codepipeline_actions.S3DeployAction({
         actionName: "Artifact",
-        input: buildOutput,
-        bucket: props.outputBucket,
-        objectKey: props.artifactOutputObjectKey,
+        input: buildActionOutputArtifact,
+        bucket: props.pipelineArtifactBucket,
+        objectKey: `${props.pipelineArtifactPrefix}/${sourceRepoAsset.s3ObjectKey}`,
       });
-    } else {
-      artifactAction = new codepipeline_actions.S3DeployAction({
-        actionName: "Artifact",
-        input: buildOutput,
-        bucket: props.outputBucket,
-      });
-    }
 
     /** Here we create the logic to check for presence of ECR image on the CodeCodePipeline automatic triggering upon resource creation,
      * and stop the execution if the image does not exist.  */
@@ -287,26 +263,26 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
         runtime: lambda.Runtime.PYTHON_3_10,
         handler: "index.handler",
         code: lambda.Code.fromInline(`
-import boto3
-import json
+    import boto3
+    import json
 
-ecr_client = boto3.client('ecr')
-codepipeline_client = boto3.client('codepipeline')
+    ecr_client = boto3.client('ecr')
+    codepipeline_client = boto3.client('codepipeline')
 
-def handler(event, context):
-  print("Received event: " + json.dumps(event, indent=2))
-  response = ecr_client.describe_images(repositoryName='${props.ecrRepository.repositoryName}', filter={'tagStatus': 'TAGGED'})
-  for i in response['imageDetails']:
-    if '${props.ecrRepositoryImageTag}' in i['ecrRepositoryImageTags']:
-      break
-  else:
-    print('OS image not found. Stopping execution.')
-    response = codepipeline_client.stop_pipeline_execution(
-    pipelineName=event['detail']['pipeline'],
-    pipelineExecutionId=event['detail']['execution-id'],
-    abandon=True,
-    reason='OS image not found in ECR repository. Stopping pipeline until image is present.')
-    `),
+    def handler(event, context):
+      print("Received event: " + json.dumps(event, indent=2))
+      response = ecr_client.describe_images(repositoryName='${props.ecrRepository.repositoryName}', filter={'tagStatus': 'TAGGED'})
+      for i in response['imageDetails']:
+        if '${props.ecrRepositoryImageTag}' in i['ecrRepositoryImageTags']:
+          break
+      else:
+        print('OS image not found. Stopping execution.')
+        response = codepipeline_client.stop_pipeline_execution(
+        pipelineName=event['detail']['pipeline'],
+        pipelineExecutionId=event['detail']['execution-id'],
+        abandon=True,
+        reason='OS image not found in ECR repository. Stopping pipeline until image is present.')
+        `),
         logRetention: logs.RetentionDays.ONE_YEAR,
       },
     );
@@ -337,7 +313,7 @@ def handler(event, context):
       "EmbeddedLinuxCodePipeline",
       {
         pipelineName: `${id}`,
-        artifactBucket: props.artifactBucket,
+        artifactBucket: props.pipelineArtifactBucket,
         restartExecutionOnUpdate: true,
         pipelineType: codepipeline.PipelineType.V1,
         stages: [
@@ -384,15 +360,104 @@ def handler(event, context):
       targets: [pipelineTarget],
     });
 
-    new cdk.CfnOutput(this, "BuildSource", {
-      value: `s3://${props.sourceBucket.bucketName}/${sourceDestinationKeyPrefix}/${sourceFileName}`,
-      description: "The source bucket key of this pipeline.",
+    // Add stack output for the source-repo bucket uri for this pipeline
+    new cdk.CfnOutput(this, "SourceURI", {
+      value: `s3://${props.pipelineSourceBucket.bucketName}/${props.pipelineSourcePrefix}/${sourceRepoAsset.s3ObjectKey}`,
+      description: "The source bucket uri for this pipeline.",
     });
 
-    new cdk.CfnOutput(this, "BuildOutput", {
-      value: props.outputBucket.bucketName,
+    new cdk.CfnOutput(this, "OutputURI", {
+      value: `s3://${props.pipelineOutputBucket.bucketName}/${props.pipelineOutputPrefix}`,
       description: "The output bucket of this pipeline.",
     });
+
+    new cdk.CfnOutput(this, "ArtifactURI", {
+      value: `s3://${props.pipelineArtifactBucket.bucketName}/${props.pipelineArtifactPrefix}/${sourceRepoAsset.s3ObjectKey}`,
+      description: "The artifact bucket of this pipeline.",
+    });
+  }
+
+  private createVMImportRole(
+    id: string,
+    props: EmbeddedLinuxCodePipelineProps,
+  ) {
+    // Adapted from meta-aws-ewaol and
+    // https://docs.aws.amazon.com/vm-import/latest/userguide/required-permissions.html
+    const vmImportPolicy = new iam.PolicyDocument({
+      statements: [
+        new iam.PolicyStatement({
+          actions: ["s3:GetBucketLocation", "s3:GetObject", "s3:ListBucket"],
+          resources: [
+            props.pipelineOutputBucket.bucketArn,
+            `${props.pipelineOutputBucket.bucketArn}/*`,
+          ],
+        }),
+        new iam.PolicyStatement({
+          actions: ["ec2:CreateTags", "ec2:DescribeTags"],
+          resources: ["*"],
+          conditions: {
+            StringEquals: {
+              "ec2:ResourceTag/CreatedBy": [id],
+            },
+          },
+        }),
+        new iam.PolicyStatement({
+          actions: ["ec2:CopySnapshot"],
+          resources: [`arn:aws:ec2:${cdk.Stack.of(this).region}::snapshot/*`],
+        }),
+        new iam.PolicyStatement({
+          actions: ["ec2:DescribeSnapshots"],
+          resources: ["*"],
+        }),
+        new iam.PolicyStatement({
+          actions: [
+            "kms:CreateGrant",
+            "kms:Decrypt",
+            "kms:DescribeKey",
+            "kms:GenerateDataKeyWithoutPlaintext",
+          ],
+          resources: [props.encryptionKey.keyArn],
+        }),
+      ],
+    });
+
+    const vmImportRole = new iam.Role(
+      this,
+      "EmbeddedLinuxCodePipelineVMImportRole",
+      {
+        roleName: `${id}-vm-mport`,
+        assumedBy: new iam.ServicePrincipal("vmie.amazonaws.com"),
+        externalIds: ["vmimport"],
+        inlinePolicies: { vmImportPolicy },
+      },
+    );
+    return vmImportRole;
+  }
+  private addAMIExportPolicy(
+    project: codebuild.PipelineProject,
+    props: EmbeddedLinuxCodePipelineProps,
+  ) {
+    project.addToRolePolicy(this.addVMExportPolicy());
+    project.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["ec2:ImportSnapshot"],
+        resources: [
+          `arn:aws:ec2:${cdk.Stack.of(this).region}:${cdk.Stack.of(this).account}:import-snapshot-task/*`,
+          `arn:aws:ec2:${cdk.Stack.of(this).region}::snapshot/*`,
+        ],
+      }),
+    );
+    //Permissions for BackUp to S3
+    project.addToRolePolicy(
+      this.addAMIS3BackupPolicy(props.pipelineOutputBucket.bucketArn),
+    );
+    project.addToRolePolicy(
+      this.addAMIEC2EBSBackupPolicy(cdk.Stack.of(this).region),
+    );
+    project.addToRolePolicy(
+      this.addAMIEBSBackupPolicy(cdk.Stack.of(this).region),
+    );
+    project.addToRolePolicy(this.addAMIBackupPolicy());
   }
 
   private addVMExportPolicy(): iam.PolicyStatement {

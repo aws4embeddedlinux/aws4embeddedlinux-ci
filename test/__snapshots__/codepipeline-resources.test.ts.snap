@@ -3,47 +3,26 @@
 exports[`PipelineResourcesStack Snapshot 1`] = `
 {
   "Outputs": {
-    "OutputPipelineResourcesAccessLoggingBucket": {
-      "Description": "The access logging bucket.",
-      "Export": {
-        "Name": "accessLoggingBucket",
-      },
-      "Value": {
-        "Ref": "PipelineResourcesAccessLoggingBucket66A74BE5",
-      },
-    },
-    "OutputPipelineResourcesArtifactBucket": {
+    "ArtifactBucket": {
       "Description": "The artifact bucket.",
-      "Export": {
-        "Name": "artifactBucket",
-      },
       "Value": {
         "Ref": "PipelineResourcesArtifactBucketFF61EB98",
       },
     },
-    "OutputPipelineResourcesOutputBucket": {
-      "Description": "The output bucket.",
-      "Export": {
-        "Name": "outputBucket",
+    "LoggingBucket": {
+      "Description": "The access logging bucket.",
+      "Value": {
+        "Ref": "PipelineResourcesLoggingBucketD957F175",
       },
+    },
+    "OutputBucket": {
+      "Description": "The output bucket.",
       "Value": {
         "Ref": "PipelineResourcesOutputBucketA2144F25",
       },
     },
-    "OutputPipelineResourcesOutputVMImportBuckett": {
-      "Description": "The output VM import bucket.",
-      "Export": {
-        "Name": "outputVMImportBucket",
-      },
-      "Value": {
-        "Ref": "PipelineResourcesOutputVMImportBucket410130C7",
-      },
-    },
-    "OutputPipelineResourcesSourceBucket": {
+    "SourceBucket": {
       "Description": "The source bucket.",
-      "Export": {
-        "Name": "sourceBucket",
-      },
       "Value": {
         "Ref": "PipelineResourcesSourceBucket1FA488F5",
       },
@@ -72,7 +51,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
             [
               "Lambda function for auto-deleting objects in ",
               {
-                "Ref": "PipelineResourcesAccessLoggingBucket66A74BE5",
+                "Ref": "PipelineResourcesLoggingBucketD957F175",
               },
               " S3 bucket.",
             ],
@@ -112,151 +91,6 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         ],
       },
       "Type": "AWS::IAM::Role",
-    },
-    "PipelineResourcesAccessLoggingBucket66A74BE5": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "AccessControl": "LogDeliveryWrite",
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": [
-            {
-              "ServerSideEncryptionByDefault": {
-                "KMSMasterKeyID": {
-                  "Fn::GetAtt": [
-                    "PipelineResourcesArtifactKey368D3018",
-                    "Arn",
-                  ],
-                },
-                "SSEAlgorithm": "aws:kms",
-              },
-            },
-          ],
-        },
-        "BucketName": "test-111111111111-eu-central-1-access-logs",
-        "OwnershipControls": {
-          "Rules": [
-            {
-              "ObjectOwnership": "ObjectWriter",
-            },
-          ],
-        },
-        "Tags": [
-          {
-            "Key": "aws-cdk:auto-delete-objects",
-            "Value": "true",
-          },
-        ],
-        "VersioningConfiguration": {
-          "Status": "Enabled",
-        },
-      },
-      "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "PipelineResourcesAccessLoggingBucketAutoDeleteObjectsCustomResource32A88A27": {
-      "DeletionPolicy": "Delete",
-      "DependsOn": [
-        "PipelineResourcesAccessLoggingBucketPolicyF9B77CD5",
-      ],
-      "Properties": {
-        "BucketName": {
-          "Ref": "PipelineResourcesAccessLoggingBucket66A74BE5",
-        },
-        "ServiceToken": {
-          "Fn::GetAtt": [
-            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "Custom::S3AutoDeleteObjects",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "PipelineResourcesAccessLoggingBucketPolicyF9B77CD5": {
-      "Properties": {
-        "Bucket": {
-          "Ref": "PipelineResourcesAccessLoggingBucket66A74BE5",
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:*",
-              "Condition": {
-                "Bool": {
-                  "aws:SecureTransport": "false",
-                },
-              },
-              "Effect": "Deny",
-              "Principal": {
-                "AWS": "*",
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "PipelineResourcesAccessLoggingBucket66A74BE5",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "PipelineResourcesAccessLoggingBucket66A74BE5",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-            {
-              "Action": [
-                "s3:PutBucketPolicy",
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-              ],
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::GetAtt": [
-                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
-                    "Arn",
-                  ],
-                },
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "PipelineResourcesAccessLoggingBucket66A74BE5",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "PipelineResourcesAccessLoggingBucket66A74BE5",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::S3::BucketPolicy",
     },
     "PipelineResourcesArtifactBucketAutoDeleteObjectsCustomResource92CEB6DD": {
       "DeletionPolicy": "Delete",
@@ -298,7 +132,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         "BucketName": "test-111111111111-eu-central-1-artifact",
         "LoggingConfiguration": {
           "DestinationBucketName": {
-            "Ref": "PipelineResourcesAccessLoggingBucket66A74BE5",
+            "Ref": "PipelineResourcesLoggingBucketD957F175",
           },
           "LogFilePrefix": "artifact-bucket",
         },
@@ -455,6 +289,151 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
       "Type": "AWS::ECR::Repository",
       "UpdateReplacePolicy": "Delete",
     },
+    "PipelineResourcesLoggingBucketAutoDeleteObjectsCustomResource17381FC7": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "PipelineResourcesLoggingBucketPolicy520659AE",
+      ],
+      "Properties": {
+        "BucketName": {
+          "Ref": "PipelineResourcesLoggingBucketD957F175",
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineResourcesLoggingBucketD957F175": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "AccessControl": "LogDeliveryWrite",
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "KMSMasterKeyID": {
+                  "Fn::GetAtt": [
+                    "PipelineResourcesArtifactKey368D3018",
+                    "Arn",
+                  ],
+                },
+                "SSEAlgorithm": "aws:kms",
+              },
+            },
+          ],
+        },
+        "BucketName": "test-111111111111-eu-central-1-logs",
+        "OwnershipControls": {
+          "Rules": [
+            {
+              "ObjectOwnership": "ObjectWriter",
+            },
+          ],
+        },
+        "Tags": [
+          {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
+        "VersioningConfiguration": {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineResourcesLoggingBucketPolicy520659AE": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "PipelineResourcesLoggingBucketD957F175",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineResourcesLoggingBucketD957F175",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineResourcesLoggingBucketD957F175",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:PutBucketPolicy",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineResourcesLoggingBucketD957F175",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineResourcesLoggingBucketD957F175",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
     "PipelineResourcesOutputBucketA2144F25": {
       "DeletionPolicy": "Delete",
       "Properties": {
@@ -476,7 +455,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         "BucketName": "test-111111111111-eu-central-1-output",
         "LoggingConfiguration": {
           "DestinationBucketName": {
-            "Ref": "PipelineResourcesAccessLoggingBucket66A74BE5",
+            "Ref": "PipelineResourcesLoggingBucketD957F175",
           },
           "LogFilePrefix": "output-bucket",
         },
@@ -598,149 +577,6 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
       },
       "Type": "AWS::S3::BucketPolicy",
     },
-    "PipelineResourcesOutputVMImportBucket410130C7": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": [
-            {
-              "ServerSideEncryptionByDefault": {
-                "KMSMasterKeyID": {
-                  "Fn::GetAtt": [
-                    "PipelineResourcesArtifactKey368D3018",
-                    "Arn",
-                  ],
-                },
-                "SSEAlgorithm": "aws:kms",
-              },
-            },
-          ],
-        },
-        "BucketName": "test-111111111111-eu-central-1-output-vm",
-        "LoggingConfiguration": {
-          "DestinationBucketName": {
-            "Ref": "PipelineResourcesAccessLoggingBucket66A74BE5",
-          },
-          "LogFilePrefix": "output-vm-import-bucket",
-        },
-        "Tags": [
-          {
-            "Key": "aws-cdk:auto-delete-objects",
-            "Value": "true",
-          },
-        ],
-        "VersioningConfiguration": {
-          "Status": "Enabled",
-        },
-      },
-      "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "PipelineResourcesOutputVMImportBucketAutoDeleteObjectsCustomResource630CC98A": {
-      "DeletionPolicy": "Delete",
-      "DependsOn": [
-        "PipelineResourcesOutputVMImportBucketPolicy8034D299",
-      ],
-      "Properties": {
-        "BucketName": {
-          "Ref": "PipelineResourcesOutputVMImportBucket410130C7",
-        },
-        "ServiceToken": {
-          "Fn::GetAtt": [
-            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "Custom::S3AutoDeleteObjects",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "PipelineResourcesOutputVMImportBucketPolicy8034D299": {
-      "Properties": {
-        "Bucket": {
-          "Ref": "PipelineResourcesOutputVMImportBucket410130C7",
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:*",
-              "Condition": {
-                "Bool": {
-                  "aws:SecureTransport": "false",
-                },
-              },
-              "Effect": "Deny",
-              "Principal": {
-                "AWS": "*",
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "PipelineResourcesOutputVMImportBucket410130C7",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "PipelineResourcesOutputVMImportBucket410130C7",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-            {
-              "Action": [
-                "s3:PutBucketPolicy",
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-              ],
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::GetAtt": [
-                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
-                    "Arn",
-                  ],
-                },
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "PipelineResourcesOutputVMImportBucket410130C7",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "PipelineResourcesOutputVMImportBucket410130C7",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::S3::BucketPolicy",
-    },
     "PipelineResourcesSourceBucket1FA488F5": {
       "DeletionPolicy": "Delete",
       "Properties": {
@@ -762,7 +598,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         "BucketName": "test-111111111111-eu-central-1-source",
         "LoggingConfiguration": {
           "DestinationBucketName": {
-            "Ref": "PipelineResourcesAccessLoggingBucket66A74BE5",
+            "Ref": "PipelineResourcesLoggingBucketD957F175",
           },
           "LogFilePrefix": "source-bucket",
         },
@@ -1507,108 +1343,6 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         },
       },
       "Type": "AWS::EC2::VPCGatewayAttachment",
-    },
-    "VMImportRoleAC246CAD": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Condition": {
-                "StringEquals": {
-                  "sts:ExternalId": "vmimport",
-                },
-              },
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "vmie.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Policies": [
-          {
-            "PolicyDocument": {
-              "Statement": [
-                {
-                  "Action": [
-                    "s3:GetBucketLocation",
-                    "s3:GetObject",
-                    "s3:ListBucket",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": [
-                    {
-                      "Fn::GetAtt": [
-                        "PipelineResourcesOutputVMImportBucket410130C7",
-                        "Arn",
-                      ],
-                    },
-                    {
-                      "Fn::Join": [
-                        "",
-                        [
-                          {
-                            "Fn::GetAtt": [
-                              "PipelineResourcesOutputVMImportBucket410130C7",
-                              "Arn",
-                            ],
-                          },
-                          "/*",
-                        ],
-                      ],
-                    },
-                  ],
-                },
-                {
-                  "Action": [
-                    "ec2:CreateTags",
-                    "ec2:DescribeTags",
-                  ],
-                  "Condition": {
-                    "StringEquals": {
-                      "ec2:ResourceTag/CreatedBy": [
-                        "aws4embeddedlinux-ci",
-                      ],
-                    },
-                  },
-                  "Effect": "Allow",
-                  "Resource": "*",
-                },
-                {
-                  "Action": "ec2:CopySnapshot",
-                  "Effect": "Allow",
-                  "Resource": "arn:aws:ec2:eu-central-1::snapshot/*",
-                },
-                {
-                  "Action": "ec2:DescribeSnapshots",
-                  "Effect": "Allow",
-                  "Resource": "*",
-                },
-                {
-                  "Action": [
-                    "kms:CreateGrant",
-                    "kms:Decrypt",
-                    "kms:DescribeKey",
-                    "kms:GenerateDataKeyWithoutPlaintext",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": {
-                    "Fn::GetAtt": [
-                      "PipelineResourcesArtifactKey368D3018",
-                      "Arn",
-                    ],
-                  },
-                },
-              ],
-              "Version": "2012-10-17",
-            },
-            "PolicyName": "importPolicy",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
     },
   },
   "Rules": {

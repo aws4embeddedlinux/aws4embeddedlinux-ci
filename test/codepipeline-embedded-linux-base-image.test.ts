@@ -34,9 +34,9 @@ describe("EmbeddedLinuxCodePipelineBaseImageStack", () => {
     const embeddedLinuxCodePipelineBaseImageProps: EmbeddedLinuxCodePipelineBaseImageProps =
       {
         env: DEFAULT_ENV,
-        sourceBucket: pipelineResourcesStack.sourceBucket,
+        pipelineSourceBucket: pipelineResourcesStack.pipelineSourceBucket,
+        pipelineArtifactBucket: pipelineResourcesStack.pipelineArtifactBucket,
         ecrRepository: pipelineResourcesStack.ecrRepository,
-        artifactBucket: pipelineResourcesStack.artifactBucket,
         encryptionKey: pipelineResourcesStack.encryptionKey,
       };
     stack = new EmbeddedLinuxCodePipelineBaseImageStack(
