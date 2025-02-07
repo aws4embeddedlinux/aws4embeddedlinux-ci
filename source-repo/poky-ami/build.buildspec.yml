@@ -63,7 +63,7 @@ phases:
       - find $TMP_DIR/tmp/deploy/images/aws-ec2-arm64/  -name *.testdata.json
       - find $TMP_DIR/tmp/deploy/images/aws-ec2-arm64/  -name *.vhd
       # - $CODEBUILD_SRC_DIR/create-ec2-ami.sh $PIPELINE_OUTPUT_BUCKET 16 core-image-minimal aws-ec2-arm64 $TMP_DIR/tmp $VM_IMPORT_ROLE .rootfs
-      - ./create-ec2-ami.sh $PIPELINE_OUTPUT_BUCKET 16 core-image-minimal aws-ec2-arm64 $TMP_DIR/tmp $VM_IMPORT_ROLE .rootfs
+      - $CODEBUILD_SRC_DIR/create-ec2-ami.sh $PIPELINE_OUTPUT_BUCKET 16 core-image-minimal aws-ec2-arm64 $TMP_DIR/tmp $VM_IMPORT_ROLE .rootfs
       # Prune old files in our EFS Mounts, that are not accessed by this or any build within 30 days
       - find /nfs/sstate-cache -atime +30 -type f -delete
       # only delete empty dirs
