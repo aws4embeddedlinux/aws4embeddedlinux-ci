@@ -57,7 +57,7 @@ import {
   EmbeddedLinuxCodePipelineStack,
   EmbeddedLinuxCodeBuildProjectStack,
   PipelineResourcesStack,
-  ProjectKind,
+  ProjectType,
 } from "aws4embeddedlinux-cdk-lib";
 ```
 
@@ -106,6 +106,7 @@ yarn link
 ```bash
 yarn install
 yarn link "aws4embeddedlinux-cdk-lib"
+yarn run build
 ```
 
 This will link through the system `node_modules` install. 
@@ -123,7 +124,7 @@ import {
   EmbeddedLinuxCodePipelineStack,
   EmbeddedLinuxCodeBuildProjectStack,
   PipelineResourcesStack,
-  ProjectKind,
+  ProjectType,
 } from "aws4embeddedlinux-cdk-lib";
 ```
 
@@ -153,11 +154,15 @@ The following steps detaisl at a high level, how you can enable the use of AWS S
 
   ```typescript
   import * as iam from "aws-cdk-lib/aws-iam";
-
-  const pipeline = new EmbeddedLinuxPipelineStack(app, "MyPokyPipeline", {
-    imageRepo: buildImageRepo.repository,
-    imageTag: ImageKind.Ubuntu22_04,
-    vpc: vpc.vpc,
+  const projectPipeline = new EmbeddedLinuxCodePipelineStack(app, "MyPokyPipeline", {
+    projectType: ProjectType.Poky,
+    ecrRepository: <ecrRepository>,
+    ecrRepositoryImageTag: <ecrRepositoryImageTag>,
+    pipelineSourceBucket: <SourceBucket>,
+    pipelineArtifactBucket: <ArtifactBucket>,
+    pipelineOutputBucket: <OutputBucket>,
+    vpc: <vpc>,
+    encryptionKey: <encryptionKey>,
     buildPolicyAdditions: [
       iam.PolicyStatement.fromJson({
         Effect: "Allow",
@@ -168,6 +173,7 @@ The following steps detaisl at a high level, how you can enable the use of AWS S
     ],
   });
   ```
+
 - The secret can then be used in the CodeBuild Project by adding it to the BuildSpec. 
 
   ```yaml
