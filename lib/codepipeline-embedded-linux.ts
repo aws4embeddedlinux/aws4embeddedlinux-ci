@@ -153,7 +153,7 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
     const sourceActionOutputArtifact = new codepipeline.Artifact("Source");
     const sourceAction = new codepipeline_actions.S3SourceAction({
       actionName: "Source",
-      trigger: codepipeline_actions.S3Trigger.EVENTS,
+      trigger: codepipeline_actions.S3Trigger.POLL,
       output: sourceActionOutputArtifact,
       bucket: props.pipelineSourceBucket,
       bucketKey: `${props.pipelineSourcePrefix}/${sourceRepoAsset.s3ObjectKey}`,
@@ -433,11 +433,25 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
     );
     return vmImportRole;
   }
+
   private addAMIExportPolicy(
     project: codebuild.PipelineProject,
     props: EmbeddedLinuxCodePipelineProps,
   ) {
-    project.addToRolePolicy(this.addVMExportPolicy());
+    project.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "ec2:CreateImage",
+          "ec2:CreateTags",
+          "ec2:DescribeImages",
+          "ec2:DescribeSnapshots",
+          "ec2:DescribeImportSnapshotTasks",
+          "ec2:DescribeTags",
+          "ec2:CancelImportTask",
+        ],
+        resources: ["*"],
+      })
+    );
     project.addToRolePolicy(
       new iam.PolicyStatement({
         actions: ["ec2:ImportSnapshot"],
@@ -448,35 +462,7 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
       }),
     );
     //Permissions for BackUp to S3
-    project.addToRolePolicy(
-      this.addAMIS3BackupPolicy(props.pipelineOutputBucket.bucketArn),
-    );
-    project.addToRolePolicy(
-      this.addAMIEC2EBSBackupPolicy(cdk.Stack.of(this).region),
-    );
-    project.addToRolePolicy(
-      this.addAMIEBSBackupPolicy(cdk.Stack.of(this).region),
-    );
-    project.addToRolePolicy(this.addAMIBackupPolicy());
-  }
-
-  private addVMExportPolicy(): iam.PolicyStatement {
-    return new iam.PolicyStatement({
-      actions: [
-        "ec2:CreateImage",
-        "ec2:CreateTags",
-        "ec2:DescribeImages",
-        "ec2:DescribeSnapshots",
-        "ec2:DescribeImportSnapshotTasks",
-        "ec2:DescribeTags",
-        "ec2:CancelImportTask",
-      ],
-      resources: ["*"],
-    });
-  }
-
-  private addAMIS3BackupPolicy(artifactBucketArn: string): iam.PolicyStatement {
-    return new iam.PolicyStatement({
+    project.addToRolePolicy(new iam.PolicyStatement({
       actions: [
         "s3:GetObject",
         "s3:ListBucket",
@@ -484,41 +470,45 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
         "s3:PutObjectTagging",
         "s3:AbortMultipartUpload",
       ],
-      resources: [artifactBucketArn, `${artifactBucketArn}/*`],
-    });
-  }
-
-  private addAMIEBSBackupPolicy(region: string): iam.PolicyStatement {
-    return new iam.PolicyStatement({
-      actions: [
-        "ebs:CompleteSnapshot",
-        "ebs:GetSnapshotBlock",
-        "ebs:ListChangedBlocks",
-        "ebs:ListSnapshotBlocks",
-        "ebs:PutSnapshotBlock",
-      ],
-      resources: [`arn:aws:ec2:${region}::snapshot/*`],
-    });
-  }
-
-  private addAMIBackupPolicy(): iam.PolicyStatement {
-    return new iam.PolicyStatement({
-      actions: ["ec2:DescribeStoreImageTasks", "ec2:GetEbsEncryptionByDefault"],
-      resources: ["*"],
-    });
-  }
-
-  private addAMIEC2EBSBackupPolicy(region: string): iam.PolicyStatement {
-    return new iam.PolicyStatement({
-      actions: [
-        "ec2:RegisterImage",
-        "ec2:DeregisterImage",
-        "ec2:CreateStoreImageTask",
-      ],
       resources: [
-        `arn:aws:ec2:${region}::image/*`,
-        `arn:aws:ec2:${region}::snapshot/snap-*`,
+        `${props.pipelineOutputBucket.bucketArn}`,
+        `${props.pipelineOutputBucket.bucketArn}/*`,
       ],
-    });
+    })
+    );
+    project.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "ec2:RegisterImage",
+          "ec2:DeregisterImage",
+          "ec2:CreateStoreImageTask",
+        ],
+        resources: [
+          `arn:aws:ec2:${cdk.Stack.of(this).region}::image/*`,
+          `arn:aws:ec2:${cdk.Stack.of(this).region}::snapshot/snap-*`,
+        ],
+      }),
+    );
+    project.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "ebs:CompleteSnapshot",
+          "ebs:GetSnapshotBlock",
+          "ebs:ListChangedBlocks",
+          "ebs:ListSnapshotBlocks",
+          "ebs:PutSnapshotBlock",
+        ],
+        resources: [`arn:aws:ec2:${cdk.Stack.of(this).region}::snapshot/*`],
+      })
+    );
+    project.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "ec2:DescribeStoreImageTasks",
+          "ec2:GetEbsEncryptionByDefault",
+        ],
+        resources: ["*"],
+      })
+    );
   }
 }
