@@ -39,7 +39,7 @@ export class PipelineResourcesStack extends cdk.Stack {
   /** The output bucket*/
   readonly pipelineOutputBucket: s3.Bucket;
   /** The Cloudwatch logging bucket*/
-  public readonly accessLoggingBucket?: s3.Bucket;
+  public readonly loggingBucket?: s3.Bucket;
   /** The encryption key use across*/
   public readonly encryptionKey: kms.Key;
 
@@ -96,7 +96,7 @@ export class PipelineResourcesStack extends cdk.Stack {
     });
 
     // Create a bucket, then allow a deployment Lambda to upload to it.
-    this.accessLoggingBucket = new s3.Bucket(
+    this.loggingBucket = new s3.Bucket(
       this,
       "PipelineResourcesLoggingBucket",
       {
@@ -119,7 +119,7 @@ export class PipelineResourcesStack extends cdk.Stack {
         autoDeleteObjects: true,
         removalPolicy: cdk.RemovalPolicy.DESTROY,
         encryptionKey: this.encryptionKey,
-        serverAccessLogsBucket: this.accessLoggingBucket,
+        serverAccessLogsBucket: this.loggingBucket,
         serverAccessLogsPrefix: "source-bucket",
       },
     );
@@ -134,7 +134,7 @@ export class PipelineResourcesStack extends cdk.Stack {
         autoDeleteObjects: true,
         removalPolicy: cdk.RemovalPolicy.DESTROY,
         encryptionKey: this.encryptionKey,
-        serverAccessLogsBucket: this.accessLoggingBucket,
+        serverAccessLogsBucket: this.loggingBucket,
         serverAccessLogsPrefix: "artifact-bucket",
       },
     );
@@ -149,13 +149,13 @@ export class PipelineResourcesStack extends cdk.Stack {
         autoDeleteObjects: true,
         removalPolicy: cdk.RemovalPolicy.DESTROY,
         encryptionKey: this.encryptionKey,
-        serverAccessLogsBucket: this.accessLoggingBucket,
+        serverAccessLogsBucket: this.loggingBucket,
         serverAccessLogsPrefix: "output-bucket",
       },
     );
 
     new cdk.CfnOutput(this, "LoggingBucket", {
-      value: this.accessLoggingBucket.bucketName,
+      value: this.loggingBucket.bucketName,
       description: "The access logging bucket.",
     });
 
