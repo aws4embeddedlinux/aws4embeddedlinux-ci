@@ -21,13 +21,13 @@ This is the overall architecture pattern used to deploy the build pipeline:
 
 ![architecture overview](images/architecture-v0.2.x.svg "Architecture")
 
-[Bask to the top](#table-of-contents)
+[Bask to the top](#aws4embeddedlinux-ci)
 
 ## API documentation
 
 The [API documentation](https://aws4embeddedlinux.github.io/aws4embeddedlinux-ci/) is generated automatically using [Typedoc](https://typedoc.org/).
 
-[Bask to the top](#table-of-contents)
+[Bask to the top](#aws4embeddedlinux-ci)
 
 ## Project Build with AWS CodePipeline
 
@@ -131,7 +131,7 @@ A build should automatically start. Once it succeeds you will get an image conta
 - First build: **30 minutes**
 - Rebuild (without any change, just use sstate cache): **9 minutes**
 
-[Bask to the top](#table-of-contents)
+[Bask to the top](#aws4embeddedlinux-ci)
 
 
 ## Project Build with AWS CodeBuild as Action Runner
@@ -172,7 +172,7 @@ There might be more than one occuerence to replace in the file.
 
 Refer to the following [example](https://github.com/aws4embeddedlinux/meta-aws-demos/blob/master/.github/workflows/build-gg.yml) for more details.
 
-[Bask to the top](#table-of-contents)
+[Bask to the top](#aws4embeddedlinux-ci)
 
 ## Setup
 
@@ -188,7 +188,7 @@ Additionally, you must have [NodeJS](https://nodejs.org/en/) installed.
 
 You can also use the [sample project code](https://github.com/aws4embeddedlinux/aws4embeddedlinux-ci-examples) provided to get started and deploy the stacks.
 
-[Bask to the top](#table-of-contents)
+[Bask to the top](#aws4embeddedlinux-ci)
 
 ### Setting Up A New Project
 
@@ -272,7 +272,7 @@ This will create an Ubuntu based container for building the Yocto images.
 
 Once your pipelines completes successfully, the Yocto deploy directory generated content will be pushed into a S3 bucket.
 
-[Bask to the top](#table-of-contents)
+[Bask to the top](#aws4embeddedlinux-ci)
 
 ## Development Setup
 
@@ -361,7 +361,7 @@ See the [CodeBuild Documentation](https://docs.aws.amazon.com/codebuild/latest/u
 
 CVE checking is enabled in the reference implementations. Details on this can be found in the [Yocto documentation](https://docs.yoctoproject.org/4.0.13/singleindex.html#checking-for-vulnerabilities).
 
-[Bask to the top](#table-of-contents)
+[Bask to the top](#aws4embeddedlinux-ci)
 
 ## Known issues
 
@@ -370,22 +370,22 @@ CVE checking is enabled in the reference implementations. Details on this can be
 - Deletion of stacks while a CodePipeline is running can lead to unexpected behaviours.
 - The NXP-IMX pipeline will fail unless you adjust the build spec file and address the licence acceptance requirement.
 
-[Bask to the top](#table-of-contents)
+[Bask to the top](#aws4embeddedlinux-ci)
 
 ## Security
 
 See [SECURITY](SECURITY.md) for more information about reporting issues with this project.
 
-[Bask to the top](#table-of-contents)
+[Bask to the top](#aws4embeddedlinux-ci)
 
 ## Contributing
 
 See [CONTRIBUTING](CONTRIBUTING.md) for more information.
 
-[Bask to the top](#table-of-contents)
+[Bask to the top](#aws4embeddedlinux-ci)
 
 ## License
 
 This library is licensed under the MIT-0 License. See the [LICENSE](LICENSE) file.
 
-[Bask to the top](#table-of-contents)
+[Bask to the top](#aws4embeddedlinux-ci)
