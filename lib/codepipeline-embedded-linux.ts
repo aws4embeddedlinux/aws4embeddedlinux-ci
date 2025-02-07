@@ -1,3 +1,6 @@
+import * as path from "path";
+import * as fs from "fs";
+
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { BucketDeployment, Source } from "aws-cdk-lib/aws-s3-deployment";
@@ -12,7 +15,6 @@ import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as efs from "aws-cdk-lib/aws-efs";
 import * as s3 from "aws-cdk-lib/aws-s3";
-import * as path from "path";
 import * as ecr from "aws-cdk-lib/aws-ecr";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as logs from "aws-cdk-lib/aws-logs";
@@ -51,6 +53,8 @@ export interface EmbeddedLinuxCodePipelineProps extends cdk.StackProps {
   };
   /** The encryption key use across*/
   readonly encryptionKey: kms.Key;
+  /** Custom asset to be provided when using ProjectType.Custom  */
+  readonly sourceCustomPath?: string;
 }
 
 /**
@@ -126,13 +130,22 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
     );
 
     // archive and upload the source-repo folder into CDK owned bucket
-    const sourceRepoAsset: Asset = new Asset(
-      this,
-      "EmbeddedLinuxCodePipelineBucketDeploymentAsset",
-      {
-        path: path.join(__dirname, "..", "source-repo", props.projectType),
-      },
-    );
+    let sourcePath = path.join(__dirname, "..", "source-repo", props.projectType);
+    if (props.projectType == ProjectType.Custom) {
+      if (!props.sourceCustomPath) {
+        throw new Error(
+          `sourceCustomPath must be provided when using ProjectType.Custom`,
+        );
+      }
+      if (!fs.existsSync(`${props.sourceCustomPath}/build.buildspec.yml`)) {
+        throw new Error(
+          `sourceCustomPath must be provide a valid path to a build.buildspec.yml file (sourceCustomPath = ${props.sourceCustomPath})`,
+        );
+      }
+
+      sourcePath = props.sourceCustomPath;
+    }
+    const sourceRepoAsset: Asset = new Asset(this, "EmbeddedLinuxCodePipelineBucketDeploymentAsset", { path: sourcePath, });
 
     // deploy the sourceRepo to the bucket
     const bucketDeployment = new BucketDeployment(
