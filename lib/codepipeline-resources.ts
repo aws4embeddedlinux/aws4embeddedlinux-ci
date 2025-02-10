@@ -96,18 +96,14 @@ export class PipelineResourcesStack extends cdk.Stack {
     });
 
     // Create a bucket, then allow a deployment Lambda to upload to it.
-    this.loggingBucket = new s3.Bucket(
-      this,
-      "PipelineResourcesLoggingBucket",
-      {
-        bucketName: loggingBucketName,
-        versioned: true,
-        enforceSSL: true,
-        autoDeleteObjects: true,
-        removalPolicy: cdk.RemovalPolicy.DESTROY,
-        encryptionKey: this.encryptionKey,
-      },
-    );
+    this.loggingBucket = new s3.Bucket(this, "PipelineResourcesLoggingBucket", {
+      bucketName: loggingBucketName,
+      versioned: true,
+      enforceSSL: true,
+      autoDeleteObjects: true,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      encryptionKey: this.encryptionKey,
+    });
 
     this.pipelineSourceBucket = new s3.Bucket(
       this,
