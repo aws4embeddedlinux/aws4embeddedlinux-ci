@@ -130,7 +130,12 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
     );
 
     // archive and upload the source-repo folder into CDK owned bucket
-    let sourcePath = path.join(__dirname, "..", "source-repo", props.projectType);
+    let sourcePath = path.join(
+      __dirname,
+      "..",
+      "source-repo",
+      props.projectType,
+    );
     if (props.projectType == ProjectType.Custom) {
       if (!props.sourceCustomPath) {
         throw new Error(
@@ -145,7 +150,11 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
 
       sourcePath = props.sourceCustomPath;
     }
-    const sourceRepoAsset: Asset = new Asset(this, "EmbeddedLinuxCodePipelineBucketDeploymentAsset", { path: sourcePath, });
+    const sourceRepoAsset: Asset = new Asset(
+      this,
+      "EmbeddedLinuxCodePipelineBucketDeploymentAsset",
+      { path: sourcePath },
+    );
 
     // deploy the sourceRepo to the bucket
     const bucketDeployment = new BucketDeployment(
@@ -166,7 +175,7 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
     const sourceActionOutputArtifact = new codepipeline.Artifact("Source");
     const sourceAction = new codepipeline_actions.S3SourceAction({
       actionName: "Source",
-      trigger: codepipeline_actions.S3Trigger.POLL,
+      trigger: codepipeline_actions.S3Trigger.EVENTS,
       output: sourceActionOutputArtifact,
       bucket: props.pipelineSourceBucket,
       bucketKey: `${props.pipelineSourcePrefix}/${sourceRepoAsset.s3ObjectKey}`,
@@ -200,6 +209,10 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
             AWS_DEFAULT_REGION: {
               type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
               value: cdk.Stack.of(this).region,
+            },
+            PIPELINE_PROJECT_NAME: {
+              type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
+              value: id,
             },
             PIPELINE_OUTPUT_BUCKET: {
               type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
@@ -463,7 +476,7 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
           "ec2:CancelImportTask",
         ],
         resources: ["*"],
-      })
+      }),
     );
     project.addToRolePolicy(
       new iam.PolicyStatement({
@@ -475,19 +488,20 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
       }),
     );
     //Permissions for BackUp to S3
-    project.addToRolePolicy(new iam.PolicyStatement({
-      actions: [
-        "s3:GetObject",
-        "s3:ListBucket",
-        "s3:PutObject",
-        "s3:PutObjectTagging",
-        "s3:AbortMultipartUpload",
-      ],
-      resources: [
-        `${props.pipelineOutputBucket.bucketArn}`,
-        `${props.pipelineOutputBucket.bucketArn}/*`,
-      ],
-    })
+    project.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "s3:GetObject",
+          "s3:ListBucket",
+          "s3:PutObject",
+          "s3:PutObjectTagging",
+          "s3:AbortMultipartUpload",
+        ],
+        resources: [
+          `${props.pipelineOutputBucket.bucketArn}`,
+          `${props.pipelineOutputBucket.bucketArn}/*`,
+        ],
+      }),
     );
     project.addToRolePolicy(
       new iam.PolicyStatement({
@@ -512,7 +526,7 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
           "ebs:PutSnapshotBlock",
         ],
         resources: [`arn:aws:ec2:${cdk.Stack.of(this).region}::snapshot/*`],
-      })
+      }),
     );
     project.addToRolePolicy(
       new iam.PolicyStatement({
@@ -521,7 +535,7 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
           "ec2:GetEbsEncryptionByDefault",
         ],
         resources: ["*"],
-      })
+      }),
     );
   }
 }
