@@ -53,7 +53,7 @@ export class EmbeddedLinuxCodePipelineBaseImageStack extends cdk.Stack {
 
     this.ecrRepository = props.ecrRepository;
     this.ecrRepositoryImageTag = `${id}`;
-    
+
     const projectType: string = "base-image";
 
     if (!props.pipelineSourcePrefix) {
@@ -112,7 +112,7 @@ export class EmbeddedLinuxCodePipelineBaseImageStack extends cdk.Stack {
     const sourceActionOutputArtifact = new codepipeline.Artifact("Source");
     const sourceAction = new codepipeline_actions.S3SourceAction({
       actionName: "Source",
-      trigger: codepipeline_actions.S3Trigger.POLL,
+      trigger: codepipeline_actions.S3Trigger.EVENTS,
       output: sourceActionOutputArtifact,
       bucket: props.pipelineSourceBucket,
       bucketKey: `${props.pipelineSourcePrefix}/${sourceRepoAsset.s3ObjectKey}`,
