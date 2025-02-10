@@ -20,12 +20,7 @@ describe("PipelineResourcesStack", () => {
     template = assertions.Template.fromStack(stack);
   });
 
-  const bucketSuffixes = [
-    `artifact`,
-    `source`,
-    `output`,
-    `logs`,
-  ];
+  const bucketSuffixes = [`artifact`, `source`, `output`, `logs`];
   it.each(bucketSuffixes)(`Has S3 Bucket`, (bucketSuffix) => {
     const bucketName =
       `${props.resource_prefix}-${props.env?.account}-${props.env?.region}-${bucketSuffix}`.toLowerCase();

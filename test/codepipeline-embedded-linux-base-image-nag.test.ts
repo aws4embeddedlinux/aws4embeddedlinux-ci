@@ -4,7 +4,10 @@ import { AwsSolutionsChecks, NagSuppressions } from "cdk-nag";
 import * as ecr from "aws-cdk-lib/aws-ecr";
 import * as kms from "aws-cdk-lib/aws-kms";
 import * as s3 from "aws-cdk-lib/aws-s3";
-import { EmbeddedLinuxCodePipelineBaseImageProps, EmbeddedLinuxCodePipelineBaseImageStack } from "../lib/codepipeline-embedded-linux-base-image";
+import {
+  EmbeddedLinuxCodePipelineBaseImageProps,
+  EmbeddedLinuxCodePipelineBaseImageStack,
+} from "../lib/codepipeline-embedded-linux-base-image";
 import { DEFAULT_ENV } from "./util";
 
 function addNagSuppressions(stack: cdk.Stack) {
@@ -94,10 +97,14 @@ describe("EmbeddedLinuxCodePipelineBaseImageStack cdk-nag AwsSolutions Pack", ()
         versioned: true,
       },
     );
-    const pipelineArtifactBucket = new s3.Bucket(baseStack, "PipelineArtifactBucket", {});
+    const pipelineArtifactBucket = new s3.Bucket(
+      baseStack,
+      "PipelineArtifactBucket",
+      {},
+    );
     const ecrRepository = new ecr.Repository(baseStack, "EcrRepository", {});
 
-    const props : EmbeddedLinuxCodePipelineBaseImageProps = {
+    const props: EmbeddedLinuxCodePipelineBaseImageProps = {
       env: DEFAULT_ENV,
       pipelineSourceBucket: pipelineSourceBucket,
       pipelineArtifactBucket: pipelineArtifactBucket,

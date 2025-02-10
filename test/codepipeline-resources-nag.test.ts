@@ -1,12 +1,9 @@
 import * as cdk from "aws-cdk-lib";
 
 import { Annotations, Match } from "aws-cdk-lib/assertions";
-import { AwsSolutionsChecks, NagSuppressions } from "cdk-nag";
+import { AwsSolutionsChecks } from "cdk-nag";
 import { DEFAULT_ENV } from "./util";
 import { PipelineResourcesStack } from "../lib";
-
-function addNagSuppressions(stack: cdk.Stack) {
-}
 
 describe("PipelineResourcesStack cdk-nag AwsSolutions Pack", () => {
   const app: cdk.App = new cdk.App();
@@ -20,8 +17,6 @@ describe("PipelineResourcesStack cdk-nag AwsSolutions Pack", () => {
     };
 
     stack = new PipelineResourcesStack(app, "MyTestStack", props);
-
-    addNagSuppressions(stack);
 
     // WHEN
     cdk.Aspects.of(stack).add(new AwsSolutionsChecks({ verbose: true }));

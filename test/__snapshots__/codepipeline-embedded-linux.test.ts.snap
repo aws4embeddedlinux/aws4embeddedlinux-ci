@@ -1106,6 +1106,11 @@ exports[`EmbeddedLinuxCodePipelineStack Snapshot 1`] = `
               "Value": "eu-central-1",
             },
             {
+              "Name": "PIPELINE_PROJECT_NAME",
+              "Type": "PLAINTEXT",
+              "Value": "MyTestStack",
+            },
+            {
               "Name": "PIPELINE_OUTPUT_BUCKET",
               "Type": "PLAINTEXT",
               "Value": {

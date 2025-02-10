@@ -149,7 +149,7 @@ function addNagSuppressions(stack: cdk.Stack) {
           },
           {
             regex: `/Resource::\\*$/g`,
-          }
+          },
         ],
       },
     ],
@@ -176,7 +176,11 @@ describe("EmbeddedLinuxCodePipelineStack cdk-nag AwsSolutions Pack", () => {
         versioned: true,
       },
     );
-    const pipelineArtifactBucket = new s3.Bucket(baseStack, "ArtifactBucket", {});
+    const pipelineArtifactBucket = new s3.Bucket(
+      baseStack,
+      "ArtifactBucket",
+      {},
+    );
     const pipelineOutputBucket = new s3.Bucket(baseStack, "OutputBucket", {
       encryptionKey: encryptionKey,
     });
