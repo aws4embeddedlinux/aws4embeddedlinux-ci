@@ -183,7 +183,7 @@ Additionally, you must have [NodeJS](https://nodejs.org/en/) installed.
 
 > [!NOTE]
 >
-> This library is tested against Node Versions 18, 20, and 22. If these versions are not available for your system, we recommend using [NVM](https://github.com/nvm-sh/nvm) to install a compatible version.
+> This library is tested against Node Versions 22. If these version is not available for your system, we recommend using [NVM](https://github.com/nvm-sh/nvm) to install a compatible version.
 >  
 
 You can also use the [sample project code](https://github.com/aws4embeddedlinux/aws4embeddedlinux-ci-examples) provided to get started and deploy the stacks.
