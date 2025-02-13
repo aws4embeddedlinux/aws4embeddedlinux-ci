@@ -22,7 +22,7 @@ fi
 
 for arg in "$@"
 do
-   key=$(echo $arg | cut -f1 -d=)
+   key=$(echo "$arg" | cut -f1 -d=)
 
    len=${#key}
    val="${arg:$len+1}"
