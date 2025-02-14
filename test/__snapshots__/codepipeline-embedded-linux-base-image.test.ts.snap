@@ -456,7 +456,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CodePipelineBuildBaseImageCodePipelineMyTestStackCodePipelineBuildBaseImageCodePipelineFF25ACC6SourceEventRulebaseimage463ab4e34f1fc19129697c4ba70a2910697e6f4dc82b08fdabb32f2eed60a01fzip4059CF7E": {
+    "CodePipelineBuildBaseImageCodePipelineMyTestStackCodePipelineBuildBaseImageCodePipelineFF25ACC6SourceEventRulebaseimage1ccdf1583059080a3911192a20ae50cc6b3bfa57d56d0b5b4d3866f920b3ad20zip04E1981E": {
       "DependsOn": [
         "CodePipelineBuildBaseImageProject69590E59",
         "CodePipelineBuildBaseImageProjectRoleDefaultPolicy6F99FFCC",

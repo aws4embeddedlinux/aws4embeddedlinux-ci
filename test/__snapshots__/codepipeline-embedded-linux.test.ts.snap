@@ -840,7 +840,7 @@ exports[`EmbeddedLinuxCodePipelineStack Snapshot 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
-    "EmbeddedLinuxCodePipelineMyTestStackEmbeddedLinuxCodePipelineE5C7D172SourceEventRulepoky2c3284e71ba6f2c28421a26a63b3f77e74abad491196ba63ec03dfb5b8674f59zipE030E80D": {
+    "EmbeddedLinuxCodePipelineMyTestStackEmbeddedLinuxCodePipelineE5C7D172SourceEventRulepokyf48cd2a94def24552abdd5b6ef9ffe6137be08fbc49a17964c6f7cae81245d5dzipEC68B3DA": {
       "DependsOn": [
         "EmbeddedLinuxCodePipelineProjectPolicyDocument1FA633EB",
         "EmbeddedLinuxCodePipelineProjectF55E3B36",
