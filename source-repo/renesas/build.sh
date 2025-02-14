@@ -1,23 +1,24 @@
 #!/bin/bash
 
 set -e
-export BOARD_LIST=("h3ulcb" "m3ulcb")
 export TARGET_BOARD=$1
-export PROPRIETARY_DIR="$(pwd)/proprietary"
+export BOARD_LIST=("h3ulcb" "m3ulcb")
+PROPRIETARY_DIR="$(pwd)/proprietary"
+export PROPRIETARY_DIR
 WORK="$(pwd)/${TARGET_BOARD}"
 
 export GFX_MMP_LIB=R-Car_Gen3_Series_Evaluation_Software_Package_for_Linux-20220121.zip
 export GFX_MMP_DRIVER=R-Car_Gen3_Series_Evaluation_Software_Package_of_Linux_Drivers-20220121.zip
 
 Usage () {
-   echo "Usage: $0 \${TARGET_BOARD_NAME}"
-   echo "BOARD_NAME list: "
-   for i in ${BOARD_LIST[@]}; do echo "  - $i"; done
-		        exit
+    echo "Usage: $0 \${TARGET_BOARD_NAME}"
+    echo "BOARD_NAME list: "
+    for i in "${BOARD_LIST[@]}"; do echo "  - $i"; done
+    # exit
 }
 
 # Check Param.
-if ! `IFS=$'\n'; echo "${BOARD_LIST[*]}" | grep -qx "${TARGET_BOARD}"`; then
+if ! (IFS=$'\n'; echo "${BOARD_LIST[*]}" | grep -qx "${TARGET_BOARD}"); then
 	    Usage
 fi
 mkdir -p "${WORK}"
@@ -36,6 +37,7 @@ mkdir -p "${WORK_PROP_DIR}"
 cd "${WORK}/meta-renesas"
 sh meta-rcar-gen3/docs/sample/copyscript/copy_proprietary_softwares.sh -f "${WORK_PROP_DIR}"
 cd "${WORK}"
+# shellcheck source=/dev/null
 source "poky/oe-init-build-env" "${WORK}/build"
 #cp ${WORK}/meta-renesas/meta-rcar-gen3/docs/sample/conf/${TARGET_BOARD}/poky-gcc/bsp/*.conf ./conf/
 #cp ${WORK}/meta-renesas/meta-rcar-gen3/docs/sample/conf/${TARGET_BOARD}/poky-gcc/gfx-only/*.conf ./conf/
