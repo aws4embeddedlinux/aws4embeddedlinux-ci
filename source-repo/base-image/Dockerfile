@@ -25,7 +25,7 @@ RUN unzip -qq /tmp/awscliv2.zip -d /tmp
 RUN /tmp/aws/install
 
 # install kas tool
-RUN pip3 install -q PyYAML==5.3.1 -q && pip3 install -q kas==4.0.0 
+RUN pip3 install -q PyYAML==5.3.1 -q && pip3 install -q kas==4.0.0
 
 RUN locale-gen en_US.UTF-8
 
@@ -34,7 +34,7 @@ RUN groupadd -g 1000 yoctouser
 RUN useradd -u 1000 -g 1000 -m yoctouser
 
 # These will be mount points for an EFS volume. This allows the cache to be reused.
-RUN mkdir -p /nfs && chown -R yoctouser /nfs && chmod -R 755 /nfs 
+RUN mkdir -p /nfs && chown -R yoctouser /nfs && chmod -R 755 /nfs
 
 RUN sudo -u yoctouser bash -c 'git config --global user.email "yoctouser@example.com"'
 RUN sudo -u yoctouser bash -c 'git config --global user.name "yoctouser"'

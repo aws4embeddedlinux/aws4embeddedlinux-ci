@@ -73,7 +73,7 @@ phases:
           ROLE_NAME=$VM_IMPORT_ROLE \
           IMAGE_EXTEN=.rootfs \
           PIPELINE_PROJECT_NAME=$PIPELINE_PROJECT_NAME
-          
+
       # Prune old files in our EFS Mounts, that are not accessed by this or any build within 30 days
       - find /nfs/sstate-cache -atime +30 -type f -delete
       # only delete empty dirs
@@ -83,7 +83,7 @@ phases:
       # only delete empty dirs
       - find /nfs/downloads -atime +30 -type d -empty -delete
       - echo "Post build completed - [$(date '+%F %H:%M:%S')]"
-      
+
 artifacts:
   discard-paths: true
   files:

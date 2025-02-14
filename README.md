@@ -33,7 +33,7 @@ The [API documentation](https://aws4embeddedlinux.github.io/aws4embeddedlinux-ci
 
 Several pipelines are provided in this library, each one demonstrating a different aspect of how to build a Yocto image with AWS.
 
-Once deployed, ou can review the pipeline execution from the `Developer Tools > Pipeline - CodePipeline > Pipelines` page in the AWS Console. 
+Once deployed, ou can review the pipeline execution from the `Developer Tools > Pipeline - CodePipeline > Pipelines` page in the AWS Console.
 
 From the pipeline page, you can find the source repository (S3), the CodeBuild Project (with the build logs), and the S3 bucket that the image is uploaded to, at the end.
 
@@ -41,7 +41,7 @@ Each pipelines will refresh/re-run automatically every week using AWS EventBridg
 
 ### <ins>__Poky__</ins>
 
-The pipeline name will end with **`poky`**. 
+The pipeline name will end with **`poky`**.
 
 This example will build the `core-image-minimal` image from Poky using the repo tool to manage layers. CVE checking is also enabled in the buildspec file.
 
@@ -52,7 +52,7 @@ This example will build the `core-image-minimal` image from Poky using the repo 
 
 ### <ins>__Poky EC2 AMI__</ins>
 
-The pipeline name will end with **`poky-ami`**. 
+The pipeline name will end with **`poky-ami`**.
 
 Yocto can be used to create an EC2 AMI. This example builds an AMI based on Poky and meta-aws and exports it to your AMI registry using the [VM Import/Export Service](https://docs.aws.amazon.com/vm-import/latest/userguide/what-is-vmimport.html).
 
@@ -63,9 +63,9 @@ Yocto can be used to create an EC2 AMI. This example builds an AMI based on Poky
 
 ### <ins>__Kas__</ins>
 
-The pipeline name will end with **`kas`**. 
+The pipeline name will end with **`kas`**.
 
-The Kas example shows how to use a [Kas Config](https://github.com/aws4embeddedlinux/aws4embeddedlinux-ci/blob/main/source-repo/kas/kas.yml) to manage layers. 
+The Kas example shows how to use a [Kas Config](https://github.com/aws4embeddedlinux/aws4embeddedlinux-ci/blob/main/source-repo/kas/kas.yml) to manage layers.
 
 This tool can help programatically manage layers and config with tighter Yocto integration than Git Submodules or the Repo tool.
 
@@ -76,9 +76,9 @@ This tool can help programatically manage layers and config with tighter Yocto i
 
 ### <ins>__QEmu__</ins>
 
-The pipeline name will end with **`qemu`**. 
+The pipeline name will end with **`qemu`**.
 
-This example builds a Qemu based image using [meta-aws-demos](https://github.com/aws4embeddedlinux/meta-aws-demos). 
+This example builds a Qemu based image using [meta-aws-demos](https://github.com/aws4embeddedlinux/meta-aws-demos).
 
 The Qemu image can be run in the CodeBuild environment. Using SLIRP networking, [OEQA testing](https://docs.yoctoproject.org/singleindex.html#performing-automated-runtime-testing) such as ptest can be run in the pipeline.
 
@@ -89,11 +89,11 @@ The Qemu image can be run in the CodeBuild environment. Using SLIRP networking, 
 
 ### <ins>__NXP / IMX__</ins>
 
-The pipeline name will end with **`nxp`**. 
+The pipeline name will end with **`nxp`**.
 
 This example will build an image for the [i.MX 6ULL EVK](https://www.nxp.com/design/development-boards/i-mx-evaluation-and-development-boards/evaluation-kit-for-the-i-mx-6ull-and-6ulz-applications-processor:MCIMX6ULL-EVK) board.
 
-**NXP requires users to accept and comply with a EULA in order to build** and, for this reason, **the buildspec will require modification before the build succeeds**. 
+**NXP requires users to accept and comply with a EULA in order to build** and, for this reason, **the buildspec will require modification before the build succeeds**.
 
 See the [IMX Yocto Users Guide](https://www.nxp.com/docs/en/user-guide/IMX_YOCTO_PROJECT_USERS_GUIDE.pdf) for more detail.
 
@@ -102,7 +102,7 @@ See the [IMX Yocto Users Guide](https://www.nxp.com/docs/en/user-guide/IMX_YOCTO
 - First build: **xx minutes**
 - Rebuild (without any change, just use sstate cache): **xx minutes**
 
-### <ins>__Renesas__</ins> 
+### <ins>__Renesas__</ins>
 
 This example is based on the [Yocto / Renesas R-Car work](https://elinux.org/R-Car/Boards/Yocto-Gen3/v5.9.0) to build an image for Renesas R-Car-H3 Starter Kit Premier board (unofficial name - H3ULCB) including the proprietary graphics and multimedia drivers from Renesas.
 
@@ -163,11 +163,11 @@ runs-on: ${{ vars.CODEBUILD_RUNNER_NAME }}-${{ github.run_id }}-${{ github.run_a
 
 with:
 
-```  
+```
 runs-on: codebuild-<project-name>-${{ github.run_id }}-${{ github.run_attempt }}
 ```
 
-`<project-name>` should be replaced by your AWS CodeBuild project name (`aws4el-ci-codebuild-project`). 
+`<project-name>` should be replaced by your AWS CodeBuild project name (`aws4el-ci-codebuild-project`).
 There might be more than one occuerence to replace in the file.
 
 Refer to the following [example](https://github.com/aws4embeddedlinux/meta-aws-demos/blob/master/.github/workflows/build-gg.yml) for more details.
@@ -177,14 +177,14 @@ Refer to the following [example](https://github.com/aws4embeddedlinux/meta-aws-d
 ## Setup
 
 In order to use this library, you must first set up an [AWS CDK](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html) project, including
-installing the CDK tool and bootstrapping the account you wish to deploy to. 
+installing the CDK tool and bootstrapping the account you wish to deploy to.
 
 Additionally, you must have [NodeJS](https://nodejs.org/en/) installed.
 
 > [!NOTE]
 >
 > This library is tested against Node Versions 22. If these version is not available for your system, we recommend using [NVM](https://github.com/nvm-sh/nvm) to install a compatible version.
->  
+>
 
 You can also use the [sample project code](https://github.com/aws4embeddedlinux/aws4embeddedlinux-ci-examples) provided to get started and deploy the stacks.
 
@@ -192,7 +192,7 @@ You can also use the [sample project code](https://github.com/aws4embeddedlinux/
 
 ### Setting Up A New Project
 
-In order to create a new project, you will need to initialize a new CDK project. 
+In order to create a new project, you will need to initialize a new CDK project.
 
 More details can be found in the [CDK Getting Started Documentation](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html).
 
@@ -211,7 +211,7 @@ yarn install
 yarn add github:aws4embeddedlinux/aws4embeddedlinux-ci
 ```
 
-Once added, you can start creatin your application using the library. 
+Once added, you can start creatin your application using the library.
 
 For example, you can start by importing classes using:
 
@@ -254,13 +254,13 @@ Once you have completed the code of your application, you can deploy the CDK sta
 cdk deploy
 ```
 
-After the CDK application is successfully deployed, the 'Base Image' pipeline needs to complete successfully. 
+After the CDK application is successfully deployed, the 'Base Image' pipeline needs to complete successfully.
 
-This will create an Ubuntu based container for building the Yocto images. 
+This will create an Ubuntu based container for building the Yocto images.
 
 > [!NOTE]
 >
-> This container is used by the other pipelines. If the other pipelines are run before this container is created and pushed to [ECR](https://aws.amazon.com/ecr/), they will fail. 
+> This container is used by the other pipelines. If the other pipelines are run before this container is created and pushed to [ECR](https://aws.amazon.com/ecr/), they will fail.
 >
 > The 'Base Image' pipeline will run weekly by default to keep the container patched and up to date.
 >
@@ -294,7 +294,7 @@ yarn link "aws4embeddedlinux-cdk-lib"
 yarn run build
 ```
 
-This will link through the system `node_modules` install. 
+This will link through the system `node_modules` install.
 
 > _Note:_
 >
@@ -310,7 +310,7 @@ This will link through the system `node_modules` install.
 
 > _Note:_
 >
-> When using a system node install on Linux, this can require sudo access. 
+> When using a system node install on Linux, this can require sudo access.
 > To avoid this, use a [node version manager](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm#using-a-node-version-manager-to-install-nodejs-and-npm) or [set a node prefix](https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally).
 
 ### Using Git Credentials and Build Time Secrets
@@ -348,7 +348,7 @@ The following steps detaisl at a high level, how you can enable the use of AWS S
   });
   ```
 
-- The secret can then be used in the CodeBuild Project by adding it to the BuildSpec. 
+- The secret can then be used in the CodeBuild Project by adding it to the BuildSpec.
 
   ```yaml
   env:
