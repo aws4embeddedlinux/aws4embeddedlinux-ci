@@ -1,23 +1,27 @@
 {
   "name": "aws4embeddedlinux-cdk-lib",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
-  "type": "module",
+  "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "copy-src": "if [ -d dist/source-repo ]; then rm -rf dist/source-repo; fi && cp -r source-repo dist && cp assets/create-ec2-ami.sh dist/assets",
-    "zip-data": "if [ -f dist/assets/build-image/data.zip ]; then rm -rf dist/assets/build-image; fi && mkdir -p dist/assets/build-image ; cd assets/build-image && zip -q -o ../../dist/assets/build-image/data.zip -r *",
-    "clean": "tsc --build --clean && rm -rf dist && rm -rf cdk.out",
-    "prebuild": "npm run zip-data && npm run copy-src",
     "watch": "tsc -w",
-    "test": "jest",
-    "update-snapshot": "jest -u",
     "cdk": "cdk",
+    "clean": "tsc --build --clean && rm -rf dist && rm -rf source-zip && rm -rf cdk.out",
     "doc": "typedoc --sort source-order --readme README.md",
     "format": "eslint '**/*.{js,ts,json}' --quiet --fix",
     "check": "eslint '**/*.{js,ts,json}'",
-    "prepare": "npm run build"
+    "build-assets": "./utils/build-assets.sh",
+    "prebuild": "yarn run build-assets",
+    "test": "yarn run prebuild && jest",
+    "update-snapshot": "yarn run prebuild && jest -u",
+    "prepare": "yarn run build",
+    "prepare-commit": "yarn run clean && yarn run format && yarn run build && yarn run check && yarn run test & pre-commit run --all-files --color=always --show-diff-on-failure"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.176.0",
+    "constructs": "^10.4.2"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.4",
@@ -27,9 +31,8 @@
     "@types/node": "20.14.8",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
-    "aws-cdk-lib": "^2.173.0",
-    "cdk-nag": "^2.34.23",
-    "constructs": "^10.4.2",
+    "aws-cdk": "2.176.0",
+    "cdk-nag": "^2.35.0",
     "eslint": "^9.16.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
@@ -42,10 +45,6 @@
     "typedoc": "^0.27.4",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.18.0"
-  },
-  "peerDependencies": {
-    "aws-cdk-lib": "^2.173.0",
-    "constructs": "^10.4.2"
   },
   "resolutions": {
     "glob": "^9.3.5"

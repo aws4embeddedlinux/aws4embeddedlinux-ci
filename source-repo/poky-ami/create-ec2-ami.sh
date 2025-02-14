@@ -1,27 +1,61 @@
 #!/usr/bin/env bash
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: MIT-0
+
 set -eo pipefail
 [ "$DEBUG" == 'true' ] && set -x
 
 ARGC=$#
 if [ $ARGC -lt 6 ]; then
-    echo "ERROR: args 1: import bucket name 2:AMI disk size in GB 3:IMAGE_NAME 4:MACHINE_NAME 5:TMPDIR 6:ROLE NAME 7:IMAGE_EXTEN 8:TESTDATA_JSON_EXTEN."
+    echo "ERROR: missing args "
+    echo "  1:IMPORT_BUCKET_NAME"
+    echo "  2:AMI_DISK_SIZE_GB"
+    echo "  3:IMAGE_NAME"
+    echo "  4:MACHINE_NAME"
+    echo "  5:TMPDIR"
+    echo "  6:ROLE NAME"
+    echo "  7:IMAGE_EXTEN"
+    echo "  8:TESTDATA_JSON_EXTEN"
+    echo "  9:PIPELINE_PROJECT_NAME"
     exit 1
 fi
-IMPORT_BUCKET_NAME=$1
-AMI_DISK_SIZE_GB=$2
-IMAGE_NAME=$3
-MACHINE_NAME=$4
-TMPDIR=${5:-build/tmp}
-ROLE_NAME=$6
-IMAGE_EXTEN=${7:-}
-TESTDATA_JSON_EXTEN=${8:-}
+
+for arg in "$@"
+do
+   key=$(echo "$arg" | cut -f1 -d=)
+
+   len=${#key}
+   val="${arg:$len+1}"
+
+   export "$key"="$val"
+done
+
+# IMPORT_BUCKET_NAME=$1
+# AMI_DISK_SIZE_GB=$2
+# IMAGE_NAME=$3
+# MACHINE_NAME=$4
+TMPDIR=${TMPDIR:-build/tmp}
+# ROLE_NAME=$6
+IMAGE_EXTEN=${IMAGE_EXTEN:-}
+TESTDATA_JSON_EXTEN=${TESTDATA_JSON_EXTEN:-}
+# PIPELINE_PROJECT_NAME=${9:-}
 
 CREATED_BY_TAG="aws4embeddedlinux-ci"
 IMG_DIR="${TMPDIR}/deploy/images/${MACHINE_NAME}"
 
 TESTDATA_JSON="${IMG_DIR}/${IMAGE_NAME}-${MACHINE_NAME}${TESTDATA_JSON_EXTEN}.testdata.json"
+
+
+echo "Input parameters:"
+echo "  1:IMPORT_BUCKET_NAME : $IMPORT_BUCKET_NAME"
+echo "  2:AMI_DISK_SIZE_GB : $AMI_DISK_SIZE_GB"
+echo "  3:IMAGE_NAME : $IMAGE_NAME"
+echo "  4:MACHINE_NAME : $MACHINE_NAME"
+echo "  5:TMPDIR : $TMPDIR"
+echo "  6:ROLE NAME : $ROLE"
+echo "  7:IMAGE_EXTEN : $IMAGE_EXTEN"
+echo "  8:TESTDATA_JSON_EXTEN : $TESTDATA_JSON_EXTEN"
+echo "  9:PIPELINE_PROJECT_NAME : $PIPELINE_PROJECT_NAME"
 
 DISTRO=$(jq -r '.DISTRO' "$TESTDATA_JSON")
 DISTRO_CODENAME=$(jq -r '.DISTRO_CODENAME' "$TESTDATA_JSON")
@@ -32,7 +66,6 @@ TARGET_ARCH=$(jq -r '.TARGET_ARCH' "$TESTDATA_JSON")
 IMAGE_NAME=$(jq -r '.IMAGE_NAME' "$TESTDATA_JSON")
 IMAGE_ROOTFS_SIZE=$(jq -r '.IMAGE_ROOTFS_SIZE' "$TESTDATA_JSON")
 
-
 echo DISTRO="$DISTRO"
 echo DISTRO_CODENAME="$DISTRO_CODENAME"
 echo DISTRO_NAME="$DISTRO_NAME"
@@ -41,6 +74,8 @@ echo BUILDNAME="$BUILDNAME"
 echo TARGET_ARCH="$TARGET_ARCH"
 echo IMAGE_ROOTFS_SIZE="$IMAGE_ROOTFS_SIZE"
 echo AMI_DISK_SIZE_GB="$AMI_DISK_SIZE_GB"
+
+
 
 
 echo "Pushing image ${IMAGE_NAME}${IMAGE_EXTEN}.wic.vhd to s3://${IMPORT_BUCKET_NAME}"
@@ -58,7 +93,11 @@ cat <<EOF > image-import.json
 EOF
 echo "Importing image file into snapshot "
 
-command_output=$(aws ec2 import-snapshot --disk-container "file://image-import.json" --tag-specifications "ResourceType=import-snapshot-task,Tags=[{Key=CreatedBy,Value=$CREATED_BY_TAG}]" --role-name "$ROLE_NAME" --encrypted)
+command_output=$(aws ec2 import-snapshot \
+    --disk-container "file://image-import.json" \
+    --tag-specifications "ResourceType=import-snapshot-task,Tags=[{Key=CreatedBy,Value=$CREATED_BY_TAG},{Key=PipelineProject,Value=$PIPELINE_PROJECT_NAME}]" \
+    --role-name "$ROLE_NAME" --encrypted
+)
 command_exit_code=$?
 
 if [[ "$command_exit_code" -ne 0 ]]; then
@@ -99,7 +138,7 @@ else
     echo "Architecture not supported"
     exit 1
 fi
-DESCRIPTION=$(echo "DISTRO=$DISTRO;DISTRO_CODENAME=$DISTRO_CODENAME;DISTRO_NAME=$DISTRO_NAME;DISTRO_VERSION=$DISTRO_VERSION;BUILDNAME=$BUILDNAME;TARGET_ARCH=$ARCHITECTURE;IMAGE_NAME=$IMAGE_NAME" | cut -c -255)
+DESCRIPTION=$(echo "PIPELINE_PROJECT_NAME=$PIPELINE_PROJECT_NAME;DISTRO=$DISTRO;DISTRO_CODENAME=$DISTRO_CODENAME;DISTRO_NAME=$DISTRO_NAME;DISTRO_VERSION=$DISTRO_VERSION;BUILDNAME=$BUILDNAME;TARGET_ARCH=$ARCHITECTURE;IMAGE_NAME=$IMAGE_NAME" | cut -c -255)
 
 cat <<EOF > register-ami.json
 {
@@ -129,10 +168,17 @@ if [ "$IMAGE_ID" != "" ]; then
     echo "Deregistering existing image $IMAGE_ID"
     aws ec2 deregister-image --image-id "${IMAGE_ID}" > /dev/null 2>&1
 fi
-echo "Registering AMI with Snapshot $SNAPSHOT_ID"
-AMI_ID=$(aws ec2 register-image --name "${AMI_NAME}" --cli-input-json="file://register-ami.json" --query 'ImageId' --output text)
+echo "Registering AMI with Snapshot $SNAPSHOT_ID with parameters:"
 echo "AMI name: $AMI_NAME"
-echo "AMI ID: $AMI_ID"
+more register-ami.json
+AMI_ID=$(aws ec2 register-image \
+    --name "${AMI_NAME}" \
+    --cli-input-json="file://register-ami.json" \
+    --tag-specifications "ResourceType=image,Tags=[{Key=Name,Value=$PIPELINE_PROJECT_NAME},{Key=CreatedBy,Value=$CREATED_BY_TAG},{Key=PipelineProject,Value=$PIPELINE_PROJECT_NAME}]" \
+    --query 'ImageId' \
+    --output text
+)
+echo "Registered AMI ID: $AMI_ID"
 rm register-ami.json
 
 echo "Backing up AMI with ID $AMI_ID in S3"

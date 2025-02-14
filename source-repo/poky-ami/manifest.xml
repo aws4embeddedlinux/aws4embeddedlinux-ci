@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
-  <remote fetch="https://git.yoctoproject.org/"         name="yocto"/>
-  <remote fetch="https://github.com/openembedded/"      name="oe"/>
-  <remote fetch="https://github.com/aws4embeddedlinux/" name="aws"/>
+  <remote fetch="https://git.yoctoproject.org/" name="yocto" />
+  <remote fetch="https://github.com/openembedded/" name="oe" />
+  <remote fetch="https://github.com/aws4embeddedlinux/" name="aws" />
 
-  <project name="poky" remote="yocto" path="poky" upstream="kirkstone" revision="0e4966eb77928a07230e031d6d9c477c01ec9cce"/>
-  <project name="meta-openembedded" remote="oe" path="meta-openembedded" upstream="kirkstone" revision="9c5541f7e18a1fac3b8dea71e1ebb8398d58e6ff"/>
-  <project name="meta-virtualization" remote="yocto" path="meta-virtualization" upstream="kirkstone" revision="2d8b3cba8ff27c9ec2187a52b6a551fe1dcfaa07"/>
-  <project name="meta-aws" remote="aws" path="meta-aws" upstream="kirkstone" revision="44cd8014c2850e585a0a0ca328bf7f9d2a90328b"/>
+  <project name="poky" remote="yocto" path="poky" upstream="kirkstone"
+    revision="0e4966eb77928a07230e031d6d9c477c01ec9cce" />
+  <project name="meta-openembedded" remote="oe" path="meta-openembedded" upstream="kirkstone"
+    revision="9c5541f7e18a1fac3b8dea71e1ebb8398d58e6ff" />
+  <project name="meta-virtualization" remote="yocto" path="meta-virtualization" upstream="kirkstone"
+    revision="2d8b3cba8ff27c9ec2187a52b6a551fe1dcfaa07" />
+  <project name="meta-aws" remote="aws" path="meta-aws" upstream="kirkstone"
+    revision="44cd8014c2850e585a0a0ca328bf7f9d2a90328b" />
 </manifest>

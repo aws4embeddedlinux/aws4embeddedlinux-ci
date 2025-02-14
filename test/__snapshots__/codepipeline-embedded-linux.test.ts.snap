@@ -1,0 +1,2171 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EmbeddedLinuxCodePipelineStack Snapshot 1`] = `
+{
+  "Outputs": {
+    "ArtifactURI": {
+      "Description": "The artifact bucket of this pipeline.",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "s3://",
+            {
+              "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesArtifactBucketFF61EB98FA6EAAC1",
+            },
+            "/poky/arbitrary-file.ext",
+          ],
+        ],
+      },
+    },
+    "OutputURI": {
+      "Description": "The output bucket of this pipeline.",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "s3://",
+            {
+              "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesOutputBucketA2144F25070A0F1C",
+            },
+            "/poky",
+          ],
+        ],
+      },
+    },
+    "SourceURI": {
+      "Description": "The source bucket uri for this pipeline.",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "s3://",
+            {
+              "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesSourceBucket1FA488F54AA73B60",
+            },
+            "/poky/arbitrary-file.ext",
+          ],
+        ],
+      },
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536": {
+      "DependsOn": [
+        "EmbeddedLinuxCodePipelineBucketDeploymentRoleDefaultPolicy6C7ED123",
+        "EmbeddedLinuxCodePipelineBucketDeploymentRoleC8070F49",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": "cdk-hnb659fds-assets-111111111111-eu-central-1",
+          "S3Key": "arbitrary-file.ext",
+        },
+        "Environment": {
+          "Variables": {
+            "AWS_CA_BUNDLE": "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem",
+          },
+        },
+        "Handler": "index.handler",
+        "Layers": [
+          {
+            "Ref": "EmbeddedLinuxCodePipelineBucketDeploymentAwsCliLayerAA1BBC13",
+          },
+        ],
+        "Role": {
+          "Fn::GetAtt": [
+            "EmbeddedLinuxCodePipelineBucketDeploymentRoleC8070F49",
+            "Arn",
+          ],
+        },
+        "Runtime": "python3.11",
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "EmbeddedLinuxCodePipeline4B3C7651": {
+      "DependsOn": [
+        "EmbeddedLinuxCodePipelineRoleDefaultPolicy8CDA8ACC",
+        "EmbeddedLinuxCodePipelineRole784D6893",
+        "EmbeddedLinuxCodePipelineProjectPolicyDocument1FA633EB",
+        "EmbeddedLinuxCodePipelineProjectF55E3B36",
+        "EmbeddedLinuxCodePipelineProjectRoleDefaultPolicyC205FC16",
+        "EmbeddedLinuxCodePipelineProjectRoleFD913DB7",
+      ],
+      "Properties": {
+        "ArtifactStore": {
+          "EncryptionKey": {
+            "Id": {
+              "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+            },
+            "Type": "KMS",
+          },
+          "Location": {
+            "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesArtifactBucketFF61EB98FA6EAAC1",
+          },
+          "Type": "S3",
+        },
+        "Name": "MyTestStack",
+        "PipelineType": "V1",
+        "RestartExecutionOnUpdate": true,
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "EmbeddedLinuxCodePipelineRole784D6893",
+            "Arn",
+          ],
+        },
+        "Stages": [
+          {
+            "Actions": [
+              {
+                "ActionTypeId": {
+                  "Category": "Source",
+                  "Owner": "AWS",
+                  "Provider": "S3",
+                  "Version": "1",
+                },
+                "Configuration": {
+                  "PollForSourceChanges": false,
+                  "S3Bucket": {
+                    "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesSourceBucket1FA488F54AA73B60",
+                  },
+                  "S3ObjectKey": "poky/arbitrary-file.ext",
+                },
+                "Name": "Source",
+                "OutputArtifacts": [
+                  {
+                    "Name": "Source",
+                  },
+                ],
+                "RoleArn": {
+                  "Fn::GetAtt": [
+                    "EmbeddedLinuxCodePipelineSourceCodePipelineActionRole1B690AB7",
+                    "Arn",
+                  ],
+                },
+                "RunOrder": 1,
+              },
+            ],
+            "Name": "Source",
+          },
+          {
+            "Actions": [
+              {
+                "ActionTypeId": {
+                  "Category": "Build",
+                  "Owner": "AWS",
+                  "Provider": "CodeBuild",
+                  "Version": "1",
+                },
+                "Configuration": {
+                  "ProjectName": {
+                    "Ref": "EmbeddedLinuxCodePipelineProjectF55E3B36",
+                  },
+                },
+                "InputArtifacts": [
+                  {
+                    "Name": "Source",
+                  },
+                ],
+                "Name": "Build",
+                "OutputArtifacts": [
+                  {
+                    "Name": "Artifact_Build_Build",
+                  },
+                ],
+                "RoleArn": {
+                  "Fn::GetAtt": [
+                    "EmbeddedLinuxCodePipelineBuildCodePipelineActionRoleEE85AA1E",
+                    "Arn",
+                  ],
+                },
+                "RunOrder": 1,
+              },
+            ],
+            "Name": "Build",
+          },
+          {
+            "Actions": [
+              {
+                "ActionTypeId": {
+                  "Category": "Deploy",
+                  "Owner": "AWS",
+                  "Provider": "S3",
+                  "Version": "1",
+                },
+                "Configuration": {
+                  "BucketName": {
+                    "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesArtifactBucketFF61EB98FA6EAAC1",
+                  },
+                  "Extract": "true",
+                  "ObjectKey": "poky/arbitrary-file.ext",
+                },
+                "InputArtifacts": [
+                  {
+                    "Name": "Artifact_Build_Build",
+                  },
+                ],
+                "Name": "Artifact",
+                "RoleArn": {
+                  "Fn::GetAtt": [
+                    "EmbeddedLinuxCodePipelineArtifactCodePipelineActionRole97F56214",
+                    "Arn",
+                  ],
+                },
+                "RunOrder": 1,
+              },
+            ],
+            "Name": "Artifact",
+          },
+        ],
+      },
+      "Type": "AWS::CodePipeline::Pipeline",
+    },
+    "EmbeddedLinuxCodePipelineArtifactCodePipelineActionRole97F56214": {
+      "DependsOn": [
+        "EmbeddedLinuxCodePipelineProjectPolicyDocument1FA633EB",
+        "EmbeddedLinuxCodePipelineProjectF55E3B36",
+        "EmbeddedLinuxCodePipelineProjectRoleDefaultPolicyC205FC16",
+        "EmbeddedLinuxCodePipelineProjectRoleFD913DB7",
+      ],
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::111111111111:root",
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EmbeddedLinuxCodePipelineArtifactCodePipelineActionRoleDefaultPolicyF6D7AEC0": {
+      "DependsOn": [
+        "EmbeddedLinuxCodePipelineProjectPolicyDocument1FA633EB",
+        "EmbeddedLinuxCodePipelineProjectF55E3B36",
+        "EmbeddedLinuxCodePipelineProjectRoleDefaultPolicyC205FC16",
+        "EmbeddedLinuxCodePipelineProjectRoleFD913DB7",
+      ],
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:DeleteObject*",
+                "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:Decrypt",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+              },
+            },
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "kms:Decrypt",
+                "kms:DescribeKey",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "EmbeddedLinuxCodePipelineArtifactCodePipelineActionRoleDefaultPolicyF6D7AEC0",
+        "Roles": [
+          {
+            "Ref": "EmbeddedLinuxCodePipelineArtifactCodePipelineActionRole97F56214",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "EmbeddedLinuxCodePipelineBucketDeploymentAwsCliLayerAA1BBC13": {
+      "Properties": {
+        "Content": {
+          "S3Bucket": "cdk-hnb659fds-assets-111111111111-eu-central-1",
+          "S3Key": "arbitrary-file.ext",
+        },
+        "Description": "/opt/awscli/aws",
+      },
+      "Type": "AWS::Lambda::LayerVersion",
+    },
+    "EmbeddedLinuxCodePipelineBucketDeploymentCustomResourceBA39990C": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "DestinationBucketKeyPrefix": "poky",
+        "DestinationBucketName": {
+          "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesSourceBucket1FA488F54AA73B60",
+        },
+        "Extract": false,
+        "OutputObjectKeys": true,
+        "Prune": true,
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+            "Arn",
+          ],
+        },
+        "SourceBucketNames": [
+          "cdk-hnb659fds-assets-111111111111-eu-central-1",
+        ],
+        "SourceObjectKeys": [
+          "arbitrary-file.ext",
+        ],
+      },
+      "Type": "Custom::CDKBucketDeployment",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "EmbeddedLinuxCodePipelineBucketDeploymentRoleC8070F49": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "arn:aws:logs:eu-central-1:111111111111:log-group:/aws/lambda/EmbeddedLinuxCodePipelineBaseImage-CustomCDKBucketDeployment*",
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "pipelineSourceBucketDeploymentPolicy",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EmbeddedLinuxCodePipelineBucketDeploymentRoleDefaultPolicy6C7ED123": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::cdk-hnb659fds-assets-111111111111-eu-central-1",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::cdk-hnb659fds-assets-111111111111-eu-central-1/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesSourceBucket1FA488F5Arn3CF62A69",
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesSourceBucket1FA488F5Arn3CF62A69",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "kms:Decrypt",
+                "kms:DescribeKey",
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "EmbeddedLinuxCodePipelineBucketDeploymentRoleDefaultPolicy6C7ED123",
+        "Roles": [
+          {
+            "Ref": "EmbeddedLinuxCodePipelineBucketDeploymentRoleC8070F49",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "EmbeddedLinuxCodePipelineBuildCodePipelineActionRoleDefaultPolicy44A54C9E": {
+      "DependsOn": [
+        "EmbeddedLinuxCodePipelineProjectPolicyDocument1FA633EB",
+        "EmbeddedLinuxCodePipelineProjectF55E3B36",
+        "EmbeddedLinuxCodePipelineProjectRoleDefaultPolicyC205FC16",
+        "EmbeddedLinuxCodePipelineProjectRoleFD913DB7",
+      ],
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "codebuild:BatchGetBuilds",
+                "codebuild:StartBuild",
+                "codebuild:StopBuild",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "EmbeddedLinuxCodePipelineProjectF55E3B36",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "EmbeddedLinuxCodePipelineBuildCodePipelineActionRoleDefaultPolicy44A54C9E",
+        "Roles": [
+          {
+            "Ref": "EmbeddedLinuxCodePipelineBuildCodePipelineActionRoleEE85AA1E",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "EmbeddedLinuxCodePipelineBuildCodePipelineActionRoleEE85AA1E": {
+      "DependsOn": [
+        "EmbeddedLinuxCodePipelineProjectPolicyDocument1FA633EB",
+        "EmbeddedLinuxCodePipelineProjectF55E3B36",
+        "EmbeddedLinuxCodePipelineProjectRoleDefaultPolicyC205FC16",
+        "EmbeddedLinuxCodePipelineProjectRoleFD913DB7",
+      ],
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::111111111111:root",
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EmbeddedLinuxCodePipelineBuildProjectSecurityGroup35690F9F": {
+      "Properties": {
+        "GroupDescription": "Security Group to allow attaching EFS",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": {
+              "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesVpc54FB4A02CidrBlock1B329233",
+            },
+            "Description": "NFS Mount Port",
+            "FromPort": 2049,
+            "IpProtocol": "tcp",
+            "ToPort": 2049,
+          },
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesVpc54FB4A0241E4C5E5",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "EmbeddedLinuxCodePipelineCheckOSAndStop8C4E93D6": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "codepipeline:StopCodePipelineExecution",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":codepipeline:eu-central-1:111111111111:",
+                    {
+                      "Ref": "EmbeddedLinuxCodePipeline4B3C7651",
+                    },
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "ecr:DescribeImages",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesECRRepositoryA0DB7EB6Arn5EC8487E",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "EmbeddedLinuxCodePipelineCheckOSAndStop8C4E93D6",
+        "Roles": [
+          {
+            "Ref": "EmbeddedLinuxCodePipelineOSImageCheckOnStartServiceRoleEBA0BE6A",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "EmbeddedLinuxCodePipelineEventsRole8EBF7C1D": {
+      "DependsOn": [
+        "EmbeddedLinuxCodePipelineProjectPolicyDocument1FA633EB",
+        "EmbeddedLinuxCodePipelineProjectF55E3B36",
+        "EmbeddedLinuxCodePipelineProjectRoleDefaultPolicyC205FC16",
+        "EmbeddedLinuxCodePipelineProjectRoleFD913DB7",
+      ],
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EmbeddedLinuxCodePipelineEventsRoleDefaultPolicyF669575E": {
+      "DependsOn": [
+        "EmbeddedLinuxCodePipelineProjectPolicyDocument1FA633EB",
+        "EmbeddedLinuxCodePipelineProjectF55E3B36",
+        "EmbeddedLinuxCodePipelineProjectRoleDefaultPolicyC205FC16",
+        "EmbeddedLinuxCodePipelineProjectRoleFD913DB7",
+      ],
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "codepipeline:StartPipelineExecution",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":codepipeline:eu-central-1:111111111111:",
+                    {
+                      "Ref": "EmbeddedLinuxCodePipeline4B3C7651",
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "EmbeddedLinuxCodePipelineEventsRoleDefaultPolicyF669575E",
+        "Roles": [
+          {
+            "Ref": "EmbeddedLinuxCodePipelineEventsRole8EBF7C1D",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "EmbeddedLinuxCodePipelineFileSystemB969CAF1": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "Encrypted": true,
+        "FileSystemTags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/EmbeddedLinuxCodePipelineFileSystem",
+          },
+        ],
+      },
+      "Type": "AWS::EFS::FileSystem",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "EmbeddedLinuxCodePipelineFileSystemEfsMountTarget1CA0AA616": {
+      "Properties": {
+        "FileSystemId": {
+          "Ref": "EmbeddedLinuxCodePipelineFileSystemB969CAF1",
+        },
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "EmbeddedLinuxCodePipelineFileSystemEfsSecurityGroup35971CF1",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesVpcPrivateSubnet1Subnet8DD627A684935C4B",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "EmbeddedLinuxCodePipelineFileSystemEfsMountTarget24B554859": {
+      "Properties": {
+        "FileSystemId": {
+          "Ref": "EmbeddedLinuxCodePipelineFileSystemB969CAF1",
+        },
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "EmbeddedLinuxCodePipelineFileSystemEfsSecurityGroup35971CF1",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesVpcPrivateSubnet2SubnetC1071C9093652F10",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "EmbeddedLinuxCodePipelineFileSystemEfsMountTarget3FAD334C7": {
+      "Properties": {
+        "FileSystemId": {
+          "Ref": "EmbeddedLinuxCodePipelineFileSystemB969CAF1",
+        },
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "EmbeddedLinuxCodePipelineFileSystemEfsSecurityGroup35971CF1",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesVpcPrivateSubnet3SubnetCA196C90FDAFF9BF",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "EmbeddedLinuxCodePipelineFileSystemEfsSecurityGroup35971CF1": {
+      "Properties": {
+        "GroupDescription": "MyTestStack/EmbeddedLinuxCodePipelineFileSystem/EfsSecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/EmbeddedLinuxCodePipelineFileSystem",
+          },
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesVpc54FB4A0241E4C5E5",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "EmbeddedLinuxCodePipelineFileSystemEfsSecurityGroupfromMyTestStackEmbeddedLinuxCodePipelineBuildProjectSecurityGroupEA21757F2049FC93D5D2": {
+      "Properties": {
+        "Description": "from MyTestStackEmbeddedLinuxCodePipelineBuildProjectSecurityGroupEA21757F:2049",
+        "FromPort": 2049,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "EmbeddedLinuxCodePipelineFileSystemEfsSecurityGroup35971CF1",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "EmbeddedLinuxCodePipelineBuildProjectSecurityGroup35690F9F",
+            "GroupId",
+          ],
+        },
+        "ToPort": 2049,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "EmbeddedLinuxCodePipelineMyTestStackEmbeddedLinuxCodePipelineE5C7D172SourceEventRulepokyf48cd2a94def24552abdd5b6ef9ffe6137be08fbc49a17964c6f7cae81245d5dzipEC68B3DA": {
+      "DependsOn": [
+        "EmbeddedLinuxCodePipelineProjectPolicyDocument1FA633EB",
+        "EmbeddedLinuxCodePipelineProjectF55E3B36",
+        "EmbeddedLinuxCodePipelineProjectRoleDefaultPolicyC205FC16",
+        "EmbeddedLinuxCodePipelineProjectRoleFD913DB7",
+      ],
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
+              "CompleteMultipartUpload",
+              "CopyObject",
+              "PutObject",
+            ],
+            "requestParameters": {
+              "bucketName": [
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesSourceBucket1FA488F54AA73B60",
+                },
+              ],
+              "key": [
+                "poky/arbitrary-file.ext",
+              ],
+            },
+            "resources": {
+              "ARN": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesSourceBucket1FA488F5Arn3CF62A69",
+                      },
+                      "/poky/arbitrary-file.ext",
+                    ],
+                  ],
+                },
+              ],
+            },
+          },
+          "detail-type": [
+            "AWS API Call via CloudTrail",
+          ],
+          "source": [
+            "aws.s3",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition",
+                  },
+                  ":codepipeline:eu-central-1:111111111111:",
+                  {
+                    "Ref": "EmbeddedLinuxCodePipeline4B3C7651",
+                  },
+                ],
+              ],
+            },
+            "Id": "Target0",
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "EmbeddedLinuxCodePipelineEventsRole8EBF7C1D",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "EmbeddedLinuxCodePipelineOSImageCheckOnStart9461FE82": {
+      "DependsOn": [
+        "EmbeddedLinuxCodePipelineOSImageCheckOnStartServiceRoleEBA0BE6A",
+      ],
+      "Properties": {
+        "Code": {
+          "ZipFile": {
+            "Fn::Join": [
+              "",
+              [
+                "
+    import boto3
+    import json
+
+    ecr_client = boto3.client('ecr')
+    codepipeline_client = boto3.client('codepipeline')
+
+    def handler(event, context):
+      print("Received event: " + json.dumps(event, indent=2))
+      response = ecr_client.describe_images(repositoryName='",
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesECRRepositoryA0DB7EB625EEF25E",
+                },
+                "', filter={'tagStatus': 'TAGGED'})
+      for i in response['imageDetails']:
+        if 'MyBaseImageStack' in i['ecrRepositoryImageTags']:
+          break
+      else:
+        print('OS image not found. Stopping execution.')
+        response = codepipeline_client.stop_pipeline_execution(
+        pipelineName=event['detail']['pipeline'],
+        pipelineExecutionId=event['detail']['execution-id'],
+        abandon=True,
+        reason='OS image not found in ECR repository. Stopping pipeline until image is present.')
+        ",
+              ],
+            ],
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "EmbeddedLinuxCodePipelineOSImageCheckOnStartServiceRoleEBA0BE6A",
+            "Arn",
+          ],
+        },
+        "Runtime": "python3.10",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "EmbeddedLinuxCodePipelineOSImageCheckOnStartLogRetentionF9BA1BAC": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "EmbeddedLinuxCodePipelineOSImageCheckOnStart9461FE82",
+              },
+            ],
+          ],
+        },
+        "RetentionInDays": 365,
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
+    },
+    "EmbeddedLinuxCodePipelineOSImageCheckOnStartServiceRoleEBA0BE6A": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EmbeddedLinuxCodePipelineOnCodePipelineStartRule0A57D4C5": {
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "execution-trigger": {
+              "trigger-type": [
+                "CreateCodePipeline",
+              ],
+            },
+            "state": [
+              "STARTED",
+            ],
+          },
+          "detail-type": [
+            "CodeCodePipeline CodePipeline Execution State Change",
+          ],
+          "source": [
+            "aws.codepipeline",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "EmbeddedLinuxCodePipelineOSImageCheckOnStart9461FE82",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "EmbeddedLinuxCodePipelineOnCodePipelineStartRuleAllowEventRuleMyTestStackEmbeddedLinuxCodePipelineOSImageCheckOnStartADCB57EA531B1926": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "EmbeddedLinuxCodePipelineOSImageCheckOnStart9461FE82",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "EmbeddedLinuxCodePipelineOnCodePipelineStartRule0A57D4C5",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "EmbeddedLinuxCodePipelineProjectF55E3B36": {
+      "DependsOn": [
+        "EmbeddedLinuxCodePipelineBucketDeploymentAwsCliLayerAA1BBC13",
+        "EmbeddedLinuxCodePipelineBucketDeploymentCustomResourceBA39990C",
+        "EmbeddedLinuxCodePipelineProjectPolicyDocument1FA633EB",
+      ],
+      "Properties": {
+        "Artifacts": {
+          "Type": "CODEPIPELINE",
+        },
+        "Cache": {
+          "Type": "NO_CACHE",
+        },
+        "EncryptionKey": {
+          "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+        },
+        "Environment": {
+          "ComputeType": "BUILD_GENERAL1_XLARGE",
+          "EnvironmentVariables": [
+            {
+              "Name": "AWS_ACCOUNT_ID",
+              "Type": "PLAINTEXT",
+              "Value": "111111111111",
+            },
+            {
+              "Name": "AWS_DEFAULT_REGION",
+              "Type": "PLAINTEXT",
+              "Value": "eu-central-1",
+            },
+            {
+              "Name": "PIPELINE_PROJECT_NAME",
+              "Type": "PLAINTEXT",
+              "Value": "MyTestStack",
+            },
+            {
+              "Name": "PIPELINE_OUTPUT_BUCKET",
+              "Type": "PLAINTEXT",
+              "Value": {
+                "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesOutputBucketA2144F25070A0F1C",
+              },
+            },
+            {
+              "Name": "PIPELINE_OUTPUT_BUCKET_PREFIX",
+              "Type": "PLAINTEXT",
+              "Value": "poky",
+            },
+            {
+              "Name": "VM_IMPORT_ROLE",
+              "Type": "PLAINTEXT",
+              "Value": {
+                "Ref": "EmbeddedLinuxCodePipelineVMImportRole68B53DB4",
+              },
+            },
+          ],
+          "Image": {
+            "Fn::Join": [
+              "",
+              [
+                {
+                  "Fn::Select": [
+                    4,
+                    {
+                      "Fn::Split": [
+                        ":",
+                        {
+                          "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesECRRepositoryA0DB7EB6Arn5EC8487E",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                ".dkr.ecr.",
+                {
+                  "Fn::Select": [
+                    3,
+                    {
+                      "Fn::Split": [
+                        ":",
+                        {
+                          "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesECRRepositoryA0DB7EB6Arn5EC8487E",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                ".",
+                {
+                  "Ref": "AWS::URLSuffix",
+                },
+                "/",
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesECRRepositoryA0DB7EB625EEF25E",
+                },
+                ":MyBaseImageStack",
+              ],
+            ],
+          },
+          "ImagePullCredentialsType": "SERVICE_ROLE",
+          "PrivilegedMode": true,
+          "Type": "LINUX_CONTAINER",
+        },
+        "FileSystemLocations": [
+          {
+            "Identifier": "nfs",
+            "Location": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "EmbeddedLinuxCodePipelineFileSystemB969CAF1",
+                  },
+                  ".efs.eu-central-1.amazonaws.com:/",
+                ],
+              ],
+            },
+            "MountPoint": "/nfs",
+            "Type": "EFS",
+          },
+        ],
+        "LogsConfig": {
+          "CloudWatchLogs": {
+            "GroupName": {
+              "Ref": "EmbeddedLinuxCodePipelineProjectLogsBA5DB55C",
+            },
+            "Status": "ENABLED",
+          },
+        },
+        "Name": "MyTestStack",
+        "ServiceRole": {
+          "Fn::GetAtt": [
+            "EmbeddedLinuxCodePipelineProjectRoleFD913DB7",
+            "Arn",
+          ],
+        },
+        "Source": {
+          "BuildSpec": "build.buildspec.yml",
+          "Type": "CODEPIPELINE",
+        },
+        "TimeoutInMinutes": 240,
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "EmbeddedLinuxCodePipelineBuildProjectSecurityGroup35690F9F",
+                "GroupId",
+              ],
+            },
+          ],
+          "Subnets": [
+            {
+              "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesVpcPrivateSubnet1Subnet8DD627A684935C4B",
+            },
+            {
+              "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesVpcPrivateSubnet2SubnetC1071C9093652F10",
+            },
+            {
+              "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesVpcPrivateSubnet3SubnetCA196C90FDAFF9BF",
+            },
+          ],
+          "VpcId": {
+            "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesVpc54FB4A0241E4C5E5",
+          },
+        },
+      },
+      "Type": "AWS::CodeBuild::Project",
+    },
+    "EmbeddedLinuxCodePipelineProjectLogsBA5DB55C": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "LogGroupName": "MyTestStack-EmbeddedLinuxCodePipelineProjectLogs",
+        "RetentionInDays": 365,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "EmbeddedLinuxCodePipelineProjectPolicyDocument1FA633EB": {
+      "DependsOn": [
+        "EmbeddedLinuxCodePipelineBucketDeploymentAwsCliLayerAA1BBC13",
+        "EmbeddedLinuxCodePipelineBucketDeploymentCustomResourceBA39990C",
+      ],
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "ec2:CreateNetworkInterface",
+                "ec2:DescribeNetworkInterfaces",
+                "ec2:DeleteNetworkInterface",
+                "ec2:DescribeSubnets",
+                "ec2:DescribeSecurityGroups",
+                "ec2:DescribeDhcpOptions",
+                "ec2:DescribeVpcs",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "EmbeddedLinuxCodePipelineProjectPolicyDocument1FA633EB",
+        "Roles": [
+          {
+            "Ref": "EmbeddedLinuxCodePipelineProjectRoleFD913DB7",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "EmbeddedLinuxCodePipelineProjectRoleDefaultPolicyC205FC16": {
+      "DependsOn": [
+        "EmbeddedLinuxCodePipelineBucketDeploymentAwsCliLayerAA1BBC13",
+        "EmbeddedLinuxCodePipelineBucketDeploymentCustomResourceBA39990C",
+      ],
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesECRRepositoryA0DB7EB6Arn5EC8487E",
+              },
+            },
+            {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "EmbeddedLinuxCodePipelineProjectLogsBA5DB55C",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "ec2:CreateNetworkInterfacePermission",
+              "Condition": {
+                "StringEquals": {
+                  "ec2:AuthorizedService": "codebuild.amazonaws.com",
+                  "ec2:Subnet": [
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "arn:",
+                          {
+                            "Ref": "AWS::Partition",
+                          },
+                          ":ec2:",
+                          {
+                            "Ref": "AWS::Region",
+                          },
+                          ":",
+                          {
+                            "Ref": "AWS::AccountId",
+                          },
+                          ":subnet/",
+                          {
+                            "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesVpcPrivateSubnet1Subnet8DD627A684935C4B",
+                          },
+                        ],
+                      ],
+                    },
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "arn:",
+                          {
+                            "Ref": "AWS::Partition",
+                          },
+                          ":ec2:",
+                          {
+                            "Ref": "AWS::Region",
+                          },
+                          ":",
+                          {
+                            "Ref": "AWS::AccountId",
+                          },
+                          ":subnet/",
+                          {
+                            "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesVpcPrivateSubnet2SubnetC1071C9093652F10",
+                          },
+                        ],
+                      ],
+                    },
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "arn:",
+                          {
+                            "Ref": "AWS::Partition",
+                          },
+                          ":ec2:",
+                          {
+                            "Ref": "AWS::Region",
+                          },
+                          ":",
+                          {
+                            "Ref": "AWS::AccountId",
+                          },
+                          ":subnet/",
+                          {
+                            "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesVpcPrivateSubnet3SubnetCA196C90FDAFF9BF",
+                          },
+                        ],
+                      ],
+                    },
+                  ],
+                },
+              },
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ec2:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":network-interface/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":logs:eu-central-1:111111111111:log-group:/aws/codebuild/",
+                      {
+                        "Ref": "EmbeddedLinuxCodePipelineProjectF55E3B36",
+                      },
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":logs:eu-central-1:111111111111:log-group:/aws/codebuild/",
+                      {
+                        "Ref": "EmbeddedLinuxCodePipelineProjectF55E3B36",
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "codebuild:CreateReportGroup",
+                "codebuild:CreateReport",
+                "codebuild:UpdateReport",
+                "codebuild:BatchPutTestCases",
+                "codebuild:BatchPutCodeCoverages",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":codebuild:eu-central-1:111111111111:report-group/",
+                    {
+                      "Ref": "EmbeddedLinuxCodePipelineProjectF55E3B36",
+                    },
+                    "-*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "kms:Decrypt",
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+              },
+            },
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesOutputBucketA2144F25ArnBAEF4928",
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesOutputBucketA2144F25ArnBAEF4928",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "kms:Decrypt",
+                "kms:DescribeKey",
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+              },
+            },
+            {
+              "Action": [
+                "ec2:CreateImage",
+                "ec2:CreateTags",
+                "ec2:DescribeImages",
+                "ec2:DescribeSnapshots",
+                "ec2:DescribeImportSnapshotTasks",
+                "ec2:DescribeTags",
+                "ec2:CancelImportTask",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": "ec2:ImportSnapshot",
+              "Effect": "Allow",
+              "Resource": [
+                "arn:aws:ec2:eu-central-1:111111111111:import-snapshot-task/*",
+                "arn:aws:ec2:eu-central-1::snapshot/*",
+              ],
+            },
+            {
+              "Action": [
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:PutObject",
+                "s3:PutObjectTagging",
+                "s3:AbortMultipartUpload",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesOutputBucketA2144F25ArnBAEF4928",
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesOutputBucketA2144F25ArnBAEF4928",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "ec2:RegisterImage",
+                "ec2:DeregisterImage",
+                "ec2:CreateStoreImageTask",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                "arn:aws:ec2:eu-central-1::image/*",
+                "arn:aws:ec2:eu-central-1::snapshot/snap-*",
+              ],
+            },
+            {
+              "Action": [
+                "ebs:CompleteSnapshot",
+                "ebs:GetSnapshotBlock",
+                "ebs:ListChangedBlocks",
+                "ebs:ListSnapshotBlocks",
+                "ebs:PutSnapshotBlock",
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:ec2:eu-central-1::snapshot/*",
+            },
+            {
+              "Action": [
+                "ec2:DescribeStoreImageTasks",
+                "ec2:GetEbsEncryptionByDefault",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "EmbeddedLinuxCodePipelineProjectRoleDefaultPolicyC205FC16",
+        "Roles": [
+          {
+            "Ref": "EmbeddedLinuxCodePipelineProjectRoleFD913DB7",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "EmbeddedLinuxCodePipelineProjectRoleFD913DB7": {
+      "DependsOn": [
+        "EmbeddedLinuxCodePipelineBucketDeploymentAwsCliLayerAA1BBC13",
+        "EmbeddedLinuxCodePipelineBucketDeploymentCustomResourceBA39990C",
+      ],
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "codebuild.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EmbeddedLinuxCodePipelineRole784D6893": {
+      "DependsOn": [
+        "EmbeddedLinuxCodePipelineProjectPolicyDocument1FA633EB",
+        "EmbeddedLinuxCodePipelineProjectF55E3B36",
+        "EmbeddedLinuxCodePipelineProjectRoleDefaultPolicyC205FC16",
+        "EmbeddedLinuxCodePipelineProjectRoleFD913DB7",
+      ],
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "codepipeline.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EmbeddedLinuxCodePipelineRoleDefaultPolicy8CDA8ACC": {
+      "DependsOn": [
+        "EmbeddedLinuxCodePipelineProjectPolicyDocument1FA633EB",
+        "EmbeddedLinuxCodePipelineProjectF55E3B36",
+        "EmbeddedLinuxCodePipelineProjectRoleDefaultPolicyC205FC16",
+        "EmbeddedLinuxCodePipelineProjectRoleFD913DB7",
+      ],
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "kms:Decrypt",
+                "kms:DescribeKey",
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "EmbeddedLinuxCodePipelineSourceCodePipelineActionRole1B690AB7",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "EmbeddedLinuxCodePipelineBuildCodePipelineActionRoleEE85AA1E",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "EmbeddedLinuxCodePipelineArtifactCodePipelineActionRole97F56214",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "EmbeddedLinuxCodePipelineRoleDefaultPolicy8CDA8ACC",
+        "Roles": [
+          {
+            "Ref": "EmbeddedLinuxCodePipelineRole784D6893",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "EmbeddedLinuxCodePipelineSourceCodePipelineActionRole1B690AB7": {
+      "DependsOn": [
+        "EmbeddedLinuxCodePipelineProjectPolicyDocument1FA633EB",
+        "EmbeddedLinuxCodePipelineProjectF55E3B36",
+        "EmbeddedLinuxCodePipelineProjectRoleDefaultPolicyC205FC16",
+        "EmbeddedLinuxCodePipelineProjectRoleFD913DB7",
+      ],
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::111111111111:root",
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EmbeddedLinuxCodePipelineSourceCodePipelineActionRoleDefaultPolicy2FB1A568": {
+      "DependsOn": [
+        "EmbeddedLinuxCodePipelineProjectPolicyDocument1FA633EB",
+        "EmbeddedLinuxCodePipelineProjectF55E3B36",
+        "EmbeddedLinuxCodePipelineProjectRoleDefaultPolicyC205FC16",
+        "EmbeddedLinuxCodePipelineProjectRoleFD913DB7",
+      ],
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesSourceBucket1FA488F5Arn3CF62A69",
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesSourceBucket1FA488F5Arn3CF62A69",
+                      },
+                      "/poky/arbitrary-file.ext",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "kms:Decrypt",
+                "kms:DescribeKey",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+              },
+            },
+            {
+              "Action": [
+                "s3:DeleteObject*",
+                "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:Decrypt",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "EmbeddedLinuxCodePipelineSourceCodePipelineActionRoleDefaultPolicy2FB1A568",
+        "Roles": [
+          {
+            "Ref": "EmbeddedLinuxCodePipelineSourceCodePipelineActionRole1B690AB7",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "EmbeddedLinuxCodePipelineVMImportRole68B53DB4": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringEquals": {
+                  "sts:ExternalId": "vmimport",
+                },
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "vmie.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "s3:GetBucketLocation",
+                    "s3:GetObject",
+                    "s3:ListBucket",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": [
+                    {
+                      "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesOutputBucketA2144F25ArnBAEF4928",
+                    },
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          {
+                            "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesOutputBucketA2144F25ArnBAEF4928",
+                          },
+                          "/*",
+                        ],
+                      ],
+                    },
+                  ],
+                },
+                {
+                  "Action": [
+                    "ec2:CreateTags",
+                    "ec2:DescribeTags",
+                  ],
+                  "Condition": {
+                    "StringEquals": {
+                      "ec2:ResourceTag/CreatedBy": [
+                        "MyTestStack",
+                      ],
+                    },
+                  },
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                {
+                  "Action": "ec2:CopySnapshot",
+                  "Effect": "Allow",
+                  "Resource": "arn:aws:ec2:eu-central-1::snapshot/*",
+                },
+                {
+                  "Action": "ec2:DescribeSnapshots",
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                {
+                  "Action": [
+                    "kms:CreateGrant",
+                    "kms:Decrypt",
+                    "kms:DescribeKey",
+                    "kms:GenerateDataKeyWithoutPlaintext",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "vmImportPolicy",
+          },
+        ],
+        "RoleName": "MyTestStack-vm-mport",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EmbeddedLinuxCodePipelineWeeklyRefreshSchedule47F3A27D": {
+      "Properties": {
+        "ScheduleExpression": "cron(0 6 ? * Tuesday *)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition",
+                  },
+                  ":codepipeline:eu-central-1:111111111111:",
+                  {
+                    "Ref": "EmbeddedLinuxCodePipeline4B3C7651",
+                  },
+                ],
+              ],
+            },
+            "Id": "Target0",
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "EmbeddedLinuxCodePipelineEventsRole8EBF7C1D",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": {
+      "DependsOn": [
+        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": "cdk-hnb659fds-assets-111111111111-eu-central-1",
+          "S3Key": "arbitrary-file.ext",
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs20.x",
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "logs:PutRetentionPolicy",
+                "logs:DeleteRetentionPolicy",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+        "Roles": [
+          {
+            "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
