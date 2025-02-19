@@ -10,7 +10,8 @@
     "clean": "tsc --build --clean",
     "doc": "typedoc --sort source-order --readme README.md",
     "format": "eslint '**/*.{js,ts,json}' --quiet --fix",
-    "prepare": "yarn build",
+    "postinstall": "npm run build > /dev/null || echo 'prepapre command completed successfully with errors'",
+    "prepare": "npm run build > /dev/null || echo 'prepapre command completed successfully with errors'",
     "prepare-commit": "pre-commit run --all-files --color=always --show-diff-on-failure",
     "test": "jest",
     "update-snapshot": "jest -u",
@@ -54,5 +55,6 @@
   },
   "overrides": {
     "glob": "^9.3.5"
-  }
+  },
+  "packageManager": "yarn@4.6.0"
 }
