@@ -6,6 +6,15 @@
 node_modules
 dist
 
+# yarn asset
+yarn-install.log
+.yarn/*
+!.yarn/releases/
+!.yarn/plugins/
+!.yarn/versions/
+!.yarn/sdks/
+.pnp.*
+
 # CDK asset staging directory
 .cdk.staging
 cdk.out

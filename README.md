@@ -204,12 +204,20 @@ cd my-project
 cdk init app --language typescript
 ```
 
-Then you will need to install the CDK library including the `aws4embeddedlinux-ci` library:
+Then you will need to install the CDK library including the `aws4embeddedlinux-ci` library either using `npm`:
 
 ```bash
-yarn install
-yarn add github:aws4embeddedlinux/aws4embeddedlinux-ci
+npm install aws4embeddedlinux/aws4embeddedlinux-ci
 ```
+
+of `yarn':
+
+```bash
+yarn add github:aws4embeddedlinux/aws4embeddedlinux-ci
+yarn install
+```
+
+> If you are not familliar with Yarn, please refer to the [documentation](https://yarnpkg.com/getting-started).
 
 Once added, you can start creatin your application using the library.
 
@@ -275,6 +283,8 @@ Once your pipelines completes successfully, the Yocto deploy directory generated
 [Bask to the top](#aws4embeddedlinux-ci)
 
 ## Development Setup
+
+The repository is leveraging Yarn 2 and if you are not familliar with Yarn, please refer to the [documentation](https://yarnpkg.com/getting-started).
 
 If you are looking to develop new feature, you can use [`yarn link`](https://classic.yarnpkg.com/lang/en/docs/cli/link/k) to develop with a local copy of this repo.
 
