@@ -39,9 +39,9 @@ sh meta-rcar-gen3/docs/sample/copyscript/copy_proprietary_softwares.sh -f "${WOR
 cd "${WORK}"
 # shellcheck source=/dev/null
 source "poky/oe-init-build-env" "${WORK}/build"
-#cp ${WORK}/meta-renesas/meta-rcar-gen3/docs/sample/conf/${TARGET_BOARD}/poky-gcc/bsp/*.conf ./conf/
-#cp ${WORK}/meta-renesas/meta-rcar-gen3/docs/sample/conf/${TARGET_BOARD}/poky-gcc/gfx-only/*.conf ./conf/
-cp "${WORK}/meta-renesas/meta-rcar-gen3/docs/sample/conf/${TARGET_BOARD}/poky-gcc/mmp/*.conf" ./conf
+#cp "${WORK}/meta-renesas/meta-rcar-gen3/docs/sample/conf/${TARGET_BOARD}/poky-gcc/bsp/"*.conf ./conf/
+#cp "${WORK}/meta-renesas/meta-rcar-gen3/docs/sample/conf/${TARGET_BOARD}/poky-gcc/gfx-only/"*.conf ./conf/
+cp "${WORK}/meta-renesas/meta-rcar-gen3/docs/sample/conf/${TARGET_BOARD}/poky-gcc/mmp/"*.conf ./conf
 cd "${WORK}/build"
 cp conf/local-wayland.conf conf/local.conf
 echo 'BB_DANGLINGAPPENDS_WARNONLY ?= "true"' >> conf/local.conf
