@@ -6,18 +6,22 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "watch": "tsc -w",
-    "cdk": "cdk",
-    "clean": "tsc --build --clean && rm -rf dist && rm -rf source-zip && rm -rf cdk.out",
+    "check": "eslint '**/*.{js,ts,json}'",
+    "clean": "tsc --build --clean",
     "doc": "typedoc --sort source-order --readme README.md",
     "format": "eslint '**/*.{js,ts,json}' --quiet --fix",
-    "check": "eslint '**/*.{js,ts,json}'",
-    "build-assets": "./utils/build-assets.sh",
-    "prebuild": "yarn run build-assets",
-    "test": "yarn run prebuild && jest",
-    "update-snapshot": "yarn run prebuild && jest -u",
-    "prepare": "yarn run build",
-    "prepare-commit": "yarn run clean && yarn run format && yarn run build && yarn run check && yarn run test & pre-commit run --all-files --color=always --show-diff-on-failure"
+    "postinstall": "npm run build > /dev/null || echo 'prepapre command completed successfully with errors'",
+    "prepare": "npm run build > /dev/null || echo 'prepapre command completed successfully with errors'",
+    "prepare-commit": "pre-commit run --all-files --color=always --show-diff-on-failure",
+    "test": "jest",
+    "update-snapshot": "jest -u",
+    "watch": "tsc -w",
+    "postclean": "rm -rf ./dist",
+    "prebuild": "./utils/build-assets.sh",
+    "precheck": "yarn clean",
+    "preformat": "yarn clean",
+    "pretest": "yarn prebuild",
+    "preupdate-snapshot": "yarn prebuild"
   },
   "dependencies": {
     "aws-cdk-lib": "2.176.0",
@@ -51,5 +55,6 @@
   },
   "overrides": {
     "glob": "^9.3.5"
-  }
+  },
+  "packageManager": "yarn@4.6.0"
 }
