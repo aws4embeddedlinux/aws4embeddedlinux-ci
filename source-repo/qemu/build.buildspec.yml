@@ -29,23 +29,15 @@ phases:
   build:
     commands:
       - echo "Build started - [$(date '+%F %H:%M:%S')]"
-      - if [ -d .git ]; then rm -rf .git; fi
-      - git init $CODEBUILD_SRC_DIR && git add --all && git commit -m 'initial'
-      - repo init -u https://github.com/nxp-imx/imx-manifest -b imx-linux-mickledore -m imx-6.1.22-2.0.0.xml
-      - repo sync -c --no-tags -j$(nproc --all)
-      # If you have not accepted NXP's EULA for these layers, the build will
-      # prompt you repeatedly until the timeout. This next line is an
-      # intentional barrier to stop the build quickly and get your attention.
-      # Please review the licensing required, modify this buildspec to accept
-      # and remove the next line to proceed.
-      - echo "User input is required." && exit 1
-      - MACHINE=imx6ullevk DISTRO=fsl-imx-wayland source ./imx-setup-release.sh
+      - git clone https://github.com/aws4embeddedlinux/meta-aws-demos
+      - cd meta-aws-demos
+      - git submodule update --init --recursive
+      - . ./init-build-env $TMP_DIR
       # Update our local conf to check for CVEs
-      - echo 'INHERIT += "cve-check"' >> conf/local.conf
+      - echo 'INHERIT += "cve-check"' >> $TMP_DIR/conf/local.conf
       # this will suppress false positive CVEs
-      - echo 'include cve-extra-exclusions.inc' >> conf/local.conf
-      # build the image
-      - bitbake core-image-minimal
+      - echo 'include cve-extra-exclusions.inc' >> $TMP_DIR/conf/local.conf
+      - BUILD_DEVICE=qemu bitbake core-image-minimal
       - echo "Build completed - [$(date '+%F %H:%M:%S')]"
   post_build:
     commands:
@@ -63,6 +55,5 @@ phases:
 artifacts:
   discard-paths: true
   files:
-    # $TMP_DIR is not supported by imx bsp / distro
-    - build/tmp/deploy/images/imx93evk/*
-    - build/tmp/log/cve/cve-summary*
+    - $TMP_DIR/tmp/deploy/images/qemux86-64/core-image-minimal-qemux86-64*
+    - $TMP_DIR/tmp/log/cve/cve-summary*

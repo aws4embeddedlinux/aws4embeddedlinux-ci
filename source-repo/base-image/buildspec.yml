@@ -1,0 +1,23 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo "Pre build started - [$(date '+%F %H:%M:%S')]"
+      - echo Logging into Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION |
+        docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - echo "Pre build completed - [$(date '+%F %H:%M:%S')]"
+  build:
+    commands:
+      - echo "Build started - [$(date '+%F %H:%M:%S')]"
+      - ls .
+      - echo "Building the Docker image $IMAGE_TAG ..."
+      - docker build -t ubuntu_22_04:$IMAGE_TAG .
+      - docker tag ubuntu_22_04:$IMAGE_TAG $ECR_REPOSITORY_URI:$IMAGE_TAG
+      - echo "Build completed - [$(date '+%F %H:%M:%S')]"
+  post_build:
+    commands:
+      - echo "Post build statred - [$(date '+%F %H:%M:%S')]"
+      - echo Pushing the Docker image...
+      - docker push $ECR_REPOSITORY_URI:$IMAGE_TAG
+      - echo "Post build completed - [$(date '+%F %H:%M:%S')]"

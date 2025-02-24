@@ -1,0 +1,1376 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PipelineResourcesStack Snapshot 1`] = `
+{
+  "Outputs": {
+    "ArtifactBucket": {
+      "Description": "The artifact bucket.",
+      "Value": {
+        "Ref": "PipelineResourcesArtifactBucketFF61EB98",
+      },
+    },
+    "LoggingBucket": {
+      "Description": "The access logging bucket.",
+      "Value": {
+        "Ref": "PipelineResourcesLoggingBucketD957F175",
+      },
+    },
+    "OutputBucket": {
+      "Description": "The output bucket.",
+      "Value": {
+        "Ref": "PipelineResourcesOutputBucketA2144F25",
+      },
+    },
+    "SourceBucket": {
+      "Description": "The source bucket.",
+      "Value": {
+        "Ref": "PipelineResourcesSourceBucket1FA488F5",
+      },
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": {
+      "DependsOn": [
+        "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": "cdk-hnb659fds-assets-111111111111-eu-central-1",
+          "S3Key": "arbitrary-file.ext",
+        },
+        "Description": {
+          "Fn::Join": [
+            "",
+            [
+              "Lambda function for auto-deleting objects in ",
+              {
+                "Ref": "PipelineResourcesLoggingBucketD957F175",
+              },
+              " S3 bucket.",
+            ],
+          ],
+        },
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs20.x",
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Sub": "arn:\${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "PipelineResourcesArtifactBucketAutoDeleteObjectsCustomResource92CEB6DD": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "PipelineResourcesArtifactBucketPolicy41E82DF1",
+      ],
+      "Properties": {
+        "BucketName": {
+          "Ref": "PipelineResourcesArtifactBucketFF61EB98",
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineResourcesArtifactBucketFF61EB98": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "KMSMasterKeyID": {
+                  "Fn::GetAtt": [
+                    "PipelineResourcesArtifactKey368D3018",
+                    "Arn",
+                  ],
+                },
+                "SSEAlgorithm": "aws:kms",
+              },
+            },
+          ],
+        },
+        "BucketName": "test-111111111111-eu-central-1-artifact",
+        "LoggingConfiguration": {
+          "DestinationBucketName": {
+            "Ref": "PipelineResourcesLoggingBucketD957F175",
+          },
+          "LogFilePrefix": "artifact-bucket",
+        },
+        "Tags": [
+          {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
+        "VersioningConfiguration": {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineResourcesArtifactBucketPolicy41E82DF1": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "PipelineResourcesArtifactBucketFF61EB98",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineResourcesArtifactBucketFF61EB98",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineResourcesArtifactBucketFF61EB98",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:PutBucketPolicy",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineResourcesArtifactBucketFF61EB98",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineResourcesArtifactBucketFF61EB98",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "PipelineResourcesArtifactKey368D3018": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "EnableKeyRotation": true,
+        "KeyPolicy": {
+          "Statement": [
+            {
+              "Action": "kms:*",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::111111111111:root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "kms:Decrypt",
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "logging.s3.amazonaws.com",
+              },
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::KMS::Key",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineResourcesECRRepositoryA0DB7EB6": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "EmptyOnDelete": true,
+        "RepositoryName": "test-111111111111-eu-central-1-repo",
+      },
+      "Type": "AWS::ECR::Repository",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineResourcesLoggingBucketAutoDeleteObjectsCustomResource17381FC7": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "PipelineResourcesLoggingBucketPolicy520659AE",
+      ],
+      "Properties": {
+        "BucketName": {
+          "Ref": "PipelineResourcesLoggingBucketD957F175",
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineResourcesLoggingBucketD957F175": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "AccessControl": "LogDeliveryWrite",
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "KMSMasterKeyID": {
+                  "Fn::GetAtt": [
+                    "PipelineResourcesArtifactKey368D3018",
+                    "Arn",
+                  ],
+                },
+                "SSEAlgorithm": "aws:kms",
+              },
+            },
+          ],
+        },
+        "BucketName": "test-111111111111-eu-central-1-logs",
+        "OwnershipControls": {
+          "Rules": [
+            {
+              "ObjectOwnership": "ObjectWriter",
+            },
+          ],
+        },
+        "Tags": [
+          {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
+        "VersioningConfiguration": {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineResourcesLoggingBucketPolicy520659AE": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "PipelineResourcesLoggingBucketD957F175",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineResourcesLoggingBucketD957F175",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineResourcesLoggingBucketD957F175",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:PutBucketPolicy",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineResourcesLoggingBucketD957F175",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineResourcesLoggingBucketD957F175",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "PipelineResourcesOutputBucketA2144F25": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "KMSMasterKeyID": {
+                  "Fn::GetAtt": [
+                    "PipelineResourcesArtifactKey368D3018",
+                    "Arn",
+                  ],
+                },
+                "SSEAlgorithm": "aws:kms",
+              },
+            },
+          ],
+        },
+        "BucketName": "test-111111111111-eu-central-1-output",
+        "LoggingConfiguration": {
+          "DestinationBucketName": {
+            "Ref": "PipelineResourcesLoggingBucketD957F175",
+          },
+          "LogFilePrefix": "output-bucket",
+        },
+        "Tags": [
+          {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
+        "VersioningConfiguration": {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineResourcesOutputBucketAutoDeleteObjectsCustomResource5A511D2C": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "PipelineResourcesOutputBucketPolicyAE7D91E7",
+      ],
+      "Properties": {
+        "BucketName": {
+          "Ref": "PipelineResourcesOutputBucketA2144F25",
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineResourcesOutputBucketPolicyAE7D91E7": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "PipelineResourcesOutputBucketA2144F25",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineResourcesOutputBucketA2144F25",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineResourcesOutputBucketA2144F25",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:PutBucketPolicy",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineResourcesOutputBucketA2144F25",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineResourcesOutputBucketA2144F25",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "PipelineResourcesSourceBucket1FA488F5": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "KMSMasterKeyID": {
+                  "Fn::GetAtt": [
+                    "PipelineResourcesArtifactKey368D3018",
+                    "Arn",
+                  ],
+                },
+                "SSEAlgorithm": "aws:kms",
+              },
+            },
+          ],
+        },
+        "BucketName": "test-111111111111-eu-central-1-source",
+        "LoggingConfiguration": {
+          "DestinationBucketName": {
+            "Ref": "PipelineResourcesLoggingBucketD957F175",
+          },
+          "LogFilePrefix": "source-bucket",
+        },
+        "Tags": [
+          {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
+        "VersioningConfiguration": {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineResourcesSourceBucketAutoDeleteObjectsCustomResourceD6504155": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "PipelineResourcesSourceBucketPolicyE537B0E0",
+      ],
+      "Properties": {
+        "BucketName": {
+          "Ref": "PipelineResourcesSourceBucket1FA488F5",
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineResourcesSourceBucketPolicyE537B0E0": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "PipelineResourcesSourceBucket1FA488F5",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineResourcesSourceBucket1FA488F5",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineResourcesSourceBucket1FA488F5",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:PutBucketPolicy",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PipelineResourcesSourceBucket1FA488F5",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PipelineResourcesSourceBucket1FA488F5",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "PipelineResourcesVPCFlowLogGroupCCF3042F": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "LogGroupName": "MyTestStack-PipelineResourcesVPCFlowLogGroup",
+        "RetentionInDays": 365,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "PipelineResourcesVPCFlowLogsFlowLogDCC98C23": {
+      "Properties": {
+        "DeliverLogsPermissionArn": {
+          "Fn::GetAtt": [
+            "PipelineResourcesVPCFlowLogsIAMRoleD4BD5FD0",
+            "Arn",
+          ],
+        },
+        "LogDestinationType": "cloud-watch-logs",
+        "LogGroupName": {
+          "Ref": "PipelineResourcesVPCFlowLogGroupCCF3042F",
+        },
+        "ResourceId": {
+          "Ref": "PipelineResourcesVpc54FB4A02",
+        },
+        "ResourceType": "VPC",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVPCFlowLogs",
+          },
+        ],
+        "TrafficType": "ALL",
+      },
+      "Type": "AWS::EC2::FlowLog",
+    },
+    "PipelineResourcesVPCFlowLogsIAMRoleD4BD5FD0": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "vpc-flow-logs.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVPCFlowLogs",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "PipelineResourcesVPCFlowLogsIAMRoleDefaultPolicy6A6D03E1": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:DescribeLogStreams",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "PipelineResourcesVPCFlowLogGroupCCF3042F",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "PipelineResourcesVPCFlowLogsIAMRoleD4BD5FD0",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "PipelineResourcesVPCFlowLogsIAMRoleDefaultPolicy6A6D03E1",
+        "Roles": [
+          {
+            "Ref": "PipelineResourcesVPCFlowLogsIAMRoleD4BD5FD0",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "PipelineResourcesVpc54FB4A02": {
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "PipelineResourcesVpcIGW375CBF19": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "PipelineResourcesVpcPrivateSubnet1DefaultRoute4C73C54F": {
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "PipelineResourcesVpcPublicSubnet1NATGateway9B71CD07",
+        },
+        "RouteTableId": {
+          "Ref": "PipelineResourcesVpcPrivateSubnet1RouteTable42958689",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "PipelineResourcesVpcPrivateSubnet1RouteTable42958689": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "PipelineResourcesVpc54FB4A02",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "PipelineResourcesVpcPrivateSubnet1RouteTableAssociationC7ED7464": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PipelineResourcesVpcPrivateSubnet1RouteTable42958689",
+        },
+        "SubnetId": {
+          "Ref": "PipelineResourcesVpcPrivateSubnet1Subnet8DD627A6",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "PipelineResourcesVpcPrivateSubnet1Subnet8DD627A6": {
+      "Properties": {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.96.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "PipelineResourcesVpc54FB4A02",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "PipelineResourcesVpcPrivateSubnet2DefaultRouteB1EEA4A3": {
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "PipelineResourcesVpcPublicSubnet2NATGateway655DC282",
+        },
+        "RouteTableId": {
+          "Ref": "PipelineResourcesVpcPrivateSubnet2RouteTableBA14AB02",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "PipelineResourcesVpcPrivateSubnet2RouteTableAssociation9DEF6A48": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PipelineResourcesVpcPrivateSubnet2RouteTableBA14AB02",
+        },
+        "SubnetId": {
+          "Ref": "PipelineResourcesVpcPrivateSubnet2SubnetC1071C90",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "PipelineResourcesVpcPrivateSubnet2RouteTableBA14AB02": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "PipelineResourcesVpc54FB4A02",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "PipelineResourcesVpcPrivateSubnet2SubnetC1071C90": {
+      "Properties": {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.128.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "PipelineResourcesVpc54FB4A02",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "PipelineResourcesVpcPrivateSubnet3DefaultRoute12E7DE69": {
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "PipelineResourcesVpcPublicSubnet3NATGatewayE3DAD508",
+        },
+        "RouteTableId": {
+          "Ref": "PipelineResourcesVpcPrivateSubnet3RouteTable6A1E641C",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "PipelineResourcesVpcPrivateSubnet3RouteTable6A1E641C": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc/PrivateSubnet3",
+          },
+        ],
+        "VpcId": {
+          "Ref": "PipelineResourcesVpc54FB4A02",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "PipelineResourcesVpcPrivateSubnet3RouteTableAssociationACAD4730": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PipelineResourcesVpcPrivateSubnet3RouteTable6A1E641C",
+        },
+        "SubnetId": {
+          "Ref": "PipelineResourcesVpcPrivateSubnet3SubnetCA196C90",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "PipelineResourcesVpcPrivateSubnet3SubnetCA196C90": {
+      "Properties": {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.160.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc/PrivateSubnet3",
+          },
+        ],
+        "VpcId": {
+          "Ref": "PipelineResourcesVpc54FB4A02",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "PipelineResourcesVpcPublicSubnet1DefaultRouteEC2ED518": {
+      "DependsOn": [
+        "PipelineResourcesVpcVPCGWD5E21195",
+      ],
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "PipelineResourcesVpcIGW375CBF19",
+        },
+        "RouteTableId": {
+          "Ref": "PipelineResourcesVpcPublicSubnet1RouteTable31D009BE",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "PipelineResourcesVpcPublicSubnet1EIPAA3A3298": {
+      "Properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "PipelineResourcesVpcPublicSubnet1NATGateway9B71CD07": {
+      "DependsOn": [
+        "PipelineResourcesVpcPublicSubnet1DefaultRouteEC2ED518",
+        "PipelineResourcesVpcPublicSubnet1RouteTableAssociation20C8242F",
+      ],
+      "Properties": {
+        "AllocationId": {
+          "Fn::GetAtt": [
+            "PipelineResourcesVpcPublicSubnet1EIPAA3A3298",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": {
+          "Ref": "PipelineResourcesVpcPublicSubnet1SubnetF8A80437",
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "PipelineResourcesVpcPublicSubnet1RouteTable31D009BE": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "PipelineResourcesVpc54FB4A02",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "PipelineResourcesVpcPublicSubnet1RouteTableAssociation20C8242F": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PipelineResourcesVpcPublicSubnet1RouteTable31D009BE",
+        },
+        "SubnetId": {
+          "Ref": "PipelineResourcesVpcPublicSubnet1SubnetF8A80437",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "PipelineResourcesVpcPublicSubnet1SubnetF8A80437": {
+      "Properties": {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.0.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "PipelineResourcesVpc54FB4A02",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "PipelineResourcesVpcPublicSubnet2DefaultRoute3E8F0AD0": {
+      "DependsOn": [
+        "PipelineResourcesVpcVPCGWD5E21195",
+      ],
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "PipelineResourcesVpcIGW375CBF19",
+        },
+        "RouteTableId": {
+          "Ref": "PipelineResourcesVpcPublicSubnet2RouteTable3F256387",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "PipelineResourcesVpcPublicSubnet2EIPD5CF8B49": {
+      "Properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet2",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "PipelineResourcesVpcPublicSubnet2NATGateway655DC282": {
+      "DependsOn": [
+        "PipelineResourcesVpcPublicSubnet2DefaultRoute3E8F0AD0",
+        "PipelineResourcesVpcPublicSubnet2RouteTableAssociation6F2523EC",
+      ],
+      "Properties": {
+        "AllocationId": {
+          "Fn::GetAtt": [
+            "PipelineResourcesVpcPublicSubnet2EIPD5CF8B49",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": {
+          "Ref": "PipelineResourcesVpcPublicSubnet2SubnetB9638D82",
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet2",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "PipelineResourcesVpcPublicSubnet2RouteTable3F256387": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "PipelineResourcesVpc54FB4A02",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "PipelineResourcesVpcPublicSubnet2RouteTableAssociation6F2523EC": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PipelineResourcesVpcPublicSubnet2RouteTable3F256387",
+        },
+        "SubnetId": {
+          "Ref": "PipelineResourcesVpcPublicSubnet2SubnetB9638D82",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "PipelineResourcesVpcPublicSubnet2SubnetB9638D82": {
+      "Properties": {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.32.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "PipelineResourcesVpc54FB4A02",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "PipelineResourcesVpcPublicSubnet3DefaultRoute9ED6D279": {
+      "DependsOn": [
+        "PipelineResourcesVpcVPCGWD5E21195",
+      ],
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "PipelineResourcesVpcIGW375CBF19",
+        },
+        "RouteTableId": {
+          "Ref": "PipelineResourcesVpcPublicSubnet3RouteTableB8C2FF69",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "PipelineResourcesVpcPublicSubnet3EIPF7259271": {
+      "Properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet3",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "PipelineResourcesVpcPublicSubnet3NATGatewayE3DAD508": {
+      "DependsOn": [
+        "PipelineResourcesVpcPublicSubnet3DefaultRoute9ED6D279",
+        "PipelineResourcesVpcPublicSubnet3RouteTableAssociationA597E9BD",
+      ],
+      "Properties": {
+        "AllocationId": {
+          "Fn::GetAtt": [
+            "PipelineResourcesVpcPublicSubnet3EIPF7259271",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": {
+          "Ref": "PipelineResourcesVpcPublicSubnet3Subnet154058BD",
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet3",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "PipelineResourcesVpcPublicSubnet3RouteTableAssociationA597E9BD": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PipelineResourcesVpcPublicSubnet3RouteTableB8C2FF69",
+        },
+        "SubnetId": {
+          "Ref": "PipelineResourcesVpcPublicSubnet3Subnet154058BD",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "PipelineResourcesVpcPublicSubnet3RouteTableB8C2FF69": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet3",
+          },
+        ],
+        "VpcId": {
+          "Ref": "PipelineResourcesVpc54FB4A02",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "PipelineResourcesVpcPublicSubnet3Subnet154058BD": {
+      "Properties": {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.64.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet3",
+          },
+        ],
+        "VpcId": {
+          "Ref": "PipelineResourcesVpc54FB4A02",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "PipelineResourcesVpcVPCGWD5E21195": {
+      "Properties": {
+        "InternetGatewayId": {
+          "Ref": "PipelineResourcesVpcIGW375CBF19",
+        },
+        "VpcId": {
+          "Ref": "PipelineResourcesVpc54FB4A02",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;

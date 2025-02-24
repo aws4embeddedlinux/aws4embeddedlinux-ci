@@ -13,4 +13,4 @@ jobs:
       - name: Install shellcheck
         run: sudo apt-get install shellcheck
       - name: Run shellcheck
-        run: shellcheck assets/*.sh
+        run: for file in $(find ./source-repo -type f -iname "*.sh"); do shellcheck $file; done;

@@ -1,25 +1,42 @@
 name: Typedoc build and deploy doc to GH pages
 on:
-    push:
-        branches: ["main"]
+  push:
+    branches: ["main"]
 
-    workflow_dispatch:
+  workflow_dispatch:
 
 permissions:
-    contents: write
+  contents: write
 jobs:
-    build-and-deploy:
-        runs-on: ubuntu-latest
-        steps:
-        - name: Checkout
-          uses: actions/checkout@v3
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v4
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
-        - name: Install and Build
-          run: |
-            npm ci
-            npm run doc
+      - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
 
-        - name: Deploy
-          uses: JamesIves/github-pages-deploy-action@v4
-          with:
-            folder: dist/docs
+      - name: Install and Build
+        run: |
+          yarn install --immutable
+          yarn run doc
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist/docs
