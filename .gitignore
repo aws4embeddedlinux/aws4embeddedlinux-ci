@@ -28,6 +28,15 @@ yarn-install.log
 !.yarn/sdks/
 .pnp.*
 
+# yarn asset
+yarn-install.log
+.yarn/*
+!.yarn/releases/
+!.yarn/plugins/
+!.yarn/versions/
+!.yarn/sdks/
+.pnp.*
+
 # CDK asset staging directory
 .cdk.staging
 cdk.out
@@ -41,4 +50,7 @@ cdk.context.json
 
 assets
 source-zip
+<<<<<<< HEAD
 aws4embeddedlinux-cdk-lib-*.tgz
+=======
+>>>>>>> 988e320 (Major update to 0.2.0 (#76))
