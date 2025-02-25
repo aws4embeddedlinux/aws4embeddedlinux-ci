@@ -11,7 +11,6 @@
     "doc": "typedoc --sort source-order --readme README.md",
     "format": "eslint '**/*.{js,ts,json}' --quiet --fix",
     "postinstall": "npm run build > /dev/null || echo 'prepapre command completed successfully with errors'",
-    "__prepare": "npm run build > /dev/null || echo 'prepapre command completed successfully with errors'",
     "prepare-commit": "pre-commit run --all-files --color=always --show-diff-on-failure",
     "test": "jest",
     "update-snapshot": "jest -u",
