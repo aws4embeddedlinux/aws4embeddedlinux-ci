@@ -1,1 +1,10 @@
-*.snap
+/.yarn
+/.github
+/test 
+
+.editorconfig
+.gitattributes
+.pre-commit-config.yaml
+eslint.config.mjs
+jest.config.js
+typedoc.json
