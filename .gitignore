@@ -28,3 +28,4 @@ cdk.context.json
 
 assets
 source-zip
+aws4embeddedlinux-cdk-lib-*.tgz
