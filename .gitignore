@@ -2,9 +2,11 @@
 !jest.config.js
 !.eslintrc.js
 !.prettierrc.js
+
+!lib/**/*.ts
 *.d.ts
+
 node_modules
-dist
 
 # yarn asset
 yarn-install.log

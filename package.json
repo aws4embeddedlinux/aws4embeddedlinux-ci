@@ -1,9 +1,8 @@
 {
   "name": "aws4embeddedlinux-cdk-lib",
   "version": "0.2.0",
-  "main": "dist/lib/index.js",
-  "types": "dist/lib/index.d.ts",
-  "files": ["/lib", "/dist", "/source-repo", "/utils"],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
@@ -12,17 +11,13 @@
     "doc": "typedoc --sort source-order --readme README.md",
     "format": "eslint '**/*.{js,ts,json}' --quiet --fix",
     "postinstall": "npm run build > /dev/null || echo 'prepapre command completed successfully with errors'",
-    "prepare": "npm run build > /dev/null || echo 'prepapre command completed successfully with errors'",
+    "__prepare": "npm run build > /dev/null || echo 'prepapre command completed successfully with errors'",
     "prepare-commit": "pre-commit run --all-files --color=always --show-diff-on-failure",
     "test": "jest",
     "update-snapshot": "jest -u",
     "watch": "tsc -w",
-    "postclean": "rm -rf ./dist",
-    "prebuild": "./utils/build-assets.sh",
     "precheck": "yarn clean",
-    "preformat": "yarn clean",
-    "pretest": "yarn prebuild",
-    "preupdate-snapshot": "yarn prebuild"
+    "preformat": "yarn clean"
   },
   "dependencies": {
     "aws-cdk-lib": "2.176.0",
