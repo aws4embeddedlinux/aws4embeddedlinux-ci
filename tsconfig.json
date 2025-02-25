@@ -20,6 +20,6 @@
     "typeRoots": ["./node_modules/@types"],
     "resolveJsonModule": true
   },
-  "include": ["lib/**/*"],
+  "include": ["./lib/**/*", "./test/**/*"],
   "exclude": ["node_modules", "cdk.out", "dist"]
 }

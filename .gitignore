@@ -4,6 +4,7 @@
 !.prettierrc.js
 
 !lib/**/*.ts
+!test/**/*.ts
 *.d.ts
 
 node_modules
