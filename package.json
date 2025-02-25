@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
-  "files": ["/.lib", "/dist", "/source-repo"],
+  "files": ["/lib", "/dist", "/source-repo", "/utils"],
   "license": "MIT",
   "scripts": {
     "build": "tsc",
