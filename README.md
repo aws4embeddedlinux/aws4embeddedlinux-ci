@@ -213,10 +213,7 @@ npm install aws4embeddedlinux/aws4embeddedlinux-ci
 of `yarn':
 
 ```bash
-yarn add aws4embeddedlinux/aws4embeddedlinux-ci
-
 yarn add aws4embeddedlinux-cdk-lib@aws4embeddedlinux/aws4embeddedlinux-ci
-yarn add aws4embeddedlinux-cdk-lib@adadouche/aws4embeddedlinux-ci#dev-adadouche
 yarn install
 ```
 
