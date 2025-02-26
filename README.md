@@ -254,7 +254,7 @@ const projectPipeline = new EmbeddedLinuxCodePipelineStack(app, "demo-project", 
 });
 ```
 
-Refer to the [API Documentation](https://aws4embeddedlinux.github.io/aws4embeddedlinux-ci) and the [sample](github.com/aws4embeddedlinux/aws4embeddedlinux-ci-examples) for more details.
+Refer to the [API Documentation](https://aws4embeddedlinux.github.io/aws4embeddedlinux-ci) and the [sample](https://github.com/aws4embeddedlinux/aws4embeddedlinux-ci-examples) for more details.
 
 Once you have completed the code of your application, you can deploy the CDK stack using:
 
@@ -275,7 +275,7 @@ This will create an Ubuntu based container for building the Yocto images.
 
 > [!NOTE]
 >
-> We recommend you to deploy first the 'Base Image' pipeline and once the pipeline completes successfully, then you can deploy the other pipelines in you application as described in the [sample](github.com/aws4embeddedlinux/aws4embeddedlinux-ci-examples).
+> We recommend you to deploy first the 'Base Image' pipeline and once the pipeline completes successfully, then you can deploy the other pipelines in you application as described in the [sample](https://github.com/aws4embeddedlinux/aws4embeddedlinux-ci-examples).
 >
 
 Once your pipelines completes successfully, the Yocto deploy directory generated content will be pushed into a S3 bucket.
