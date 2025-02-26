@@ -49,7 +49,7 @@ export interface EmbeddedLinuxCodePipelineProps extends cdk.StackProps {
   readonly buildPolicyAdditions?: iam.PolicyStatement[];
   /** Additional build environment variables to the build project. */
   readonly environmentVariables?: {
-    string: codebuild.BuildEnvironmentVariable;
+    [key: string]: codebuild.BuildEnvironmentVariable;
   };
   /** The encryption key use across*/
   readonly encryptionKey: kms.Key;
