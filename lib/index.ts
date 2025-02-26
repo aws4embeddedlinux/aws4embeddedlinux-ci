@@ -1,22 +1,7 @@
-import * as s3 from "aws-cdk-lib/aws-s3";
-
 export * from "./codebuild-embedded-linux";
 export * from "./codepipeline-embedded-linux-base-image";
 export * from "./codepipeline-embedded-linux";
 export * from "./codepipeline-resources";
-
-export function isBucketVersioned(bucket: s3.Bucket | s3.IBucket) {
-  const bucketCfn: s3.CfnBucket = bucket.node.defaultChild as s3.CfnBucket;
-  if (
-    bucketCfn.versioningConfiguration &&
-    (
-      bucketCfn.versioningConfiguration as s3.CfnBucket.VersioningConfigurationProperty
-    ).status != "Enabled"
-  ) {
-    return true;
-  }
-  return false;
-}
 
 /**
  * The type of project built.
