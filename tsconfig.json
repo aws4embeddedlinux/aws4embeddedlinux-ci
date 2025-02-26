@@ -18,8 +18,10 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     "typeRoots": ["./node_modules/@types"],
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "rootDir": "./lib",
+    "outDir": "./dist"
   },
-  "include": ["./lib/**/*", "./test/**/*"],
+  "include": ["./lib/**/*", "../test/**/*"],
   "exclude": ["node_modules", "cdk.out", "dist"]
 }

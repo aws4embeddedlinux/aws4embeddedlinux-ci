@@ -1,6 +1,6 @@
-/.yarn
-/.github
-/test
+.yarn
+.github
+test
 
 .editorconfig
 .gitattributes

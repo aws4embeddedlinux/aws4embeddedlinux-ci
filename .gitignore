@@ -7,6 +7,7 @@
 !test/**/*.ts
 *.d.ts
 
+dist
 node_modules
 
 # yarn asset
