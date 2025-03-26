@@ -11,21 +11,21 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
           [
             "aws ecr list-images --repository-name "",
             {
-              "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesECRRepositoryA0DB7EB625EEF25E",
+              "Fn::ImportValue": "test-common:ExportsOutputReftestecr18D9BBA8F49E3A2C",
             },
-            "" --query "imageIds[?imageTag=='MyTestStack']"",
+            "" --query "imageIds[?imageTag=='test-stack']"",
           ],
         ],
       },
     },
     "ECRBaseImageTag": {
       "Description": "The ECR Image Tag where the base image will be pushed",
-      "Value": "MyTestStack",
+      "Value": "test-stack",
     },
     "ECRRepositoryName": {
       "Description": "The ECR Repository name where the base image will be pushed",
       "Value": {
-        "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesECRRepositoryA0DB7EB625EEF25E",
+        "Fn::ImportValue": "test-common:ExportsOutputReftestecr18D9BBA8F49E3A2C",
       },
     },
     "SourceURI": {
@@ -36,7 +36,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
           [
             "s3://",
             {
-              "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesSourceBucket1FA488F54AA73B60",
+              "Fn::ImportValue": "test-common:ExportsOutputReftestsrc6C860343FD6A5870",
             },
             "/base-image/arbitrary-file.ext",
           ],
@@ -67,7 +67,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
       "Properties": {
         "DestinationBucketKeyPrefix": "base-image",
         "DestinationBucketName": {
-          "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesSourceBucket1FA488F54AA73B60",
+          "Fn::ImportValue": "test-common:ExportsOutputReftestsrc6C860343FD6A5870",
         },
         "Extract": false,
         "OutputObjectKeys": true,
@@ -178,33 +178,20 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
               "Effect": "Allow",
               "Resource": [
                 {
-                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesSourceBucket1FA488F5Arn3CF62A69",
+                  "Fn::ImportValue": "test-common:ExportsOutputFnGetAtttestsrc6C860343Arn869D5331",
                 },
                 {
                   "Fn::Join": [
                     "",
                     [
                       {
-                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesSourceBucket1FA488F5Arn3CF62A69",
+                        "Fn::ImportValue": "test-common:ExportsOutputFnGetAtttestsrc6C860343Arn869D5331",
                       },
                       "/*",
                     ],
                   ],
                 },
               ],
-            },
-            {
-              "Action": [
-                "kms:Decrypt",
-                "kms:DescribeKey",
-                "kms:Encrypt",
-                "kms:ReEncrypt*",
-                "kms:GenerateDataKey*",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
-              },
             },
           ],
           "Version": "2012-10-17",
@@ -221,7 +208,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
     "CodePipelineBuildBaseImageBuildLogs48BFE4D7": {
       "DeletionPolicy": "Delete",
       "Properties": {
-        "LogGroupName": "MyTestStack-CodePipelineBuildBaseImageBuildLogs",
+        "LogGroupName": "test-stack-CodePipelineBuildBaseImageBuildLogs",
         "RetentionInDays": 365,
       },
       "Type": "AWS::Logs::LogGroup",
@@ -237,18 +224,12 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
       ],
       "Properties": {
         "ArtifactStore": {
-          "EncryptionKey": {
-            "Id": {
-              "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
-            },
-            "Type": "KMS",
-          },
           "Location": {
-            "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesArtifactBucketFF61EB98FA6EAAC1",
+            "Fn::ImportValue": "test-common:ExportsOutputReftestartF0FFB4BEEC699EE6",
           },
           "Type": "S3",
         },
-        "Name": "MyTestStack",
+        "Name": "test-stack",
         "PipelineType": "V1",
         "RestartExecutionOnUpdate": true,
         "RoleArn": {
@@ -270,7 +251,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
                 "Configuration": {
                   "PollForSourceChanges": false,
                   "S3Bucket": {
-                    "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesSourceBucket1FA488F54AA73B60",
+                    "Fn::ImportValue": "test-common:ExportsOutputReftestsrc6C860343FD6A5870",
                   },
                   "S3ObjectKey": "base-image/arbitrary-file.ext",
                 },
@@ -456,83 +437,6 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
-    "CodePipelineBuildBaseImageCodePipelineMyTestStackCodePipelineBuildBaseImageCodePipelineFF25ACC6SourceEventRulebaseimage1ccdf1583059080a3911192a20ae50cc6b3bfa57d56d0b5b4d3866f920b3ad20zip04E1981E": {
-      "DependsOn": [
-        "CodePipelineBuildBaseImageProject69590E59",
-        "CodePipelineBuildBaseImageProjectRoleDefaultPolicy6F99FFCC",
-        "CodePipelineBuildBaseImageProjectRole12B97AA7",
-      ],
-      "Properties": {
-        "EventPattern": {
-          "detail": {
-            "eventName": [
-              "CompleteMultipartUpload",
-              "CopyObject",
-              "PutObject",
-            ],
-            "requestParameters": {
-              "bucketName": [
-                {
-                  "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesSourceBucket1FA488F54AA73B60",
-                },
-              ],
-              "key": [
-                "base-image/arbitrary-file.ext",
-              ],
-            },
-            "resources": {
-              "ARN": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesSourceBucket1FA488F5Arn3CF62A69",
-                      },
-                      "/base-image/arbitrary-file.ext",
-                    ],
-                  ],
-                },
-              ],
-            },
-          },
-          "detail-type": [
-            "AWS API Call via CloudTrail",
-          ],
-          "source": [
-            "aws.s3",
-          ],
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Fn::Join": [
-                "",
-                [
-                  "arn:",
-                  {
-                    "Ref": "AWS::Partition",
-                  },
-                  ":codepipeline:eu-central-1:111111111111:",
-                  {
-                    "Ref": "CodePipelineBuildBaseImageCodePipeline7907AE86",
-                  },
-                ],
-              ],
-            },
-            "Id": "Target0",
-            "RoleArn": {
-              "Fn::GetAtt": [
-                "CodePipelineBuildBaseImageCodePipelineEventsRoleD9A83D03",
-                "Arn",
-              ],
-            },
-          },
-        ],
-      },
-      "Type": "AWS::Events::Rule",
-    },
     "CodePipelineBuildBaseImageCodePipelineRole73E36B25": {
       "DependsOn": [
         "CodePipelineBuildBaseImageProject69590E59",
@@ -580,33 +484,20 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
               "Effect": "Allow",
               "Resource": [
                 {
-                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                  "Fn::ImportValue": "test-common:ExportsOutputFnGetAtttestartF0FFB4BEArnE74A2E94",
                 },
                 {
                   "Fn::Join": [
                     "",
                     [
                       {
-                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                        "Fn::ImportValue": "test-common:ExportsOutputFnGetAtttestartF0FFB4BEArnE74A2E94",
                       },
                       "/*",
                     ],
                   ],
                 },
               ],
-            },
-            {
-              "Action": [
-                "kms:Decrypt",
-                "kms:DescribeKey",
-                "kms:Encrypt",
-                "kms:ReEncrypt*",
-                "kms:GenerateDataKey*",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
-              },
             },
             {
               "Action": "sts:AssumeRole",
@@ -691,30 +582,20 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
               "Effect": "Allow",
               "Resource": [
                 {
-                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesSourceBucket1FA488F5Arn3CF62A69",
+                  "Fn::ImportValue": "test-common:ExportsOutputFnGetAtttestsrc6C860343Arn869D5331",
                 },
                 {
                   "Fn::Join": [
                     "",
                     [
                       {
-                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesSourceBucket1FA488F5Arn3CF62A69",
+                        "Fn::ImportValue": "test-common:ExportsOutputFnGetAtttestsrc6C860343Arn869D5331",
                       },
                       "/base-image/arbitrary-file.ext",
                     ],
                   ],
                 },
               ],
-            },
-            {
-              "Action": [
-                "kms:Decrypt",
-                "kms:DescribeKey",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
-              },
             },
             {
               "Action": [
@@ -729,32 +610,20 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
               "Effect": "Allow",
               "Resource": [
                 {
-                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                  "Fn::ImportValue": "test-common:ExportsOutputFnGetAtttestartF0FFB4BEArnE74A2E94",
                 },
                 {
                   "Fn::Join": [
                     "",
                     [
                       {
-                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                        "Fn::ImportValue": "test-common:ExportsOutputFnGetAtttestartF0FFB4BEArnE74A2E94",
                       },
                       "/*",
                     ],
                   ],
                 },
               ],
-            },
-            {
-              "Action": [
-                "kms:Encrypt",
-                "kms:ReEncrypt*",
-                "kms:GenerateDataKey*",
-                "kms:Decrypt",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
-              },
             },
           ],
           "Version": "2012-10-17",
@@ -767,6 +636,83 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "CodePipelineBuildBaseImageCodePipelineteststackCodePipelineBuildBaseImageCodePipelineBEEAC58ESourceEventRulebaseimage1ccdf1583059080a3911192a20ae50cc6b3bfa57d56d0b5b4d3866f920b3ad20zipE860D013": {
+      "DependsOn": [
+        "CodePipelineBuildBaseImageProject69590E59",
+        "CodePipelineBuildBaseImageProjectRoleDefaultPolicy6F99FFCC",
+        "CodePipelineBuildBaseImageProjectRole12B97AA7",
+      ],
+      "Properties": {
+        "EventPattern": {
+          "detail": {
+            "eventName": [
+              "CompleteMultipartUpload",
+              "CopyObject",
+              "PutObject",
+            ],
+            "requestParameters": {
+              "bucketName": [
+                {
+                  "Fn::ImportValue": "test-common:ExportsOutputReftestsrc6C860343FD6A5870",
+                },
+              ],
+              "key": [
+                "base-image/arbitrary-file.ext",
+              ],
+            },
+            "resources": {
+              "ARN": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::ImportValue": "test-common:ExportsOutputFnGetAtttestsrc6C860343Arn869D5331",
+                      },
+                      "/base-image/arbitrary-file.ext",
+                    ],
+                  ],
+                },
+              ],
+            },
+          },
+          "detail-type": [
+            "AWS API Call via CloudTrail",
+          ],
+          "source": [
+            "aws.s3",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition",
+                  },
+                  ":codepipeline:eu-central-1:111111111111:",
+                  {
+                    "Ref": "CodePipelineBuildBaseImageCodePipeline7907AE86",
+                  },
+                ],
+              ],
+            },
+            "Id": "Target0",
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "CodePipelineBuildBaseImageCodePipelineEventsRoleD9A83D03",
+                "Arn",
+              ],
+            },
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
     },
     "CodePipelineBuildBaseImageProject69590E59": {
       "DependsOn": [
@@ -781,7 +727,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
           "Type": "NO_CACHE",
         },
         "EncryptionKey": {
-          "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+          "Fn::ImportValue": "test-common:ExportsOutputFnGetAtttestkey784D0285Arn58FA9A21",
         },
         "Environment": {
           "ComputeType": "BUILD_GENERAL1_MEDIUM",
@@ -800,7 +746,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
                           "Fn::Split": [
                             ":",
                             {
-                              "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesECRRepositoryA0DB7EB6Arn5EC8487E",
+                              "Fn::ImportValue": "test-common:ExportsOutputFnGetAtttestecr18D9BBA8Arn6B304346",
                             },
                           ],
                         },
@@ -814,7 +760,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
                           "Fn::Split": [
                             ":",
                             {
-                              "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesECRRepositoryA0DB7EB6Arn5EC8487E",
+                              "Fn::ImportValue": "test-common:ExportsOutputFnGetAtttestecr18D9BBA8Arn6B304346",
                             },
                           ],
                         },
@@ -826,7 +772,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
                     },
                     "/",
                     {
-                      "Fn::ImportValue": "MyResourceStack:ExportsOutputRefPipelineResourcesECRRepositoryA0DB7EB625EEF25E",
+                      "Fn::ImportValue": "test-common:ExportsOutputReftestecr18D9BBA8F49E3A2C",
                     },
                   ],
                 ],
@@ -845,7 +791,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
             {
               "Name": "IMAGE_TAG",
               "Type": "PLAINTEXT",
-              "Value": "MyTestStack",
+              "Value": "test-stack",
             },
           ],
           "Image": "aws/codebuild/standard:7.0",
@@ -861,7 +807,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
             "Status": "ENABLED",
           },
         },
-        "Name": "MyTestStack",
+        "Name": "test-stack",
         "ServiceRole": {
           "Fn::GetAtt": [
             "CodePipelineBuildBaseImageProjectRole12B97AA7",
@@ -993,7 +939,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
               ],
               "Effect": "Allow",
               "Resource": {
-                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
+                "Fn::ImportValue": "test-common:ExportsOutputFnGetAtttestkey784D0285Arn58FA9A21",
               },
             },
             {
@@ -1008,7 +954,7 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
               ],
               "Effect": "Allow",
               "Resource": {
-                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesECRRepositoryA0DB7EB6Arn5EC8487E",
+                "Fn::ImportValue": "test-common:ExportsOutputFnGetAtttestecr18D9BBA8Arn6B304346",
               },
             },
             {
@@ -1025,30 +971,20 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
               "Effect": "Allow",
               "Resource": [
                 {
-                  "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                  "Fn::ImportValue": "test-common:ExportsOutputFnGetAtttestartF0FFB4BEArnE74A2E94",
                 },
                 {
                   "Fn::Join": [
                     "",
                     [
                       {
-                        "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactBucketFF61EB98Arn7A6F2306",
+                        "Fn::ImportValue": "test-common:ExportsOutputFnGetAtttestartF0FFB4BEArnE74A2E94",
                       },
                       "/*",
                     ],
                   ],
                 },
               ],
-            },
-            {
-              "Action": [
-                "kms:Decrypt",
-                "kms:DescribeKey",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
-              },
             },
           ],
           "Version": "2012-10-17",
