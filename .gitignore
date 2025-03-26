@@ -50,7 +50,4 @@ cdk.context.json
 
 assets
 source-zip
-<<<<<<< HEAD
 aws4embeddedlinux-cdk-lib-*.tgz
-=======
->>>>>>> 988e320 (Major update to 0.2.0 (#76))
