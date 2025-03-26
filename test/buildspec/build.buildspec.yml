@@ -1,0 +1,29 @@
+version: 0.2
+run-as: yoctouser
+
+env:
+  shell: bash
+  # HOME is set to /root even when running as a non-root user.
+  variables:
+    HOME: "/home/yoctouser"
+
+phases:
+  pre_build:
+    run-as: root
+    commands:
+      - echo "Pre build started - [$(date '+%F %H:%M:%S')]"
+      - echo "Pre build completed - [$(date '+%F %H:%M:%S')]"
+  build:
+    commands:
+      - echo "Build started - [$(date '+%F %H:%M:%S')]"
+      - echo "Build completed - [$(date '+%F %H:%M:%S')]"
+  post_build:
+    commands:
+      - echo "Post build statred - [$(date '+%F %H:%M:%S')]"
+      - echo "" > /tmp/out.log
+      - echo "Post build completed - [$(date '+%F %H:%M:%S')]"
+
+artifacts:
+  discard-paths: true
+  files:
+    - /tmp/out.log

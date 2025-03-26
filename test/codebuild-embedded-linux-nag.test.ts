@@ -5,45 +5,46 @@ import { Annotations, Match } from "aws-cdk-lib/assertions";
 import * as cdk from "aws-cdk-lib";
 import * as ecr from "aws-cdk-lib/aws-ecr";
 import * as kms from "aws-cdk-lib/aws-kms";
-import * as s3 from "aws-cdk-lib/aws-s3";
+import * as ec2 from "aws-cdk-lib/aws-ec2";
 import {
-  EmbeddedLinuxCodePipelineBaseImageProps,
-  EmbeddedLinuxCodePipelineBaseImageStack,
+  EmbeddedLinuxCodeBuildProjectProps,
+  EmbeddedLinuxCodeBuildProjectStack,
 } from "../lib";
 import { DEFAULT_ENV } from "./util";
 
-const base_path = `CodePipelineBuildBaseImage`;
+const base_path = `EmbeddedLinuxCodeBuild`;
 
-function addNagSuppressions(_stack: EmbeddedLinuxCodePipelineBaseImageStack, _props: EmbeddedLinuxCodePipelineBaseImageProps) {
+function addNagSuppressions(_stack: EmbeddedLinuxCodeBuildProjectStack, _props: EmbeddedLinuxCodeBuildProjectProps) {
+  NagSuppressions.addStackSuppressions(_stack, [
+    { id: "CdkNagValidationFailure", reason: "Multiple Validation Failures." },
+    {
+      id: "AwsSolutions-CB3",
+      reason: "CodeBuild Privilege mode is required for this pipeline.",
+    },
+    {
+      id: "AwsSolutions-IAM4",
+      reason: "TODO: Re-evaluate managed policies per resources.",
+    },
+  ]);
   NagSuppressions.addResourceSuppressionsByPath(
     _stack,
-    `/${_stack.stackName}/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/Resource`,
+    `/${_stack.stackName}/${base_path}ProjectSecurityGroup/Resource`,
     [
       {
-        id: "AwsSolutions-L1",
-        reason: "This Lambda function is 3rd Party (from CDK libs)",
+        id: "AwsSolutions-EC23",
+        reason:
+          "CidrBlock parameter referencing an intrinsic function",
       },
     ],
   );
   NagSuppressions.addResourceSuppressionsByPath(
     _stack,
-    `/${_stack.stackName}/${base_path}BucketDeploymentRole/Resource`,
+    `/${_stack.stackName}/${base_path}Project/Resource`,
     [
       {
-        id: "AwsSolutions-IAM5",
+        id: "AwsSolutions-CB5",
         reason:
-          `Because ${base_path}BucketDeploymentRole/Resource is needed here.`,
-      },
-    ],
-  );
-  NagSuppressions.addResourceSuppressionsByPath(
-    _stack,
-    `/${_stack.stackName}/${base_path}BucketDeploymentRole/DefaultPolicy/Resource`,
-    [
-      {
-        id: "AwsSolutions-IAM5",
-        reason:
-          "Because these are the default permissions assigned to a CDK default created role.",
+          "PipelineImage parameter referencing an intrinsic function",
       },
     ],
   );
@@ -60,7 +61,7 @@ function addNagSuppressions(_stack: EmbeddedLinuxCodePipelineBaseImageStack, _pr
   );
   NagSuppressions.addResourceSuppressionsByPath(
     _stack,
-    `/${_stack.stackName}/${base_path}CodePipeline/Role/DefaultPolicy/Resource`,
+    `/${_stack.stackName}/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource`,
     [
       {
         id: "AwsSolutions-IAM5",
@@ -71,7 +72,17 @@ function addNagSuppressions(_stack: EmbeddedLinuxCodePipelineBaseImageStack, _pr
   );
   NagSuppressions.addResourceSuppressionsByPath(
     _stack,
-    `/${_stack.stackName}/${base_path}CodePipeline/Source/Source/CodePipelineActionRole/DefaultPolicy/Resource`,
+    `/${_stack.stackName}/${base_path}ProjectOSImageCheckOnStart/Resource`,
+    [
+      {
+        id: "AwsSolutions-L1",
+        reason: "There is no latest PYTHON version to set.",
+      },
+    ],
+  );
+  NagSuppressions.addResourceSuppressionsByPath(
+    _stack,
+    `/${_stack.stackName}/${base_path}Project/PolicyDocument/Resource`,
     [
       {
         id: "AwsSolutions-IAM5",
@@ -82,12 +93,12 @@ function addNagSuppressions(_stack: EmbeddedLinuxCodePipelineBaseImageStack, _pr
   );
 }
 
-describe("EmbeddedLinuxCodePipelineBaseImageStack cdk-nag AwsSolutions Pack", () => {
+describe("EmbeddedLinuxCodeBuildProjectStack cdk-nag AwsSolutions Pack", () => {
   const resource_prefix = "test";
 
   let app: cdk.App;
-  let stack: EmbeddedLinuxCodePipelineBaseImageStack;
-  let props: EmbeddedLinuxCodePipelineBaseImageProps;
+  let stack: EmbeddedLinuxCodeBuildProjectStack;
+  let props: EmbeddedLinuxCodeBuildProjectProps;
   let common: cdk.Stack;
 
   beforeAll(() => {
@@ -99,19 +110,22 @@ describe("EmbeddedLinuxCodePipelineBaseImageStack cdk-nag AwsSolutions Pack", ()
     });
 
     // Create required resources for testing
-    const pipelineSourceBucket = new s3.Bucket(common, `${resource_prefix}-src`, { versioned: true, },);
-    const pipelineArtifactBucket = new s3.Bucket(common, `${resource_prefix}-art`, {},);
+    const vpc = new ec2.Vpc(common, `${resource_prefix}-vpc`, {
+      maxAzs: 2
+    });
     const ecrRepository = new ecr.Repository(common, `${resource_prefix}-ecr`);
     const encryptionKey = new kms.Key(common, `${resource_prefix}-key`);
 
+    // Create the pipeline stack & props
     props = {
       env: DEFAULT_ENV,
-      pipelineSourceBucket: pipelineSourceBucket,
-      pipelineArtifactBucket: pipelineArtifactBucket,
       ecrRepository: ecrRepository,
       encryptionKey: encryptionKey,
+      ecrRepositoryImageTag: "PipelineImage",
+      vpc: vpc,
     };
-    stack = new EmbeddedLinuxCodePipelineBaseImageStack(app, `${resource_prefix}-stack`, props);
+
+    stack = new EmbeddedLinuxCodeBuildProjectStack(app, `${resource_prefix}-stack`, props);
 
     addNagSuppressions(stack, props);
 

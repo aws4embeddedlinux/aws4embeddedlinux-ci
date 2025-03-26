@@ -1,22 +1,32 @@
-import * as cdk from "aws-cdk-lib";
-
-import { Annotations, Match } from "aws-cdk-lib/assertions";
+import { describe, expect, test, beforeAll } from '@jest/globals';
 import { AwsSolutionsChecks } from "cdk-nag";
+import { Annotations, Match } from "aws-cdk-lib/assertions";
+
+import * as cdk from "aws-cdk-lib";
+import {
+  PipelineResourcesProps,
+  PipelineResourcesStack
+} from "../lib";
 import { DEFAULT_ENV } from "./util";
-import { PipelineResourcesStack } from "../lib";
+
 
 describe("PipelineResourcesStack cdk-nag AwsSolutions Pack", () => {
-  const app: cdk.App = new cdk.App();
-  let stack: cdk.Stack;
+  const resource_prefix = "test";
+
+  let app: cdk.App;
+  let stack: PipelineResourcesStack;
+  let props: PipelineResourcesProps;
 
   beforeAll(() => {
     // GIVEN
-    const props = {
+    app = new cdk.App();
+
+    props = {
       env: DEFAULT_ENV,
       resource_prefix: `${DEFAULT_ENV.account}-${DEFAULT_ENV.region}`,
     };
 
-    stack = new PipelineResourcesStack(app, "MyTestStack", props);
+    stack = new PipelineResourcesStack(app, `${resource_prefix}-stack`, props);
 
     // WHEN
     cdk.Aspects.of(stack).add(new AwsSolutionsChecks({ verbose: true }));
