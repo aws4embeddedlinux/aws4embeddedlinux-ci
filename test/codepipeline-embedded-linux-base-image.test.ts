@@ -1,59 +1,156 @@
+import { beforeEach, describe, expect, test } from "@jest/globals";
+import { Match, Template } from "aws-cdk-lib/assertions";
+
 import * as cdk from "aws-cdk-lib";
-import * as assertions from "aws-cdk-lib/assertions";
-import { PipelineResourcesProps, PipelineResourcesStack } from "../lib";
+import * as s3 from "aws-cdk-lib/aws-s3";
+import * as ecr from "aws-cdk-lib/aws-ecr";
+import * as kms from "aws-cdk-lib/aws-kms";
 import {
   EmbeddedLinuxCodePipelineBaseImageProps,
   EmbeddedLinuxCodePipelineBaseImageStack,
 } from "../lib";
 import { DEFAULT_ENV, normalizedTemplateFromStack } from "./util";
 
-// TODO
-// - add test with PipelineResourcesProps values for various buckets
-// - add test for other outouts
-
 describe("EmbeddedLinuxCodePipelineBaseImageStack", () => {
+  const resource_prefix = "test";
+
   let app: cdk.App;
-  let stack: cdk.Stack;
-  let template: assertions.Template;
-  let pipelineResourcesStack: PipelineResourcesStack;
+  let stack: EmbeddedLinuxCodePipelineBaseImageStack;
+  let props: EmbeddedLinuxCodePipelineBaseImageProps;
+  let template: Template;
+  let common: cdk.Stack;
 
-  const pipelineResourcesProps: PipelineResourcesProps = {
-    resource_prefix: "test",
-    env: DEFAULT_ENV,
-  };
-
-  beforeAll(() => {
-    // GIVEN
+  beforeEach(() => {
     app = new cdk.App();
-    pipelineResourcesStack = new PipelineResourcesStack(
-      app,
-      "MyResourceStack",
-      pipelineResourcesProps,
-    );
 
-    const embeddedLinuxCodePipelineBaseImageProps: EmbeddedLinuxCodePipelineBaseImageProps =
-      {
-        env: DEFAULT_ENV,
-        pipelineSourceBucket: pipelineResourcesStack.pipelineSourceBucket,
-        pipelineArtifactBucket: pipelineResourcesStack.pipelineArtifactBucket,
-        ecrRepository: pipelineResourcesStack.ecrRepository,
-        encryptionKey: pipelineResourcesStack.encryptionKey,
-      };
+    common = new cdk.Stack(app, `${resource_prefix}-common`, {
+      env: DEFAULT_ENV,
+    });
+
+    // Create required resources for testing
+    const sourceBucket = new s3.Bucket(common, `${resource_prefix}-src`);
+    const artifactBucket = new s3.Bucket(common, `${resource_prefix}-art`);
+    const ecrRepo = new ecr.Repository(common, `${resource_prefix}-ecr`);
+    const encryptionKey = new kms.Key(common, `${resource_prefix}-key`);
+
+    // Create the pipeline stack & props
+    props = {
+      env: DEFAULT_ENV,
+      pipelineSourceBucket: sourceBucket,
+      pipelineArtifactBucket: artifactBucket,
+      ecrRepository: ecrRepo,
+      encryptionKey: encryptionKey,
+    };
     stack = new EmbeddedLinuxCodePipelineBaseImageStack(
       app,
-      "MyTestStack",
-      embeddedLinuxCodePipelineBaseImageProps,
+      `${resource_prefix}-stack`,
+      props,
     );
-    template = assertions.Template.fromStack(stack);
+
+    // Create template from stack
+    template = Template.fromStack(stack);
   });
 
-  test("Has Resources", () => {
-    template.resourceCountIs("AWS::CodePipeline::Pipeline", 1);
-    template.resourceCountIs("AWS::CodeBuild::Project", 1);
-    template.resourceCountIs("AWS::Events::Rule", 2); // one for the S3 trigger and one for the weekly refresh
-    template.resourceCountIs("AWS::Logs::LogGroup", 1);
-    template.allResourcesProperties("AWS::Logs::LogGroup", {
+  test("Pipeline is created with correct stages", () => {
+    template.hasResourceProperties("AWS::CodePipeline::Pipeline", {
+      Stages: [
+        {
+          Name: "Source",
+          Actions: [
+            {
+              Name: "Source",
+              ActionTypeId: {
+                Category: "Source",
+                Owner: "AWS",
+                Provider: "S3",
+                Version: "1",
+              },
+            },
+          ],
+        },
+        {
+          Name: "Build",
+          Actions: [
+            {
+              Name: "Build",
+              ActionTypeId: {
+                Category: "Build",
+                Owner: "AWS",
+                Provider: "CodeBuild",
+                Version: "1",
+              },
+            },
+          ],
+        },
+      ],
+    });
+  });
+
+  test("CodeBuild project is created with correct configuration", () => {
+    template.hasResourceProperties("AWS::CodeBuild::Project", {
+      Environment: {
+        ComputeType: "BUILD_GENERAL1_MEDIUM",
+        Image: "aws/codebuild/standard:7.0",
+        PrivilegedMode: true,
+        Type: "LINUX_CONTAINER",
+      },
+    });
+  });
+
+  test("EventBridge rule is created for weekly pipeline execution", () => {
+    template.hasResourceProperties("AWS::Events::Rule", {
+      ScheduleExpression: "cron(0 6 ? * Monday *)",
+      State: "ENABLED",
+      Targets: [
+        {
+          Arn: {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  Ref: "AWS::Partition",
+                },
+                `:codepipeline:${props.env?.region}:${props.env?.account}:`,
+                {
+                  Ref: Match.stringLikeRegexp(
+                    "CodePipelineBuildBaseImageCodePipeline*",
+                  ),
+                },
+              ],
+            ],
+          },
+        },
+      ],
+    });
+  });
+
+  test("CloudWatch log group is created with correct retention", () => {
+    template.hasResourceProperties("AWS::Logs::LogGroup", {
       RetentionInDays: 365,
+    });
+  });
+
+  test("Required outputs are created", () => {
+    template.hasOutput("ECRRepositoryName", {});
+    template.hasOutput("ECRBaseImageTag", {});
+    template.hasOutput("ECRBaseImageCheckCommand", {});
+    template.hasOutput("SourceURI", {});
+  });
+
+  test("IAM role for bucket deployment has correct permissions", () => {
+    template.hasResourceProperties("AWS::IAM::Role", {
+      AssumeRolePolicyDocument: {
+        Statement: [
+          {
+            Action: "sts:AssumeRole",
+            Effect: "Allow",
+            Principal: {
+              Service: "lambda.amazonaws.com",
+            },
+          },
+        ],
+      },
     });
   });
 

@@ -272,12 +272,12 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
       project,
     });
 
-    const artifactAction: codepipeline_actions.S3DeployAction =
+    const outputAction: codepipeline_actions.S3DeployAction =
       new codepipeline_actions.S3DeployAction({
-        actionName: "Artifact",
+        actionName: "Output",
         input: buildActionOutputArtifact,
-        bucket: props.pipelineArtifactBucket,
-        objectKey: `${props.pipelineArtifactPrefix}/${sourceRepoAsset.s3ObjectKey}`,
+        bucket: props.pipelineOutputBucket,
+        objectKey: `${props.pipelineOutputPrefix}`,
       });
 
     /** Here we create the logic to check for presence of ECR image on the CodeCodePipeline automatic triggering upon resource creation,
@@ -352,8 +352,8 @@ export class EmbeddedLinuxCodePipelineStack extends cdk.Stack {
             actions: [buildAction],
           },
           {
-            stageName: "Artifact",
-            actions: [artifactAction],
+            stageName: "Output",
+            actions: [outputAction],
           },
         ],
       },
