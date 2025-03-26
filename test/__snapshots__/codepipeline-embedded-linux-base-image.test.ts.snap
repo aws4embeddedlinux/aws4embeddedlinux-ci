@@ -503,13 +503,6 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Resource": {
-                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
-              },
-            },
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Resource": {
                 "Fn::GetAtt": [
                   "CodePipelineBuildBaseImageCodePipelineSourceCodePipelineActionRole0F967AB4",
                   "Arn",
@@ -603,16 +596,6 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
                   ],
                 },
               ],
-            },
-            {
-              "Action": [
-                "kms:Decrypt",
-                "kms:DescribeKey",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::ImportValue": "MyResourceStack:ExportsOutputFnGetAttPipelineResourcesArtifactKey368D3018Arn0E784876",
-              },
             },
             {
               "Action": [

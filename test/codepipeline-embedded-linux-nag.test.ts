@@ -162,10 +162,10 @@ function addNagSuppressions(
             regex: `/Resource::arn:aws:ec2:${DEFAULT_ENV.region}::snapshot/\\*$/g`,
           },
           {
-            regex: `/Resource::<${_props.pipelineOutputBucket.node.id.replace("-", "")}A5072518.Arn>/\\*$/g`,
+            regex: `/Resource::<${_props.pipelineOutputBucket.node.id.replaceAll("-", "")}A5072518.Arn>/\\*$/g`,
           },
           {
-            regex: `/Resource::${_stack.stackName}:ExportsOutputFnGetAtt${_props.pipelineOutputBucket.node.id.replace("-", "").toLowerCase()}A5072518ArnD3542377/\\*$/g`,
+            regex: `/Resource::${_stack.stackName}:ExportsOutputFnGetAtt${_props.pipelineOutputBucket.node.id.replaceAll("-", "").toLowerCase()}A5072518ArnD3542377/\\*$/g`,
           },
           {
             regex: `/Resource::test-common:ExportsOutputFnGetAtttestoutA5072518ArnD3542377/\\*$/g`,

@@ -140,7 +140,7 @@ describe("EmbeddedLinuxCodePipelineStack", () => {
                       ":",
                       {
                         "Fn::ImportValue": Match.stringLikeRegexp(
-                          `${common.stackName}:ExportsOutputFnGetAtt${props.ecrRepository.node.id.replace("-", "")}*`,
+                          `${common.stackName}:ExportsOutputFnGetAtt${props.ecrRepository.node.id.replaceAll("-", "")}*`,
                         ),
                       },
                     ],
@@ -156,7 +156,7 @@ describe("EmbeddedLinuxCodePipelineStack", () => {
                       ":",
                       {
                         "Fn::ImportValue": Match.stringLikeRegexp(
-                          `${common.stackName}:ExportsOutputFnGetAtt${props.ecrRepository.node.id.replace("-", "")}*`,
+                          `${common.stackName}:ExportsOutputFnGetAtt${props.ecrRepository.node.id.replaceAll("-", "")}*`,
                         ),
                       },
                     ],
@@ -170,7 +170,7 @@ describe("EmbeddedLinuxCodePipelineStack", () => {
               "/",
               {
                 "Fn::ImportValue": Match.stringLikeRegexp(
-                  `${common.stackName}:ExportsOutputRef${props.ecrRepository.node.id.replace("-", "")}*`,
+                  `${common.stackName}:ExportsOutputRef${props.ecrRepository.node.id.replaceAll("-", "")}*`,
                 ),
               },
               ":latest",
@@ -232,7 +232,7 @@ describe("EmbeddedLinuxCodePipelineStack", () => {
         Match.objectLike({
           CidrIp: {
             "Fn::ImportValue": Match.stringLikeRegexp(
-              `${common.stackName}:ExportsOutputFnGetAtt${props.vpc.node.id.replace("-", "")}*`,
+              `${common.stackName}:ExportsOutputFnGetAtt${props.vpc.node.id.replaceAll("-", "")}*`,
             ),
           },
           FromPort: 2049,
