@@ -723,7 +723,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
     "PipelineResourcesVPCFlowLogGroupCCF3042F": {
       "DeletionPolicy": "Delete",
       "Properties": {
-        "LogGroupName": "MyTestStack-PipelineResourcesVPCFlowLogGroup",
+        "LogGroupName": "test-stack-PipelineResourcesVPCFlowLogGroup",
         "RetentionInDays": 365,
       },
       "Type": "AWS::Logs::LogGroup",
@@ -748,7 +748,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVPCFlowLogs",
+            "Value": "test-stack/PipelineResourcesVPCFlowLogs",
           },
         ],
         "TrafficType": "ALL",
@@ -772,7 +772,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVPCFlowLogs",
+            "Value": "test-stack/PipelineResourcesVPCFlowLogs",
           },
         ],
       },
@@ -827,7 +827,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc",
+            "Value": "test-stack/PipelineResourcesVpc",
           },
         ],
       },
@@ -838,7 +838,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc",
+            "Value": "test-stack/PipelineResourcesVpc",
           },
         ],
       },
@@ -861,7 +861,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc/PrivateSubnet1",
+            "Value": "test-stack/PipelineResourcesVpc/PrivateSubnet1",
           },
         ],
         "VpcId": {
@@ -897,7 +897,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
           },
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc/PrivateSubnet1",
+            "Value": "test-stack/PipelineResourcesVpc/PrivateSubnet1",
           },
         ],
         "VpcId": {
@@ -934,7 +934,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc/PrivateSubnet2",
+            "Value": "test-stack/PipelineResourcesVpc/PrivateSubnet2",
           },
         ],
         "VpcId": {
@@ -959,7 +959,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
           },
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc/PrivateSubnet2",
+            "Value": "test-stack/PipelineResourcesVpc/PrivateSubnet2",
           },
         ],
         "VpcId": {
@@ -985,7 +985,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc/PrivateSubnet3",
+            "Value": "test-stack/PipelineResourcesVpc/PrivateSubnet3",
           },
         ],
         "VpcId": {
@@ -1021,7 +1021,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
           },
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc/PrivateSubnet3",
+            "Value": "test-stack/PipelineResourcesVpc/PrivateSubnet3",
           },
         ],
         "VpcId": {
@@ -1051,7 +1051,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet1",
+            "Value": "test-stack/PipelineResourcesVpc/PublicSubnet1",
           },
         ],
       },
@@ -1075,7 +1075,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet1",
+            "Value": "test-stack/PipelineResourcesVpc/PublicSubnet1",
           },
         ],
       },
@@ -1086,7 +1086,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet1",
+            "Value": "test-stack/PipelineResourcesVpc/PublicSubnet1",
           },
         ],
         "VpcId": {
@@ -1122,7 +1122,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
           },
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet1",
+            "Value": "test-stack/PipelineResourcesVpc/PublicSubnet1",
           },
         ],
         "VpcId": {
@@ -1152,7 +1152,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet2",
+            "Value": "test-stack/PipelineResourcesVpc/PublicSubnet2",
           },
         ],
       },
@@ -1176,7 +1176,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet2",
+            "Value": "test-stack/PipelineResourcesVpc/PublicSubnet2",
           },
         ],
       },
@@ -1187,7 +1187,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet2",
+            "Value": "test-stack/PipelineResourcesVpc/PublicSubnet2",
           },
         ],
         "VpcId": {
@@ -1223,7 +1223,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
           },
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet2",
+            "Value": "test-stack/PipelineResourcesVpc/PublicSubnet2",
           },
         ],
         "VpcId": {
@@ -1253,7 +1253,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet3",
+            "Value": "test-stack/PipelineResourcesVpc/PublicSubnet3",
           },
         ],
       },
@@ -1277,7 +1277,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet3",
+            "Value": "test-stack/PipelineResourcesVpc/PublicSubnet3",
           },
         ],
       },
@@ -1299,7 +1299,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet3",
+            "Value": "test-stack/PipelineResourcesVpc/PublicSubnet3",
           },
         ],
         "VpcId": {
@@ -1324,7 +1324,7 @@ exports[`PipelineResourcesStack Snapshot 1`] = `
           },
           {
             "Key": "Name",
-            "Value": "MyTestStack/PipelineResourcesVpc/PublicSubnet3",
+            "Value": "test-stack/PipelineResourcesVpc/PublicSubnet3",
           },
         ],
         "VpcId": {
