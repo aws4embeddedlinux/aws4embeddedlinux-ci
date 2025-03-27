@@ -69,7 +69,7 @@ describe("EmbeddedLinuxCodeBuildProjectStack", () => {
         Match.objectLike({
           CidrIp: {
             "Fn::ImportValue": Match.stringLikeRegexp(
-              `${common.stackName}:ExportsOutputFnGetAtt${props.vpc.node.id.replaceAll("-", "")}*`,
+              `${common.stackName}:ExportsOutputFnGetAtt${props.vpc.node.id.replace(/-/g, "")}*`,
             ),
           },
           FromPort: 2049,
@@ -96,7 +96,7 @@ describe("EmbeddedLinuxCodeBuildProjectStack", () => {
                       ":",
                       {
                         "Fn::ImportValue": Match.stringLikeRegexp(
-                          `${common.stackName}:ExportsOutputFnGetAtt${props.ecrRepository.node.id.replaceAll("-", "")}`,
+                          `${common.stackName}:ExportsOutputFnGetAtt${props.ecrRepository.node.id.replace(/-/g, "")}`,
                         ),
                       },
                     ],
@@ -112,7 +112,7 @@ describe("EmbeddedLinuxCodeBuildProjectStack", () => {
                       ":",
                       {
                         "Fn::ImportValue": Match.stringLikeRegexp(
-                          `${common.stackName}:ExportsOutputFnGetAtt${props.ecrRepository.node.id.replaceAll("-", "")}`,
+                          `${common.stackName}:ExportsOutputFnGetAtt${props.ecrRepository.node.id.replace(/-/g, "")}`,
                         ),
                       },
                     ],
@@ -126,7 +126,7 @@ describe("EmbeddedLinuxCodeBuildProjectStack", () => {
               "/",
               {
                 "Fn::ImportValue": Match.stringLikeRegexp(
-                  `${common.stackName}:ExportsOutputRef${props.ecrRepository.node.id.replaceAll("-", "")}`,
+                  `${common.stackName}:ExportsOutputRef${props.ecrRepository.node.id.replace(/-/g, "")}`,
                 ),
               },
               ":latest",
@@ -263,7 +263,7 @@ describe("EmbeddedLinuxCodeBuildProjectStack Custom", () => {
         Match.objectLike({
           CidrIp: {
             "Fn::ImportValue": Match.stringLikeRegexp(
-              `${common.stackName}:ExportsOutputFnGetAtt${props.vpc.node.id.replaceAll("-", "")}*`,
+              `${common.stackName}:ExportsOutputFnGetAtt${props.vpc.node.id.replace(/-/g, "")}*`,
             ),
           },
           FromPort: 2049,
@@ -290,7 +290,7 @@ describe("EmbeddedLinuxCodeBuildProjectStack Custom", () => {
                       ":",
                       {
                         "Fn::ImportValue": Match.stringLikeRegexp(
-                          `${common.stackName}:ExportsOutputFnGetAtt${props.ecrRepository.node.id.replaceAll("-", "")}`,
+                          `${common.stackName}:ExportsOutputFnGetAtt${props.ecrRepository.node.id.replace(/-/g, "")}`,
                         ),
                       },
                     ],
@@ -306,7 +306,7 @@ describe("EmbeddedLinuxCodeBuildProjectStack Custom", () => {
                       ":",
                       {
                         "Fn::ImportValue": Match.stringLikeRegexp(
-                          `${common.stackName}:ExportsOutputFnGetAtt${props.ecrRepository.node.id.replaceAll("-", "")}`,
+                          `${common.stackName}:ExportsOutputFnGetAtt${props.ecrRepository.node.id.replace(/-/g, "")}`,
                         ),
                       },
                     ],
@@ -320,7 +320,7 @@ describe("EmbeddedLinuxCodeBuildProjectStack Custom", () => {
               "/",
               {
                 "Fn::ImportValue": Match.stringLikeRegexp(
-                  `${common.stackName}:ExportsOutputRef${props.ecrRepository.node.id.replaceAll("-", "")}`,
+                  `${common.stackName}:ExportsOutputRef${props.ecrRepository.node.id.replace(/-/g, "")}`,
                 ),
               },
               ":latest",
