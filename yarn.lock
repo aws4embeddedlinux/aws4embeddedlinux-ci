@@ -1493,9 +1493,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"aws-cdk@npm:2.176.0":
-  version: 2.176.0
-  resolution: "aws-cdk@npm:2.176.0"
+"aws-cdk@npm:2.1006.0":
+  version: 2.1006.0
+  resolution: "aws-cdk@npm:2.1006.0"
   dependencies:
     fsevents: "npm:2.3.2"
   dependenciesMeta:
@@ -1503,7 +1503,7 @@ __metadata:
       optional: true
   bin:
     cdk: bin/cdk
-  checksum: 10c0/861dddf7dcc67806c9dae85e191af94080c6e76aaf47bf29c9b3971c6277738c5dbc64609c220b32ef4885d788360614aa1241617803d730dc1f77db2c5b7c23
+  checksum: 10c0/71af8be65b5b07d02f102fdd1490c9f84a9367e6c970505f4eafd333ca026f4433056350150dc010df68de41b1e26725e177827181e0964d8f3221349e16b169
   languageName: node
   linkType: hard
 
@@ -1518,7 +1518,7 @@ __metadata:
     "@types/node": "npm:20.14.8"
     "@typescript-eslint/eslint-plugin": "npm:^8.18.0"
     "@typescript-eslint/parser": "npm:^8.18.0"
-    aws-cdk: "npm:2.176.0"
+    aws-cdk: "npm:2.1006.0"
     aws-cdk-lib: "npm:2.176.0"
     cdk-nag: "npm:^2.35.0"
     constructs: "npm:^10.4.2"
