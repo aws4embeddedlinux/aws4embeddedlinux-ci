@@ -12,14 +12,14 @@
     "format": "eslint '**/*.{js,ts,json}' --quiet --fix",
     "postinstall": "npm run build > /dev/null || echo 'prepapre command completed successfully with errors'",
     "prepare-commit": "pre-commit run --all-files --color=always --show-diff-on-failure",
-    "test": "jest",
+    "test": "jest --passWithNoTests --updateSnapshot",
     "update-snapshot": "jest -u",
     "watch": "tsc -w",
     "precheck": "yarn clean",
     "preformat": "yarn clean"
   },
   "dependencies": {
-    "aws-cdk-lib": "2.176.0",
+    "aws-cdk-lib": "^2.186.0",
     "constructs": "^10.4.2"
   },
   "devDependencies": {
@@ -30,7 +30,7 @@
     "@types/node": "20.14.8",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
-    "aws-cdk": "2.1006.0",
+    "aws-cdk": "^2.1006.0",
     "cdk-nag": "^2.35.0",
     "eslint": "^9.16.0",
     "eslint-config-prettier": "^9.1.0",
@@ -52,5 +52,5 @@
   "overrides": {
     "glob": "^9.3.5"
   },
-  "packageManager": "yarn@4.6.0"
+  "packageManager": "yarn@4.7.0"
 }
