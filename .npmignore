@@ -1,6 +1,18 @@
-*.ts
-!*.d.ts
+.yarn
+.github
+.vscode
+test
 
-# CDK asset staging directory
-.cdk.staging
-cdk.out
+.editorconfig
+.gitattributes
+.pre-commit-config.yaml
+eslint.config.mjs
+jest.config.js
+typedoc.json
+tsconfig.*.json
+package-lock.json
+yarn.lock
+
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+SECURITY.md

@@ -1,11 +1,12 @@
 import typescriptEslintEslintPlugin from "@typescript-eslint/eslint-plugin";
+import simpleImportSort from "eslint-plugin-simple-import-sort";
 import tsdoc from "eslint-plugin-tsdoc";
 import globals from "globals";
 import tsParser from "@typescript-eslint/parser";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import eslint from "@eslint/js";
-import tseslint from "typescript-eslint";
+import eslintjs from "@eslint/js";
+import eslintts from "typescript-eslint";
 import { FlatCompat } from "@eslint/eslintrc";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -16,14 +17,22 @@ const gitignorePath = path.resolve(__dirname, ".gitignore");
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
-  recommendedConfig: eslint.configs.recommended,
-  allConfig: eslint.configs.all,
+  recommendedConfig: eslintjs.configs.recommended,
+  allConfig: eslintjs.configs.all,
 });
 
 export default [
+  ...compat.extends(
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+  ),
+  ...eslintts.configs.recommended,
   {
+    ...eslintjs.configs.recommended,
     plugins: {
       "@typescript-eslint": typescriptEslintEslintPlugin,
+      "simple-import-sort": simpleImportSort,
       tsdoc,
     },
 
@@ -39,7 +48,7 @@ export default [
 
       parserOptions: {
         sourceType: "module",
-        project: "./tsconfig.json",
+        project: "./tsconfig.eslint.json",
       },
     },
 
@@ -61,8 +70,21 @@ export default [
       "prettier/prettier": [
         "error",
         {
-          singleQuote: true,
-          trailingComma: "es5",
+          singleQuote: false,
+          trailingComma: "all",
+        },
+      ],
+
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          args: "all",
+          argsIgnorePattern: "^_",
+          caughtErrors: "all",
+          caughtErrorsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          ignoreRestSiblings: true,
         },
       ],
     },
@@ -77,13 +99,6 @@ export default [
       "/test/**",
       "/tmp/**",
     ],
-    ...eslint.configs.recommended,
   },
   includeIgnoreFile(gitignorePath),
-  ...compat.extends(
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended",
-  ),
-  ...tseslint.configs.recommended,
 ];

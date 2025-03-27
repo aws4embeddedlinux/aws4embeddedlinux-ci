@@ -1,17 +1,26 @@
+import { describe, expect, test, beforeAll } from "@jest/globals";
+import { AwsSolutionsChecks, NagSuppressions } from "cdk-nag";
+import { Annotations, Match } from "aws-cdk-lib/assertions";
+
 import * as cdk from "aws-cdk-lib";
 import * as ecr from "aws-cdk-lib/aws-ecr";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as kms from "aws-cdk-lib/aws-kms";
-
-import { Annotations, Match } from "aws-cdk-lib/assertions";
-import { AwsSolutionsChecks, NagSuppressions } from "cdk-nag";
-import { EmbeddedLinuxCodePipelineStack } from "../lib/codepipeline-embedded-linux";
-import { ProjectType } from "../lib";
+import {
+  ProjectType,
+  EmbeddedLinuxCodePipelineStack,
+  EmbeddedLinuxCodePipelineProps,
+} from "../lib";
 import { DEFAULT_ENV } from "./util";
 
-function addNagSuppressions(stack: cdk.Stack) {
-  NagSuppressions.addStackSuppressions(stack, [
+const base_path = `EmbeddedLinuxCodePipeline`;
+
+function addNagSuppressions(
+  _stack: EmbeddedLinuxCodePipelineStack,
+  _props: EmbeddedLinuxCodePipelineProps,
+) {
+  NagSuppressions.addStackSuppressions(_stack, [
     { id: "CdkNagValidationFailure", reason: "Multiple Validation Failures." },
     {
       id: "AwsSolutions-CB3",
@@ -23,19 +32,19 @@ function addNagSuppressions(stack: cdk.Stack) {
     },
   ]);
   NagSuppressions.addResourceSuppressionsByPath(
-    stack,
-    `/${stack.stackName}/EmbeddedLinuxCodePipelineBucketDeploymentRole/Resource`,
+    _stack,
+    `/${_stack.stackName}/${base_path}BucketDeploymentRole/Resource`,
     [
       {
         id: "AwsSolutions-IAM5",
         reason:
-          "/aws/lambda/EmbeddedLinuxCodePipeline-CustomCDKBucketDeployment* is needed here.",
+          "/aws/lambda/${base_path}-CustomCDKBucketDeployment* is needed here.",
       },
     ],
   );
   NagSuppressions.addResourceSuppressionsByPath(
-    stack,
-    `/${stack.stackName}/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/Resource`,
+    _stack,
+    `/${_stack.stackName}/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/Resource`,
     [
       {
         id: "AwsSolutions-L1",
@@ -44,8 +53,8 @@ function addNagSuppressions(stack: cdk.Stack) {
     ],
   );
   NagSuppressions.addResourceSuppressionsByPath(
-    stack,
-    `/${stack.stackName}/EmbeddedLinuxCodePipelineProject/PolicyDocument/Resource`,
+    _stack,
+    `/${_stack.stackName}/${base_path}Project/PolicyDocument/Resource`,
     [
       {
         id: "AwsSolutions-IAM5",
@@ -55,8 +64,8 @@ function addNagSuppressions(stack: cdk.Stack) {
     ],
   );
   NagSuppressions.addResourceSuppressionsByPath(
-    stack,
-    `/${stack.stackName}/EmbeddedLinuxCodePipelineProject/Role/DefaultPolicy/Resource`,
+    _stack,
+    `/${_stack.stackName}/${base_path}Project/Role/DefaultPolicy/Resource`,
     [
       {
         id: "AwsSolutions-IAM5",
@@ -66,8 +75,8 @@ function addNagSuppressions(stack: cdk.Stack) {
     ],
   );
   NagSuppressions.addResourceSuppressionsByPath(
-    stack,
-    `/${stack.stackName}/EmbeddedLinuxCodePipelineBucketDeploymentRole/DefaultPolicy/Resource`,
+    _stack,
+    `/${_stack.stackName}/${base_path}BucketDeploymentRole/DefaultPolicy/Resource`,
     [
       {
         id: "AwsSolutions-IAM5",
@@ -77,8 +86,8 @@ function addNagSuppressions(stack: cdk.Stack) {
     ],
   );
   NagSuppressions.addResourceSuppressionsByPath(
-    stack,
-    `/${stack.stackName}/EmbeddedLinuxCodePipeline/Role/DefaultPolicy/Resource`,
+    _stack,
+    `/${_stack.stackName}/${base_path}/Role/DefaultPolicy/Resource`,
     [
       {
         id: "AwsSolutions-IAM5",
@@ -88,8 +97,8 @@ function addNagSuppressions(stack: cdk.Stack) {
     ],
   );
   NagSuppressions.addResourceSuppressionsByPath(
-    stack,
-    `/${stack.stackName}/EmbeddedLinuxCodePipeline/Artifact/Artifact/CodePipelineActionRole/DefaultPolicy/Resource`,
+    _stack,
+    `/${_stack.stackName}/${base_path}/Source/Source/CodePipelineActionRole/DefaultPolicy/Resource`,
     [
       {
         id: "AwsSolutions-IAM5",
@@ -99,8 +108,8 @@ function addNagSuppressions(stack: cdk.Stack) {
     ],
   );
   NagSuppressions.addResourceSuppressionsByPath(
-    stack,
-    `/${stack.stackName}/EmbeddedLinuxCodePipeline/Source/Source/CodePipelineActionRole/DefaultPolicy/Resource`,
+    _stack,
+    `/${_stack.stackName}/${base_path}/Build/Build/CodePipelineActionRole/DefaultPolicy/Resource`,
     [
       {
         id: "AwsSolutions-IAM5",
@@ -110,8 +119,19 @@ function addNagSuppressions(stack: cdk.Stack) {
     ],
   );
   NagSuppressions.addResourceSuppressionsByPath(
-    stack,
-    `/${stack.stackName}/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource`,
+    _stack,
+    `/${_stack.stackName}/${base_path}/Output/Output/CodePipelineActionRole/DefaultPolicy/Resource`,
+    [
+      {
+        id: "AwsSolutions-IAM5",
+        reason:
+          "Because these are the default permissions assigned to a CDK default created role.",
+      },
+    ],
+  );
+  NagSuppressions.addResourceSuppressionsByPath(
+    _stack,
+    `/${_stack.stackName}/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource`,
     [
       {
         id: "AwsSolutions-IAM5",
@@ -121,8 +141,8 @@ function addNagSuppressions(stack: cdk.Stack) {
     ],
   );
   NagSuppressions.addResourceSuppressionsByPath(
-    stack,
-    `/${stack.stackName}/EmbeddedLinuxCodePipelineOSImageCheckOnStart/Resource`,
+    _stack,
+    `/${_stack.stackName}/${base_path}OSImageCheckOnStart/Resource`,
     [
       {
         id: "AwsSolutions-L1",
@@ -131,8 +151,8 @@ function addNagSuppressions(stack: cdk.Stack) {
     ],
   );
   NagSuppressions.addResourceSuppressionsByPath(
-    stack,
-    `/${stack.stackName}/EmbeddedLinuxCodePipelineVMImportRole/Resource`,
+    _stack,
+    `/${_stack.stackName}/${base_path}VMImportRole/Resource`,
     [
       {
         id: "AwsSolutions-IAM5",
@@ -142,10 +162,13 @@ function addNagSuppressions(stack: cdk.Stack) {
             regex: `/Resource::arn:aws:ec2:${DEFAULT_ENV.region}::snapshot/\\*$/g`,
           },
           {
-            regex: `/Resource::<OutputBucket7114EB27.Arn>/\\*$/g`,
+            regex: `/Resource::<${_props.pipelineOutputBucket.node.id.replace(/-/g, "")}A5072518.Arn>/\\*$/g`,
           },
           {
-            regex: `/Resource::BaseStack:ExportsOutputFnGetAttOutputBucket7114EB27Arn67D5716D/\\*$/g`,
+            regex: `/Resource::${_stack.stackName}:ExportsOutputFnGetAtt${_props.pipelineOutputBucket.node.id.replace(/-/g, "").toLowerCase()}A5072518ArnD3542377/\\*$/g`,
+          },
+          {
+            regex: `/Resource::test-common:ExportsOutputFnGetAtttestoutA5072518ArnD3542377/\\*$/g`,
           },
           {
             regex: `/Resource::\\*$/g`,
@@ -157,37 +180,46 @@ function addNagSuppressions(stack: cdk.Stack) {
 }
 
 describe("EmbeddedLinuxCodePipelineStack cdk-nag AwsSolutions Pack", () => {
-  const app: cdk.App = new cdk.App();
-  let stack: cdk.Stack;
+  const resource_prefix = "test";
+
+  let app: cdk.App;
+  let stack: EmbeddedLinuxCodePipelineStack;
+  let props: EmbeddedLinuxCodePipelineProps;
+  let common: cdk.Stack;
 
   beforeAll(() => {
     // GIVEN
-    const baseStack = new cdk.Stack(app, "BaseStack", { env: DEFAULT_ENV });
+    app = new cdk.App();
+
+    common = new cdk.Stack(app, `${resource_prefix}-common`, {
+      env: DEFAULT_ENV,
+    });
 
     // GIVEN
-    const encryptionKey = new kms.Key(baseStack, "EncryptionKey", {
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      enableKeyRotation: true,
-    });
+
+    // Create required resources for testing
     const pipelineSourceBucket = new s3.Bucket(
-      baseStack,
-      "pipelineSourceBucket",
-      {
-        versioned: true,
-      },
+      common,
+      `${resource_prefix}-src`,
+      { versioned: true },
     );
     const pipelineArtifactBucket = new s3.Bucket(
-      baseStack,
-      "ArtifactBucket",
+      common,
+      `${resource_prefix}-art`,
       {},
     );
-    const pipelineOutputBucket = new s3.Bucket(baseStack, "OutputBucket", {
-      encryptionKey: encryptionKey,
+    const pipelineOutputBucket = new s3.Bucket(
+      common,
+      `${resource_prefix}-out`,
+      {},
+    );
+    const ecrRepository = new ecr.Repository(common, `${resource_prefix}-ecr`);
+    const encryptionKey = new kms.Key(common, `${resource_prefix}-key`);
+    const vpc = new ec2.Vpc(common, `${resource_prefix}-vpc`, {
+      maxAzs: 2,
     });
-    const ecrRepository = new ecr.Repository(baseStack, "EcrRepository", {});
-    const vpc = new ec2.Vpc(baseStack, "Vpc", {});
 
-    stack = new EmbeddedLinuxCodePipelineStack(app, "MyTestStack", {
+    props = {
       env: DEFAULT_ENV,
       pipelineSourceBucket: pipelineSourceBucket,
       pipelineArtifactBucket: pipelineArtifactBucket,
@@ -198,9 +230,14 @@ describe("EmbeddedLinuxCodePipelineStack cdk-nag AwsSolutions Pack", () => {
       vpc: vpc,
       pipelineArtifactPrefix: `${ProjectType.PokyAmi}`,
       encryptionKey: encryptionKey,
-    });
+    };
+    stack = new EmbeddedLinuxCodePipelineStack(
+      app,
+      `${resource_prefix}-stack`,
+      props,
+    );
 
-    addNagSuppressions(stack);
+    addNagSuppressions(stack, props);
 
     // WHEN
     cdk.Aspects.of(stack).add(new AwsSolutionsChecks({ verbose: true }));
