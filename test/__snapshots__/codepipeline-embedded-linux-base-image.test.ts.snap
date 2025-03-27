@@ -321,15 +321,9 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
               "Effect": "Allow",
               "Principal": {
                 "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":iam::111111111111:root",
-                    ],
+                  "Fn::GetAtt": [
+                    "CodePipelineBuildBaseImageCodePipelineRole73E36B25",
+                    "Arn",
                   ],
                 },
               },
@@ -545,15 +539,9 @@ exports[`EmbeddedLinuxCodePipelineBaseImageStack Snapshot 1`] = `
               "Effect": "Allow",
               "Principal": {
                 "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":iam::111111111111:root",
-                    ],
+                  "Fn::GetAtt": [
+                    "CodePipelineBuildBaseImageCodePipelineRole73E36B25",
+                    "Arn",
                   ],
                 },
               },

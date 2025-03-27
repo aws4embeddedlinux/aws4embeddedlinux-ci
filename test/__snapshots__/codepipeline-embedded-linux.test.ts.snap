@@ -425,15 +425,9 @@ exports[`EmbeddedLinuxCodePipelineStack Snapshot 1`] = `
               "Effect": "Allow",
               "Principal": {
                 "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":iam::111111111111:root",
-                    ],
+                  "Fn::GetAtt": [
+                    "EmbeddedLinuxCodePipelineRole784D6893",
+                    "Arn",
                   ],
                 },
               },
@@ -845,15 +839,9 @@ exports[`EmbeddedLinuxCodePipelineStack Snapshot 1`] = `
               "Effect": "Allow",
               "Principal": {
                 "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":iam::111111111111:root",
-                    ],
+                  "Fn::GetAtt": [
+                    "EmbeddedLinuxCodePipelineRole784D6893",
+                    "Arn",
                   ],
                 },
               },
@@ -1630,15 +1618,9 @@ exports[`EmbeddedLinuxCodePipelineStack Snapshot 1`] = `
               "Effect": "Allow",
               "Principal": {
                 "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":iam::111111111111:root",
-                    ],
+                  "Fn::GetAtt": [
+                    "EmbeddedLinuxCodePipelineRole784D6893",
+                    "Arn",
                   ],
                 },
               },
