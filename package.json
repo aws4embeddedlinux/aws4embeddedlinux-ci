@@ -30,7 +30,7 @@
     "@types/node": "22.15.3",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
-    "aws-cdk": "^2.1012.0",
+    "aws-cdk": "^2.1023.0",
     "cdk-nag": "^2.36.38",
     "eslint": "^9.31.0",
     "eslint-config-prettier": "^10.1.5",
