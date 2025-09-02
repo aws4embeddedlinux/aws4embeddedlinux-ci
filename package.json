@@ -19,7 +19,7 @@
     "preformat": "yarn clean"
   },
   "dependencies": {
-    "aws-cdk-lib": "^2.206.0",
+    "aws-cdk-lib": "^2.213.0",
     "constructs": "^10.4.2"
   },
   "devDependencies": {
