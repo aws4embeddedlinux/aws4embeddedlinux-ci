@@ -29,7 +29,7 @@
     "@types/jest": "^29.5.14",
     "@types/node": "24.2.0",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
-    "@typescript-eslint/parser": "^8.18.0",
+    "@typescript-eslint/parser": "^8.41.0",
     "aws-cdk": "^2.1023.0",
     "cdk-nag": "^2.37.9",
     "eslint": "^9.32.0",
