@@ -29,13 +29,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aws-cdk/cloud-assembly-schema@npm:^48.3.0":
-  version: 48.6.0
-  resolution: "@aws-cdk/cloud-assembly-schema@npm:48.6.0"
+"@aws-cdk/cloud-assembly-schema@npm:^48.6.0":
+  version: 48.12.0
+  resolution: "@aws-cdk/cloud-assembly-schema@npm:48.12.0"
   dependencies:
     jsonschema: "npm:~1.4.1"
     semver: "npm:^7.7.2"
-  checksum: 10c0/cedebd9dea21ca5afc26325f82efb0e352443b88975dfaea6fa53f3038baf9d5c426e11ea6fe2e1593377b5ad43b453841abd4c737e5c231adb0a639ea7cf851
+  checksum: 10c0/7c7f9af1deab22e385384bc50ad934a35cc5488f7288387fa5a09ff7640c9158afc4e7ef2b437dfeddcb7b3a81c5d3f8da6309c7a5859fc040a5ca3f81a43821
   languageName: node
   linkType: hard
 
@@ -1955,13 +1955,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"aws-cdk-lib@npm:^2.213.0":
-  version: 2.213.0
-  resolution: "aws-cdk-lib@npm:2.213.0"
+"aws-cdk-lib@npm:^2.219.0":
+  version: 2.219.0
+  resolution: "aws-cdk-lib@npm:2.219.0"
   dependencies:
     "@aws-cdk/asset-awscli-v1": "npm:2.2.242"
     "@aws-cdk/asset-node-proxy-agent-v6": "npm:^2.1.0"
-    "@aws-cdk/cloud-assembly-schema": "npm:^48.3.0"
+    "@aws-cdk/cloud-assembly-schema": "npm:^48.6.0"
     "@balena/dockerignore": "npm:^1.0.2"
     case: "npm:1.6.3"
     fs-extra: "npm:^11.3.1"
@@ -1975,7 +1975,7 @@ __metadata:
     yaml: "npm:1.10.2"
   peerDependencies:
     constructs: ^10.0.0
-  checksum: 10c0/8e69369838dffbd0145fee793554a945c2a7c57a8137684f57f21f1792c1997bed4ae5b543cc55134bdd29db7c33c202aed0884224a1b3add3416f9067aeee97
+  checksum: 10c0/05cdd0da87475bedfdae40ab8772110c89af5c278e846e117a98db29df4b169c78f67eb2467e36a3a827531fc38124de6da95f4365f185c7c1419e62ae31f8d2
   languageName: node
   linkType: hard
 
@@ -2005,7 +2005,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:^8.18.0"
     "@typescript-eslint/parser": "npm:^8.18.0"
     aws-cdk: "npm:^2.1029.0"
-    aws-cdk-lib: "npm:^2.213.0"
+    aws-cdk-lib: "npm:^2.219.0"
     cdk-nag: "npm:^2.37.27"
     constructs: "npm:^10.4.2"
     eslint: "npm:^9.36.0"
