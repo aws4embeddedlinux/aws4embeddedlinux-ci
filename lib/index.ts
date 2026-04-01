@@ -2,6 +2,7 @@ export * from "./codebuild-embedded-linux";
 export * from "./codepipeline-embedded-linux-base-image";
 export * from "./codepipeline-embedded-linux";
 export * from "./codepipeline-resources";
+export * from "./hash-equivalence-server";
 
 /**
  * The type of project built.
