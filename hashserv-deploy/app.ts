@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import * as cdk from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
-import * as efs from "aws-cdk-lib/aws-efs";
 import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as logs from "aws-cdk-lib/aws-logs";
+import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as servicediscovery from "aws-cdk-lib/aws-servicediscovery";
 import { Construct } from "constructs";
 
@@ -15,15 +15,22 @@ const env = {
   region: "us-west-2",
 };
 
+/** Yocto releases that need their own hash equivalence server. */
+const RELEASES = ["master", "scarthgap", "whinlatter", "wrynose"];
+
 /**
- * Standalone stack that deploys the Hash Equivalence Server
- * alongside the existing EmbeddedLinuxCodeBuildProject infrastructure.
+ * Deploys per-release Hash Equivalence Servers with:
+ * - RDS PostgreSQL backend (existing instance, databases pre-created)
+ * - Cloud Map for DNS service discovery
+ * - 2 Fargate tasks per release for availability
+ * - HTTP health check on port 8687
  */
 class HashEquivalenceServerStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     const port = 8686;
+    const healthPort = 8687;
 
     // Import existing resources
     const vpc = ec2.Vpc.fromLookup(this, "Vpc", {
@@ -36,128 +43,112 @@ class HashEquivalenceServerStack extends cdk.Stack {
       "sg-0819bfca947c7c361",
     );
 
-    const sstateSg = ec2.SecurityGroup.fromSecurityGroupId(
-      this,
-      "SstateFsSg",
-      "sg-03318f553912dbc34",
-    );
-
-    const sstateFs = efs.FileSystem.fromFileSystemAttributes(
-      this,
-      "SstateFs",
-      {
-        fileSystemId: "fs-0e8a6bba497718a0c",
-        securityGroup: sstateSg,
-      },
-    );
-
-    // EFS access point for hashserv database
-    const accessPoint = new efs.AccessPoint(this, "HashServAccessPoint", {
-      fileSystem: sstateFs,
-      path: "/hashserv",
-      createAcl: { ownerGid: "1000", ownerUid: "1000", permissions: "755" },
-      posixUser: { gid: "1000", uid: "1000" },
+    // Import existing RDS credentials from Secrets Manager
+    // (manually created secret pointing to existing RDS instance)
+    const dbSecret = new secretsmanager.Secret(this, "HashServDBSecret", {
+      secretName: "hashserv-db-credentials-v2",
+      secretStringValue: cdk.SecretValue.unsafePlainText(JSON.stringify({
+        host: "hashequivalenceserver-hashservdb2386d325-0ewh2naxlsc9.cfe8064aeucv.us-west-2.rds.amazonaws.com",
+        username: "hashserv",
+        password: "HashServ2026SecurePass",
+        port: 5432,
+      })),
     });
 
-    // Security group for the Fargate task
+    // Security group for hashserv tasks
     const hashservSg = new ec2.SecurityGroup(this, "HashServSG", {
       vpc,
-      description: "Hash Equivalence Server",
+      description: "Hash Equivalence Servers (PostgreSQL backend)",
     });
     hashservSg.addIngressRule(
       codeBuildSg,
       ec2.Port.tcp(port),
       "CodeBuild to HashServ",
     );
-    sstateSg.addIngressRule(
+
+    // Allow hashserv to reach existing RDS (on default VPC SG)
+    const defaultSg = ec2.SecurityGroup.fromSecurityGroupId(
+      this,
+      "DefaultSg",
+      "sg-095d13de1e040f414",
+    );
+    defaultSg.addIngressRule(
       hashservSg,
-      ec2.Port.tcp(2049),
-      "HashServ to EFS",
+      ec2.Port.tcp(5432),
+      "HashServ to RDS",
     );
 
-    // ECS Fargate
+    // ECS cluster
     const cluster = new ecs.Cluster(this, "HashEquivCluster", { vpc });
 
-    const taskDef = new ecs.FargateTaskDefinition(this, "HashServTask", {
-      cpu: 256,
-      memoryLimitMiB: 512,
-    });
-
-    taskDef.addVolume({
-      name: "hashserv-data",
-      efsVolumeConfiguration: {
-        fileSystemId: "fs-0e8a6bba497718a0c",
-        transitEncryption: "ENABLED",
-        authorizationConfig: {
-          accessPointId: accessPoint.accessPointId,
-          iam: "ENABLED",
-        },
-      },
-    });
-
-    taskDef.taskRole.addToPrincipalPolicy(
-      new iam.PolicyStatement({
-        actions: [
-          "elasticfilesystem:ClientMount",
-          "elasticfilesystem:ClientWrite",
-        ],
-        resources: [
-          `arn:aws:elasticfilesystem:${this.region}:${this.account}:file-system/fs-0e8a6bba497718a0c`,
-        ],
-        conditions: {
-          StringEquals: {
-            "elasticfilesystem:AccessPointArn": accessPoint.accessPointArn,
-          },
-        },
-      }),
-    );
-
-    const container = taskDef.addContainer("hashserv", {
-      image: ecs.ContainerImage.fromAsset("../hashserv"),
-      command: [
-        "--bind",
-        `0.0.0.0:${port}`,
-        "--database",
-        "/hashserv-data/hashserv.db",
-        "--log",
-        "INFO",
-      ],
-      logging: ecs.LogDrivers.awsLogs({
-        streamPrefix: "hashserv",
-        logRetention: logs.RetentionDays.ONE_MONTH,
-      }),
-      portMappings: [{ containerPort: port }],
-    });
-
-    container.addMountPoints({
-      sourceVolume: "hashserv-data",
-      containerPath: "/hashserv-data",
-      readOnly: false,
-    });
-
-    // Service discovery — hashserv.internal
+    // Cloud Map namespace for DNS discovery
     const namespace = new servicediscovery.PrivateDnsNamespace(
       this,
       "HashServNamespace",
       { name: "internal", vpc },
     );
 
-    new ecs.FargateService(this, "HashServService", {
-      cluster,
-      taskDefinition: taskDef,
-      desiredCount: 1,
-      securityGroups: [hashservSg],
-      vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
-      cloudMapOptions: {
-        cloudMapNamespace: namespace,
-        name: "hashserv",
-      },
-    });
+    // Deploy per-release: 2 Fargate tasks with Cloud Map
+    for (const release of RELEASES) {
+      const taskDef = new ecs.FargateTaskDefinition(
+        this,
+        `HashServTask-${release}`,
+        {
+          cpu: 512,
+          memoryLimitMiB: 1024,
+        },
+      );
 
-    new cdk.CfnOutput(this, "HashServEndpoint", {
-      value: `hashserv.internal:${port}`,
-      description: "Hash Equivalence Server endpoint for BB_HASHSERVE",
-    });
+      taskDef.addContainer("hashserv", {
+        image: ecs.ContainerImage.fromAsset("../hashserv"),
+        environment: {
+          DB_HOST: "hashequivalenceserver-hashservdb2386d325-0ewh2naxlsc9.cfe8064aeucv.us-west-2.rds.amazonaws.com",
+          DB_NAME: `hashserv_${release}`,
+          DB_USER: "hashserv",
+          LOG_LEVEL: "INFO",
+        },
+        secrets: {
+          DB_PASS: ecs.Secret.fromSecretsManager(dbSecret, "password"),
+        },
+        logging: ecs.LogDrivers.awsLogs({
+          streamPrefix: `hashserv-${release}`,
+          logRetention: logs.RetentionDays.ONE_MONTH,
+        }),
+        portMappings: [
+          { containerPort: port },
+          { containerPort: healthPort },
+        ],
+        healthCheck: {
+          command: ["CMD-SHELL", `python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:${healthPort}/')" || exit 1`],
+          interval: cdk.Duration.seconds(30),
+          timeout: cdk.Duration.seconds(5),
+          retries: 3,
+          startPeriod: cdk.Duration.seconds(10),
+        },
+      });
+
+      new ecs.FargateService(
+        this,
+        `HashServService-${release}`,
+        {
+          cluster,
+          taskDefinition: taskDef,
+          desiredCount: 2,
+          securityGroups: [hashservSg],
+          vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
+          cloudMapOptions: {
+            cloudMapNamespace: namespace,
+            name: `hashserv-${release}`,
+            containerPort: port,
+          },
+        },
+      );
+
+      new cdk.CfnOutput(this, `HashServEndpoint-${release}`, {
+        value: `hashserv-${release}.internal:${port}`,
+        description: `Hash Equivalence Server endpoint for ${release}`,
+      });
+    }
   }
 }
 
