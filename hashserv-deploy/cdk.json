@@ -1,0 +1,6 @@
+{
+  "app": "npx ts-node --prefer-ts-exts app.ts",
+  "context": {
+    "@aws-cdk/core:bootstrapQualifier": "hnb659fds"
+  }
+}
